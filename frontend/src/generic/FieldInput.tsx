@@ -1,8 +1,5 @@
 import {useState} from "react";
 
-/*
-
-*/
 const FieldInput: React.FC<FieldInputProps> = ({
     label,
     content,
@@ -46,11 +43,15 @@ interface FieldInputProps {
 }
 
 /**
- * FieldInput is a React component that displays an input field with an optional label
- * Optional @Param label <string> represents the label that is given to the input field
- * Optional @Param type<string> represents the type of input field
- * Optional @Param content<string | number> represents the initial value of the input field.
- * Optional @Param layout<string> represents the styling of the outer div, to be used for layout styling purposes
- * Optional @Param style<string> represents the styling of the input field as well as the label, styling purposes.
- * @Param handleChange - function that handles the change of the input field and returns its value to its parent.
+ * FieldInput is a React component that displays an input field with an optional label.
+ *
+ * @param {Object} props - The properties object.
+ * @param {string} [props.label] - Optional. The label text for the input field.
+ * @param {string} [props.type] - Optional. The type of the input field. Defaults to "text".
+ * @param {string | number} [props.content] - Optional. The initial value of the input field.
+ * @param {string} [props.layout] - Optional. The CSS class names for layout styling of the outer div.
+ * @param {string} [props.style] - Optional. The CSS class names for styling the input field and label.
+ * @param {(value: string) => void} props.handleChange - The function to handle changes in the input field.
+ *
+ * @returns {JSX.Element} The FieldInput component.
  */

@@ -6,3 +6,12 @@ const isValidPassword = (password: string) => {
 };
 
 export default isValidPassword;
+
+/**
+ * isValidPassword checks if a given password meets the required criteria.
+ * The password must be at least 8 characters long, contain at least one letter,
+ * one number, and one special character.
+ *
+ * @param {string} password - The password to be validated.
+ * @returns {boolean} - Returns true if the password is valid, otherwise false.
+ */
