@@ -3,6 +3,7 @@ import UserService from "../services/UserService";
 import {useNavigate} from "react-router-dom";
 import FieldInput from "../generic/FieldInput";
 import {Button} from "../generic/Button";
+import isValidPassword from "../hooks/usePasswordValidator";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -28,6 +29,8 @@ const Login = () => {
                 navigate("/home");
             })
             .catch((error: string) => console.error(error));
+        //TODO check wat deze returned en of optie hieronder mogelijk is
+        // .catch((error: string) => showError(error));
     };
 
     return (
