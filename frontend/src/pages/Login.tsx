@@ -3,7 +3,6 @@ import UserService from "../services/UserService";
 import {useNavigate} from "react-router-dom";
 import FieldInput from "../generic/FieldInput";
 import {Button} from "../generic/Button";
-import isValidPassword from "../hooks/usePasswordValidator";
 
 const Login = () => {
     const navigate = useNavigate();
