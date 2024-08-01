@@ -30,7 +30,7 @@ function NavBar() {
                 <div className="flex text-xl">
                     <button
                         className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded">
-                        onClick={goToAccount()}
+                        onClick={() => navigate("/account")}
                         Account
                     </button>
                     <button
