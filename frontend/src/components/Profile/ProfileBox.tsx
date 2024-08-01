@@ -20,7 +20,15 @@ function ProfileBox() {
 
     return (
         <>
-            <div></div>
+            <div className="flex justify-center">
+                <div className="bg-blue-300 flex flex-col items-center px-20 rounded-lg">
+                    <p>{profile.userName}</p>
+                    <p>{profileAge}</p>
+                    <p>{profile.description}</p>
+                    <p>{profile.gender}</p>
+                    <p>{profile.sexuality}</p>
+                </div>
+            </div>
         </>
     );
 }
