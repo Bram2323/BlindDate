@@ -7,6 +7,7 @@ export const TextArea: React.FC<TextArea> = ({
         <div className="flex flex-col m-2">
             <label htmlFor={label}>{label}</label>
             <textarea
+                className="resize-none border-2"
                 onChange={(e) => {
                     handleChange(e.target.value);
                 }}

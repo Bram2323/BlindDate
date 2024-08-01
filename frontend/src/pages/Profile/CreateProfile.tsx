@@ -55,11 +55,13 @@ export const CreateProfile = () => {
                 .catch((error) => {
                     showError(error.response.data.detail);
                 });
+        } else {
+            showError("Fill in all fields");
         }
     };
     return (
-        <div>
-            <div className={"h-8 border-2 p-2 text-red-600"}>{error}</div>
+        <div className="flex flex-col items-center justify-center border-2 w-96">
+            <div className={"h-8 p-2 text-red-600"}>{error}</div>
             <TextArea
                 label={"description"}
                 content={"Write something about yourself"}

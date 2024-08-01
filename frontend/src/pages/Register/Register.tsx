@@ -1,9 +1,9 @@
-import { useState } from "react";
+import {useState} from "react";
 import FieldInput from "../../generic/FieldInput";
-import { Button } from "../../generic/Button";
+import {Button} from "../../generic/Button";
 import isValidPassword from "../../hooks/usePasswordValidator";
 import UserService from "../../services/UserService";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 function Register() {
     const [username, setUsername] = useState("");

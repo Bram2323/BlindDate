@@ -32,8 +32,8 @@ const Login = () => {
     };
 
     return (
-        <div className="border-2 p-2">
-            <div className={"h-8 border-2 p-2 text-red-600"}>{error}</div>
+        <div className="flex flex-col min-h-full items-center justify-center">
+            <div className={"h-8 p-2 text-red-600"}>{error}</div>
             <FieldInput
                 label={"username"}
                 handleChange={(value) => {
