@@ -4,18 +4,21 @@ export const USER_STORAGE_LOCATION = "USER";
 
 export default class UserService {
     static login(username, password) {
-        return this.#requestToken("auth/login", username, password);
+        return this.#requestToken("auth/login", { username, password });
     }
 
-    static register(username, password) {
-        return this.#requestToken("auth/register", username, password);
+    static register(username, firstName, lastName, email, password) {
+        return this.#requestToken("auth/register", {
+            username,
+            firstName,
+            lastName,
+            email,
+            password,
+        });
     }
 
-    static #requestToken(url, username, password) {
-        return ApiService.post(url, {
-            username: username,
-            password: password,
-        })
+    static #requestToken(url, data) {
+        return ApiService.post(url, data)
             .then((response) => {
                 const data = response.data;
 
