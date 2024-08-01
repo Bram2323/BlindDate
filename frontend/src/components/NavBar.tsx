@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import UserService from "../services/UserService";
 
 function NavBar() {
     const navigate = useNavigate();
@@ -13,32 +14,38 @@ function NavBar() {
                     Blind Date
                 </button>
                 <div className="flex text-xl">
-                    <button
-                        className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded"
-                        onClick={() => navigate("/login")}
-                    >
-                        Inloggen
-                    </button>
-                    <button
-                        className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded"
-                        onClick={() => navigate("/register")}
-                    >
-                        Registreren
-                    </button>
+                    {!UserService.isLoggedIn() ? (
+                        <>
+                            <button
+                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded"
+                                onClick={() => navigate("/login")}
+                            >
+                                Inloggen
+                            </button>
+                            <button
+                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded"
+                                onClick={() => navigate("/register")}
+                            >
+                                Registreren
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button
+                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded"
+                                onClick={() => navigate("/account")}
+                            >
+                                Account
+                            </button>
+                            <button
+                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded"
+                                onClick={UserService.logout()}
+                            >
+                                Uitloggen
+                            </button>
+                        </>
+                    )}
                 </div>
-                {/* If user logged in = true:
-                <div className="flex text-xl">
-                    <button
-                        className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded">
-                        onClick={() => navigate("/account")}
-                        Account
-                    </button>
-                    <button
-                        className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded">
-                        onClick={deleteJwtToken()}
-                        Uitloggen
-                    </button>
-                </div> */}
             </div>
         </>
     );
