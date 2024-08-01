@@ -1,6 +1,7 @@
 import "./App.css";
-import { history } from "./services/History";
-import { useNavigate, useLocation } from "react-router-dom";
+import {history} from "./services/History";
+import {useNavigate, useLocation, Routes, Route} from "react-router-dom";
+import {Home} from "./pages/Home";
 
 function App() {
     history.navigate = useNavigate();
@@ -8,7 +9,9 @@ function App() {
 
     return (
         <>
-            <div></div>
+            <Routes>
+                <Route path="/" element={<Home />} />
+            </Routes>
         </>
     );
 }
