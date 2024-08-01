@@ -1,6 +1,7 @@
 package com.brajula.blinddate.entities.profile;
 
 import com.brajula.blinddate.entities.sexuality.Sexuality;
+import com.brajula.blinddate.entities.user.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,6 +23,7 @@ public class Profile {
     @Setter private String description;
     @Setter private Gender gender;
     @Setter private LocalDate dateOfBirth;
+    @Setter private User user;
 
     @ManyToMany @Setter private Set<Sexuality> sexualities;
 

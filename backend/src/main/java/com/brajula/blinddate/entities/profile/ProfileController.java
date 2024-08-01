@@ -5,6 +5,10 @@ import com.brajula.blinddate.Routes;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -29,7 +33,14 @@ public class ProfileController {
     }
 
     @PostMapping
-    public ResponseEntity<Profile> create(@RequestBody ProfileDto dto) {
+    public ResponseEntity<Profile> create(
+            @RequestBody ProfileDto dto, Authentication authentication) {
+        // dit is de iugelogde gebruiker
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+        }
+
         Profile savedProfile = profileService.save(dto);
         URI location =
                 ServletUriComponentsBuilder.fromCurrentRequest()
