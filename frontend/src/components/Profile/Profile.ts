@@ -7,7 +7,7 @@ interface Profile {
     description: string;
     gender: Genders;
     sexuality: Sexualities;
-    dateOfBirth: Date;
+    dateOfBirth: number;
 }
 
 export default Profile;
