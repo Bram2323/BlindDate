@@ -4,7 +4,7 @@ import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
 import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.entities.user.UserRepository;
-import com.brajula.blinddate.exceptions.DuplicateEntityException;
+import com.brajula.blinddate.exceptions.BadRequestException;
 import com.brajula.blinddate.exceptions.NotFoundException;
 
 import jakarta.transaction.Transactional;
@@ -38,13 +38,14 @@ public class ProfileService {
 
     @Transactional
     public Profile save(ProfileDto dto, User user) {
-        Optional<Profile> userProfileExists = profileRepository.findByUser(user).or(null);
-        if (userProfileExists.isPresent()) {
-            throw new DuplicateEntityException("User already has a profile");
+        Optional<Profile> profileExists = profileRepository.findByUser(user);
+        if (profileExists.isPresent()) {
+            throw new BadRequestException("This profile already exists");
+        } else {
+            Profile profile = dto.toProfile(user);
+            profile.setSexualities(convertToSexualities(dto.sexualities()));
+            return profileRepository.save(profile);
         }
-        Profile profile = dto.toProfile(user);
-        profile.setSexualities(convertToSexualities(dto.sexualities()));
-        return profileRepository.save(profile);
     }
 
     public Profile update(Long id, ProfileDto patch) {

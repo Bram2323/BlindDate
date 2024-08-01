@@ -27,11 +27,8 @@ const Login = () => {
             return;
         }
         UserService.login(username, password)
-            .then((res) => console.log(res))
             .then(navigate("/create-profile"))
-            .catch((err) => {
-                showError(err);
-            });
+            .catch((error) => showError(error));
     };
 
     return (

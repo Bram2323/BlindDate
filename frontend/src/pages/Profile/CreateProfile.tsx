@@ -6,9 +6,20 @@ import FieldInput from "../../generic/FieldInput";
 import ApiService from "../../services/ApiService";
 import {Button} from "../../generic/Button";
 import validateForm from "../../hooks/useProfileFormValidator";
+import UserService from "../../services/UserService";
+import {useNavigate} from "react-router-dom";
 
 export const CreateProfile = () => {
+    const navigate = useNavigate();
     const baseUrl = "http://localhost:8080/api/v1/";
+    const [error, setError] = useState<string>("");
+
+    const showError = (message: string) => {
+        setTimeout(() => {
+            setError("");
+        }, 3000);
+        setError(message);
+    };
 
     const genders = [
         {id: 1, value: "male"},
@@ -31,7 +42,7 @@ export const CreateProfile = () => {
                 setSexualities(response.data);
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             });
     }, []);
 
@@ -42,13 +53,13 @@ export const CreateProfile = () => {
                     console.log(res);
                 })
                 .catch((error) => {
-                    console.error(error);
+                    showError(error.response.data.detail);
                 });
         }
     };
-
     return (
         <div>
+            <div className={"h-8 border-2 p-2 text-red-600"}>{error}</div>
             <TextArea
                 label={"description"}
                 content={"Write something about yourself"}
