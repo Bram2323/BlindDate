@@ -8,7 +8,7 @@ function NavBar() {
         <>
             <div className="bg-purple-300 flex justify-between">
                 <button
-                    className="text-4xl text-white hover:bg-purple-500 px-2 mx-2 my-2 rounded shadow-xl"
+                    className="text-4xl text-white hover:bg-purple-500 px-2 mx-2 my-2 rounded"
                     onClick={() => navigate("/")}
                 >
                     Blind Date
