@@ -7,7 +7,7 @@ function ProfileBox() {
         id: 1,
         userName: "SuperJohn",
         description: "I'm a cool person",
-        dateOfBirth: Date.parse("05-05-1995"),
+        dateOfBirth: new Date("05-05-1995"),
         gender: Genders.male,
         sexuality: Sexualities.heteroSexual,
     };
