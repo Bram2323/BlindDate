@@ -9,7 +9,7 @@ function ProfileBox() {
         description: "I'm a cool person",
         dateOfBirth: Date.parse("05-05-1995"),
         gender: Genders.male,
-        sexuality: Sexualities.hetroSexual,
+        sexuality: Sexualities.heteroSexual,
     };
 
     return (
