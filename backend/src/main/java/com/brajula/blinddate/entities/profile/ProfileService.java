@@ -1,5 +1,9 @@
 package com.brajula.blinddate.entities.profile;
 
+
+import com.brajula.blinddate.entities.sexuality.Sexuality;
+import com.brajula.blinddate.entities.sexuality.SexualityService;
+
 import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;

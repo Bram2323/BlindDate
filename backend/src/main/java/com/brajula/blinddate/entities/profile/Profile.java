@@ -1,5 +1,7 @@
 package com.brajula.blinddate.entities.profile;
 
+import com.brajula.blinddate.entities.sexuality.Sexuality;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
