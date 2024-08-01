@@ -2,7 +2,7 @@ import axios from "axios";
 import UserService from "./UserService";
 import { history } from "./History";
 
-const API_URL = "http://localhost:8080/";
+const API_URL = "http://localhost:8080/api/v1/";
 
 export const TOKEN_STORAGE_LOCATION = "JWT";
 
