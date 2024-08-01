@@ -1,8 +1,8 @@
 enum Genders {
-    male,
-    female,
-    nonBinary,
-    fluid,
+    male = "Male",
+    female = "Female",
+    nonBinary = "Non-binary",
+    fluid = "Gender Fluid",
 }
 
 export default Genders;

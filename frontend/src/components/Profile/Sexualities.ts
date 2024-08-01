@@ -1,9 +1,9 @@
 enum Sexualities {
-    hetroSexual,
-    homoSexual,
-    biSexual,
-    panSexual,
-    aSexual,
+    heteroSexual = "Heterosexual",
+    homoSexual = "Homosexual",
+    biSexual = "Bisexual",
+    panSexual = "Pansexual",
+    aSexual = "Asexual",
 }
 
 export default Sexualities;
