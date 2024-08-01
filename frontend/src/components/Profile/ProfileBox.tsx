@@ -12,6 +12,12 @@ function ProfileBox() {
         sexuality: Sexualities.heteroSexual,
     };
 
+    let profileAge: number = Math.floor(
+        Math.abs(Date.now() - profile.dateOfBirth.getTime()) /
+            (1000 * 3600 * 24) /
+            365.25
+    );
+
     return (
         <>
             <div></div>
