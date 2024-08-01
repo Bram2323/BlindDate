@@ -10,10 +10,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
+
+    public static final String PASSWORD_VALIDATION_REGEX =
+            "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+
+    private final Pattern passwordPattern = Pattern.compile(PASSWORD_VALIDATION_REGEX);
 
     private final PasswordEncoder passwordEncoder;
 
@@ -59,20 +66,9 @@ public class UserService implements UserDetailsService {
         if (password == null) return false;
         if (password.length() < 8) return false;
 
-        boolean hasUppercaseLetter = false;
-        boolean hasLowercaseLetter = false;
-        boolean hasNumber = false;
-        boolean hasSpecialCharacter = false;
+        Matcher matcher = passwordPattern.matcher(password);
 
-        for (char chr : password.toCharArray()) {
-            if (Character.isLetter(chr)) {
-                if (Character.toUpperCase(chr) == chr) hasUppercaseLetter = true;
-                if (Character.toLowerCase(chr) == chr) hasLowercaseLetter = true;
-            } else if (Character.isDigit(chr)) hasNumber = true;
-            else hasSpecialCharacter = true;
-        }
-
-        return hasUppercaseLetter && hasLowercaseLetter && hasNumber && hasSpecialCharacter;
+        return matcher.matches();
     }
 
     @Override
