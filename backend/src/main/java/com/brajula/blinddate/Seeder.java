@@ -26,6 +26,10 @@ public class Seeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        updateOrCreateAdmin();
+    }
+
+    public void updateOrCreateAdmin() {
         Optional<User> possibleAdmin = userRepository.findByUsernameIgnoreCase("admin");
         if (possibleAdmin.isEmpty()) {
             User admin =
