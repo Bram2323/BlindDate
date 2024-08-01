@@ -1,10 +1,10 @@
-import ApiService, { TOKEN_STORAGE_LOCATION } from "./ApiService";
+import ApiService, {TOKEN_STORAGE_LOCATION} from "./ApiService";
 
 export const USER_STORAGE_LOCATION = "USER";
 
 export default class UserService {
     static login(username, password) {
-        return this.#requestToken("auth/login", { username, password });
+        return this.#requestToken("auth/login", {username, password});
     }
 
     static register(username, firstName, lastName, email, password) {

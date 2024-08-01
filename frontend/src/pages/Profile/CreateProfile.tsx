@@ -1,7 +1,7 @@
+import {useEffect, useRef, useState} from "react";
 import Checkbox from "../../generic/Checkbox";
 import {TextArea} from "../../generic/TextArea";
 import {DropDownSelect} from "../../generic/DropDownSelect";
-import {useEffect, useRef, useState} from "react";
 import FieldInput from "../../generic/FieldInput";
 import ApiService from "../../services/ApiService";
 import {Button} from "../../generic/Button";
@@ -9,6 +9,7 @@ import validateForm from "../../hooks/useProfileFormValidator";
 
 export const CreateProfile = () => {
     const baseUrl = "http://localhost:8080/api/v1/";
+
     const genders = [
         {id: 1, value: "male"},
         {id: 2, value: "female"},

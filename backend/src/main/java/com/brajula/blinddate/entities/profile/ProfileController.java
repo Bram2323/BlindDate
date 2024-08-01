@@ -34,7 +34,6 @@ public class ProfileController {
     public ResponseEntity<Profile> create(
             @RequestBody ProfileDto dto, Authentication authentication) {
         User user = authentication == null ? null : (User) authentication.getPrincipal();
-
         Profile savedProfile = profileService.save(dto, user);
         URI location =
                 ServletUriComponentsBuilder.fromCurrentRequest()

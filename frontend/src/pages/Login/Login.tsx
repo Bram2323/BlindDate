@@ -16,17 +16,19 @@ const Login = () => {
         }, 3000);
         setError(message);
     };
+
     const handleLogin = () => {
-        if (username.length === 0 || password === "") {
+        if (username.length === 0) {
             showError("Enter a username");
+            return;
         }
-        if (password.length === 0 || password === "") {
+        if (password.length === 0) {
             showError("Enter a password");
+            return;
         }
         UserService.login(username, password)
-            .then(() => {
-                navigate("/create-profile");
-            })
+            .then((res) => console.log(res))
+            .then(navigate("/create-profile"))
             .catch((err) => {
                 showError(err);
             });
