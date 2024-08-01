@@ -1,6 +1,6 @@
 package com.brajula.blinddate.entities.sexuality;
 
-import jakarta.persistence.EntityNotFoundException;
+import com.brajula.blinddate.exceptions.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +18,7 @@ public class SexualityService {
     }
 
     public Sexuality getById(Long id) {
-        return sexualityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return sexualityRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     public void save(Sexuality sexuality) {
@@ -27,14 +27,14 @@ public class SexualityService {
 
     public Sexuality update(Long id, Sexuality patch) {
         Sexuality patchedSexuality =
-                sexualityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+                sexualityRepository.findById(id).orElseThrow(NotFoundException::new);
         if (patch.getName() != null) patchedSexuality.setName(patch.getName());
         sexualityRepository.save(patchedSexuality);
         return patchedSexuality;
     }
 
     public void delete(Long id) {
-        sexualityRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        sexualityRepository.findById(id).orElseThrow(NotFoundException::new);
         sexualityRepository.deleteById(id);
     }
 }

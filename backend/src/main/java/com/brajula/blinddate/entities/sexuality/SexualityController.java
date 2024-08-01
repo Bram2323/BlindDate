@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:5173"})
+@CrossOrigin(origins = "${blinddate.cors}")
 @RequestMapping(Routes.SEXUALITIES)
 public class SexualityController {
     private final SexualityService sexualityService;

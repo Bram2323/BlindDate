@@ -1,14 +1,12 @@
 package com.brajula.blinddate.entities.profile;
 
 import com.brajula.blinddate.Routes;
+import com.brajula.blinddate.entities.user.User;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -17,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:5173"})
+@CrossOrigin(origins = "${blinddate.cors}")
 @RequestMapping(Routes.PROFILES)
 public class ProfileController {
     private final ProfileService profileService;
@@ -35,13 +33,9 @@ public class ProfileController {
     @PostMapping
     public ResponseEntity<Profile> create(
             @RequestBody ProfileDto dto, Authentication authentication) {
-        // dit is de iugelogde gebruiker
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) principal;
-        }
+        User user = authentication == null ? null : (User) authentication.getPrincipal();
 
-        Profile savedProfile = profileService.save(dto);
+        Profile savedProfile = profileService.save(dto, user);
         URI location =
                 ServletUriComponentsBuilder.fromCurrentRequest()
                         .path("/id")

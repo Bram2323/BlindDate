@@ -31,7 +31,7 @@ public class SecurityConfiguration {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         requests ->
-                                requests.requestMatchers(Routes.USERS)
+                                requests.requestMatchers(Routes.USERS, Routes.PROFILES)
                                         .authenticated()
                                         .anyRequest()
                                         .permitAll())
