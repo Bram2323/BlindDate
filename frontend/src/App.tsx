@@ -3,6 +3,7 @@ import { history } from "./services/History";
 import { useNavigate, useLocation, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
 import NavBar from "./components/NavBar";
+import ProfileBox from "./components/Profile/ProfileBox";
 
 function App() {
     history.navigate = useNavigate();
@@ -10,6 +11,9 @@ function App() {
 
     return (
         <>
+            <ProfileBox
+            // profile={profile}
+            />
             <NavBar />
             <Routes>
                 <Route path="/" element={<Home />} />
