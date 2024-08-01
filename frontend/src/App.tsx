@@ -12,10 +12,12 @@ function App() {
     return (
         <>
             <NavBar />
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/register" element={<Register />} />
-            </Routes>
+            <div className="w-full h-full overflow-y-auto">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/register" element={<Register />} />
+                </Routes>
+            </div>
         </>
     );
 }
