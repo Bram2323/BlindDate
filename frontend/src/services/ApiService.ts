@@ -7,7 +7,7 @@ const API_URL = "http://localhost:8080/api/v1/";
 export const TOKEN_STORAGE_LOCATION: string = "JWT";
 
 class ApiService {
-    static get(url: string, params: any) {
+    static get(url: string, params: any = null) {
         return this.#doRequest("get", url, null, { params: params });
     }
 

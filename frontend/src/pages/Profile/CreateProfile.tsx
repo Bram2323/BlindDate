@@ -1,17 +1,15 @@
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import Checkbox from "../../generic/Checkbox";
-import {TextArea} from "../../generic/TextArea";
-import {DropDownSelect} from "../../generic/DropDownSelect";
+import { TextArea } from "../../generic/TextArea";
+import { DropDownSelect } from "../../generic/DropDownSelect";
 import FieldInput from "../../generic/FieldInput";
 import ApiService from "../../services/ApiService";
-import {Button} from "../../generic/Button";
+import { Button } from "../../generic/Button";
 import validateForm from "../../hooks/useProfileFormValidator";
-import UserService from "../../services/UserService";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const CreateProfile = () => {
     const navigate = useNavigate();
-    const baseUrl = "http://localhost:8080/api/v1/";
     const [error, setError] = useState<string>("");
 
     const showError = (message: string) => {
@@ -22,10 +20,10 @@ export const CreateProfile = () => {
     };
 
     const genders = [
-        {id: 1, value: "male"},
-        {id: 2, value: "female"},
-        {id: 3, value: "non-binary"},
-        {id: 4, value: "other"},
+        { id: 1, value: "male" },
+        { id: 2, value: "female" },
+        { id: 3, value: "non-binary" },
+        { id: 4, value: "other" },
     ];
 
     const [sexualities, setSexualities] = useState<Sexuality[]>();
@@ -39,7 +37,7 @@ export const CreateProfile = () => {
     });
 
     useEffect(() => {
-        ApiService.get(baseUrl + "sexualities")
+        ApiService.get("sexualities")
             .then((response) => {
                 setSexualities(response.data);
             })
@@ -50,7 +48,7 @@ export const CreateProfile = () => {
 
     const saveProfile = () => {
         if (validateForm(formRef.current)) {
-            ApiService.post(baseUrl + "profiles", formRef.current)
+            ApiService.post("profiles", formRef.current)
                 .then((res) => {
                     console.log(res);
                 })
