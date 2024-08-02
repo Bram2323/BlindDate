@@ -5,6 +5,12 @@ const validateForm = (form: ProfileForm) => {
     if (form.gender === "" || form.gender.includes("Select a ")) {
         return false;
     }
+    if (
+        form.lookingForGender === "" ||
+        form.lookingForGender.includes("Select a ")
+    ) {
+        return false;
+    }
     if (form.sexualities.length === 0) {
         return false;
     }
@@ -20,6 +26,7 @@ export default validateForm;
 interface ProfileForm {
     description: string;
     gender: string;
+    lookingForGender: string;
     sexualities: number[];
     dateOfBirth: string;
 }

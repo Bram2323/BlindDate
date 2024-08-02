@@ -20,22 +20,31 @@ public class Profile {
 
     @Setter private String description;
     @Setter private Gender gender;
+    @Setter private Gender lookingForGender;
     @Setter private LocalDate dateOfBirth;
 
     @OneToOne @Setter private User user;
 
     @ManyToMany @Setter private Set<Sexuality> sexualities;
 
-    public Profile(String description, Gender gender, LocalDate dateOfBirth, User user) {
+    public Profile(
+            String description,
+            Gender gender,
+            Gender lookingForGender,
+            LocalDate dateOfBirth,
+            User user) {
         this.description = description;
         this.gender = gender;
+        this.lookingForGender = lookingForGender;
         this.dateOfBirth = dateOfBirth;
         this.user = user;
     }
 
-    public Profile(String description, Gender gender, LocalDate dateOfBirth) {
+    public Profile(
+            String description, Gender gender, Gender lookingForGender, LocalDate dateOfBirth) {
         this.description = description;
         this.gender = gender;
+        this.lookingForGender = lookingForGender;
         this.dateOfBirth = dateOfBirth;
     }
 }

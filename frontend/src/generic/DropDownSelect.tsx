@@ -1,19 +1,21 @@
 import React from "react";
 export const DropDownSelect: React.FC<DropDownSelectProps> = ({
     label,
+    category,
     options,
     onSelect,
 }) => {
     return (
         <div className="m-2">
+            <label htmlFor={label}>{label}</label>
             <select
-                name={label}
-                id={label}
+                name={category}
+                id={category}
                 onChange={(e) => {
                     onSelect(e.target.value);
                 }}
             >
-                <option>Select a {label}</option>
+                <option>Select a {category}</option>
                 {options &&
                     options.map((option) => (
                         <option key={option.id} value={option.value}>
@@ -26,7 +28,8 @@ export const DropDownSelect: React.FC<DropDownSelectProps> = ({
 };
 
 interface DropDownSelectProps {
-    label: string;
+    category: string;
+    label?: string;
     options: Option[];
     onSelect: (value: string) => void;
 }

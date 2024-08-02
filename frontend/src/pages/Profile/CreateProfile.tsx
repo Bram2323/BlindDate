@@ -25,6 +25,7 @@ export const CreateProfile = () => {
         {id: 1, value: "male"},
         {id: 2, value: "female"},
         {id: 3, value: "non-binary"},
+        {id: 4, value: "other"},
     ];
 
     const [sexualities, setSexualities] = useState<Sexuality[]>();
@@ -32,6 +33,7 @@ export const CreateProfile = () => {
     const formRef = useRef<ProfileForm>({
         description: "",
         gender: "",
+        lookingForGender: "",
         sexualities: [],
         dateOfBirth: "",
     });
@@ -70,10 +72,19 @@ export const CreateProfile = () => {
                 }}
             />
             <DropDownSelect
-                label={"Gender"}
+                label={"I am a"}
+                category={"Gender"}
                 options={genders}
                 onSelect={(gender) => {
                     formRef.current.gender = gender;
+                }}
+            />
+            <DropDownSelect
+                label={"I am looking for a "}
+                category={"Gender"}
+                options={genders}
+                onSelect={(gender) => {
+                    formRef.current.lookingForGender = gender;
                 }}
             />
             <div className="border-2 overflow-scroll h-20 w-56 m-2">
@@ -116,6 +127,7 @@ interface Sexuality {
 interface ProfileForm {
     description: string;
     gender: string;
+    lookingForGender: string;
     sexualities: number[];
     dateOfBirth: string;
 }
