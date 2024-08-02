@@ -1,6 +1,7 @@
 package com.brajula.blinddate.advice;
 
 import com.brajula.blinddate.exceptions.BadRequestException;
+import com.brajula.blinddate.exceptions.DuplicateEntityException;
 import com.brajula.blinddate.exceptions.NotFoundException;
 
 import org.springframework.http.HttpStatus;
@@ -21,5 +22,13 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Void> notFoundHandler() {
         return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(DuplicateEntityException.class)
+    public ResponseEntity<ProblemDetail> duplicateEntityHandler(
+            DuplicateEntityException exception) {
+        ProblemDetail problemDetail =
+                ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.badRequest().body(problemDetail);
     }
 }

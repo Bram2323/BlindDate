@@ -1,6 +1,6 @@
 import axios from "axios";
 import UserService from "./UserService";
-import { history } from "./History";
+import {history} from "./History";
 
 const API_URL = "http://localhost:8080/api/v1/";
 
@@ -8,7 +8,7 @@ export const TOKEN_STORAGE_LOCATION = "JWT";
 
 class ApiService {
     static get(url, params) {
-        return this.#doRequest("get", url, null, { params: params });
+        return this.#doRequest("get", url, null, {params: params});
     }
 
     static post(url, data) {
@@ -34,7 +34,7 @@ class ApiService {
                 if (error.response && error.response.status === 401) {
                     UserService.logout();
                     const currentPath = history.location.pathname;
-                    history.navigate("/inloggen", {
+                    history.navigate("/login", {
                         state: {
                             prevPath: currentPath,
                         },
@@ -52,14 +52,14 @@ class ApiService {
             baseURL: API_URL,
             headers: this.#getHeaders(),
         };
-        return { ...defaultConfig, ...otherConfig };
+        return {...defaultConfig, ...otherConfig};
     }
 
     static #getHeaders() {
         let token = sessionStorage.getItem(TOKEN_STORAGE_LOCATION);
 
         if (token == null) return {};
-        return { Authorization: "Bearer " + token };
+        return {Authorization: "Bearer " + token};
     }
 }
 
