@@ -63,7 +63,11 @@ export const CreateProfile = () => {
     return (
         <div className="flex flex-col items-center justify-center border-2 w-96">
             <div className={"h-8 p-2 text-red-600"}>{error}</div>
-            <ImageUpload />
+            <ImageUpload
+                getImage={(image) => {
+                    console.log(image);
+                }}
+            />
             <TextArea
                 label={"description"}
                 content={"Write something about yourself"}
