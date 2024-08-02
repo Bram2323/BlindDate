@@ -7,6 +7,7 @@ import ApiService from "../../services/ApiService";
 import { Button } from "../../generic/Button";
 import validateForm from "../../hooks/useProfileFormValidator";
 import { useNavigate } from "react-router-dom";
+import { ImageUpload } from "../../generic/ImageUpload";
 
 export const CreateProfile = () => {
     const navigate = useNavigate();
@@ -62,6 +63,7 @@ export const CreateProfile = () => {
     return (
         <div className="flex flex-col items-center justify-center border-2 w-96">
             <div className={"h-8 p-2 text-red-600"}>{error}</div>
+            <ImageUpload />
             <TextArea
                 label={"description"}
                 content={"Write something about yourself"}
