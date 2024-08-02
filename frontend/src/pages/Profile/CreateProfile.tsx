@@ -51,6 +51,7 @@ export const CreateProfile = () => {
             ApiService.post("profiles", formRef.current)
                 .then((res) => {
                     console.log(res);
+                    () => navigate("/account");
                 })
                 .catch((error) => {
                     showError(error.response.data.detail);
