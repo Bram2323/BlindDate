@@ -1,6 +1,7 @@
 package com.brajula.blinddate.entities.images;
 
 import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
@@ -26,7 +27,7 @@ public class ImageService {
                         .imageData(ImageUtils.compressImage(imageFile.getBytes()))
                         .build();
         imageRepository.save(imageToSave);
-        return "file uploaded successfully : " + imageFile.getOriginalFilename();
+        return imageFile.getOriginalFilename();
     }
 
     @Transactional
