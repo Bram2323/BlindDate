@@ -1,9 +1,16 @@
 import "./App.css";
-import { history } from "./services/History";
-import { useNavigate, useLocation, Routes, Route } from "react-router-dom";
+import history from "./services/History";
+import {
+    useNavigate,
+    useLocation,
+    Routes,
+    Route,
+    Navigate,
+} from "react-router-dom";
 import { Home } from "./pages/Home/Home";
 import NavBar from "./components/NavBar";
 import Register from "./pages/Register/Register";
+import { useUser } from "./services/UserService";
 import Login from "./pages/Login/Login";
 import { CreateProfile } from "./pages/Profile/CreateProfile";
 
@@ -11,15 +18,30 @@ function App() {
     history.navigate = useNavigate();
     history.location = useLocation();
 
+    const [, isLoggedIn] = useUser();
+
     return (
         <>
             <NavBar />
             <div className="w-full h-full overflow-y-auto">
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/create-profile" element={<CreateProfile />} />
+
+                    {isLoggedIn ? (
+                        <>
+                            <Route
+                                path="/create-profile"
+                                element={<CreateProfile />}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                        </>
+                    )}
+
+                    <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
             </div>
         </>

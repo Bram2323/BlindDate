@@ -1,5 +1,5 @@
 import { useState } from "react";
-import UserService from "../../services/UserService";
+import { login } from "../../services/UserService";
 import { useNavigate } from "react-router-dom";
 import FieldInput from "../../generic/FieldInput";
 import { Button } from "../../generic/Button";
@@ -26,9 +26,9 @@ const Login = () => {
             showError("Enter a password");
             return;
         }
-        UserService.login(username, password)
+        login(username, password)
             .then(() => navigate("/"))
-            .catch((error) => showError(error));
+            .catch((error: any) => showError(error));
     };
 
     return (
