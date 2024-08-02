@@ -34,7 +34,7 @@ function Register() {
         }
 
         register(username, firstName, lastName, email, password).then(() =>
-            navigate("/")
+            navigate("/create-profile")
         );
     }
 

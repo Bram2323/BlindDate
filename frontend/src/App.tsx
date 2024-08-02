@@ -11,6 +11,8 @@ import { Home } from "./pages/Home/Home";
 import NavBar from "./components/NavBar";
 import Register from "./pages/Register/Register";
 import { useUser } from "./services/UserService";
+import Login from "./pages/Login/Login";
+import { CreateProfile } from "./pages/Profile/CreateProfile";
 
 function App() {
     history.navigate = useNavigate();
@@ -26,7 +28,12 @@ function App() {
                     <Route path="/" element={<Home />} />
 
                     {isLoggedIn ? (
-                        <></>
+                        <>
+                            <Route
+                                path="/create-profile"
+                                element={<CreateProfile />}
+                            />
+                        </>
                     ) : (
                         <>
                             <Route path="/login" element={"login"} />
