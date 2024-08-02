@@ -39,7 +39,7 @@ function Register() {
             lastName,
             email,
             password
-        ).then(() => navigate("/"));
+        ).then(navigate("/create-profile"));
     }
 
     return (

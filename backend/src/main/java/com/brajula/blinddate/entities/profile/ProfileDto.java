@@ -31,4 +31,21 @@ public record ProfileDto(
                 this.dateOfBirth,
                 user);
     }
+
+    public Profile toProfile() {
+        if (this.description == null
+                || this.gender == null
+                || this.dateOfBirth == null
+                || this.sexualities.isEmpty()) {
+            throw new BadRequestException("incomplete profile");
+        }
+        try {
+            Gender selectedGender = Gender.valueOf(this.gender.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Invalid Gender");
+        }
+
+        return new Profile(
+                this.description, Gender.valueOf(this.gender.toUpperCase()), this.dateOfBirth);
+    }
 }

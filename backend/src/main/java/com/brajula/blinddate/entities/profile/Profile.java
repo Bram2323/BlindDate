@@ -32,4 +32,10 @@ public class Profile {
         this.dateOfBirth = dateOfBirth;
         this.user = user;
     }
+
+    public Profile(String description, Gender gender, LocalDate dateOfBirth) {
+        this.description = description;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+    }
 }

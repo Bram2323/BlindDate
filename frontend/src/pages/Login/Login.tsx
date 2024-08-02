@@ -27,7 +27,7 @@ const Login = () => {
             return;
         }
         UserService.login(username, password)
-            .then(navigate("/create-profile"))
+            .then(navigate("/"))
             .catch((error) => showError(error));
     };
 
