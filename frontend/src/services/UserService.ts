@@ -1,13 +1,20 @@
+import { useEffect, useState } from "react";
 import ApiService, { TOKEN_STORAGE_LOCATION } from "./ApiService";
 
 export const USER_STORAGE_LOCATION = "USER";
 
-export default class UserService {
-    static login(username, password) {
+class UserService {
+    static login(username: string, password: string) {
         return this.#requestToken("auth/login", { username, password });
     }
 
-    static register(username, firstName, lastName, email, password) {
+    static register(
+        username: string,
+        firstName: string,
+        lastName: string,
+        email: string,
+        password: string
+    ) {
         return this.#requestToken("auth/register", {
             username,
             firstName,
@@ -17,13 +24,18 @@ export default class UserService {
         });
     }
 
-    static #requestToken(url, data) {
+    static #requestToken(url: string, data: any) {
         return ApiService.post(url, data)
             .then((response) => {
                 const data = response.data;
 
                 this.#setToken(data.token);
                 this.#setUser(data.user);
+
+                const event = new CustomEvent("login", {
+                    detail: { user: data.user },
+                });
+                window.dispatchEvent(event);
 
                 return Promise.resolve({
                     succes: true,
@@ -35,23 +47,81 @@ export default class UserService {
             });
     }
 
-    static #setToken(token) {
+    static #setToken(token: string) {
         sessionStorage.setItem(TOKEN_STORAGE_LOCATION, token);
     }
 
-    static #setUser(user) {
+    static #setUser(user: any) {
         sessionStorage.setItem(USER_STORAGE_LOCATION, JSON.stringify(user));
     }
 
     static logout() {
         sessionStorage.removeItem(TOKEN_STORAGE_LOCATION);
+        sessionStorage.removeItem(USER_STORAGE_LOCATION);
+        window.dispatchEvent(new Event("logout"));
     }
 
     static isLoggedIn() {
         return sessionStorage.getItem(TOKEN_STORAGE_LOCATION) !== null;
     }
 
-    static getUser() {
-        return JSON.parse(sessionStorage.getItem(USER_STORAGE_LOCATION));
+    static getUser(): User | undefined {
+        let userString = sessionStorage.getItem(USER_STORAGE_LOCATION);
+        if (userString === null) return undefined;
+        return JSON.parse(userString);
     }
+}
+
+export function login(username: string, password: string) {
+    return UserService.login(username, password);
+}
+
+export function register(
+    username: string,
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+) {
+    return UserService.register(username, firstName, lastName, email, password);
+}
+
+export const logout = UserService.logout;
+
+export function useUser(): [User | undefined, boolean] {
+    const [user, setUser] = useState<User>();
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+        function handleLogin(e: any) {
+            setUser(e.detail.user);
+            setLoggedIn(true);
+        }
+        function handleLogout() {
+            setUser(undefined);
+            setLoggedIn(false);
+        }
+        window.addEventListener("login", handleLogin);
+        window.addEventListener("logout", handleLogout);
+        return () => {
+            window.removeEventListener("login", handleLogin);
+            window.removeEventListener("logout", handleLogout);
+        };
+    }, []);
+
+    useEffect(() => {
+        setUser(UserService.getUser());
+        setLoggedIn(UserService.isLoggedIn());
+    }, []);
+
+    return [user, loggedIn];
+}
+
+export interface User {
+    username: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: string;
+    id: string;
 }

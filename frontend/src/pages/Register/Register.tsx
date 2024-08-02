@@ -2,7 +2,7 @@ import { useState } from "react";
 import FieldInput from "../../generic/FieldInput";
 import { Button } from "../../generic/Button";
 import isValidPassword from "../../hooks/usePasswordValidator";
-import UserService from "../../services/UserService";
+import { register } from "../../services/UserService";
 import { useNavigate } from "react-router-dom";
 
 function Register() {
@@ -33,13 +33,9 @@ function Register() {
             return;
         }
 
-        UserService.register(
-            username,
-            firstName,
-            lastName,
-            email,
-            password
-        ).then(() => navigate("/"));
+        register(username, firstName, lastName, email, password).then(() =>
+            navigate("/")
+        );
     }
 
     return (

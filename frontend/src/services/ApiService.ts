@@ -1,40 +1,45 @@
 import axios from "axios";
-import UserService from "./UserService";
-import { history } from "./History";
+import { logout } from "./UserService";
+import history from "./History";
 
 const API_URL = "http://localhost:8080/api/v1/";
 
-export const TOKEN_STORAGE_LOCATION = "JWT";
+export const TOKEN_STORAGE_LOCATION: string = "JWT";
 
 class ApiService {
-    static get(url, params) {
+    static get(url: string, params: any) {
         return this.#doRequest("get", url, null, { params: params });
     }
 
-    static post(url, data) {
+    static post(url: string, data: any) {
         return this.#doRequest("post", url, data);
     }
 
-    static patch(url, data) {
+    static patch(url: string, data: any) {
         return this.#doRequest("patch", url, data);
     }
 
-    static put(url, data) {
+    static put(url: string, data: any) {
         return this.#doRequest("put", url, data);
     }
 
-    static delete(url) {
-        return this.#doRequest("delete", url, null);
+    static delete(url: string) {
+        return this.#doRequest("delete", url);
     }
 
-    static #doRequest(method, url, data, otherConfig) {
+    static #doRequest(
+        method: string,
+        url: string,
+        data: any = null,
+        otherConfig: any = null
+    ) {
         return axios
             .request(this.#getConfig(method, url, data, otherConfig))
             .catch((error) => {
                 if (error.response && error.response.status === 401) {
-                    UserService.logout();
+                    logout();
                     const currentPath = history.location.pathname;
-                    history.navigate("/inloggen", {
+                    history.navigate("/login", {
                         state: {
                             prevPath: currentPath,
                         },
@@ -44,7 +49,12 @@ class ApiService {
             });
     }
 
-    static #getConfig(method, url, data, otherConfig) {
+    static #getConfig(
+        method: string,
+        url: string,
+        data: any,
+        otherConfig: any
+    ) {
         const defaultConfig = {
             method: method,
             url: url,
