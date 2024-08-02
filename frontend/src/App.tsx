@@ -12,15 +12,15 @@ function App() {
 
     return (
         <>
-            <ProfileBox
-            // profile={profile}
-            />
             <NavBar />
             <div className="w-full h-full overflow-y-auto">
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/register" element={<Register />} />
                 </Routes>
+                <ProfileBox
+                // profile={profile}
+                />
             </div>
         </>
     );
