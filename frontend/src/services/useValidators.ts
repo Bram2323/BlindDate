@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-const useValidation = () => {
+const useValidators = () => {
     const isValidEmail = useCallback((email: string) => {
         if (email.length < 8) return false;
         const emailRegex = new RegExp(
@@ -51,7 +51,7 @@ const useValidation = () => {
     };
 };
 
-export default useValidation;
+export default useValidators;
 
 interface ProfileForm {
     description: string;
