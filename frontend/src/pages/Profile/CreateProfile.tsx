@@ -40,6 +40,7 @@ export const CreateProfile = () => {
         sexualities: [],
         dateOfBirth: "",
         imageId: null,
+        interests: [],
     });
 
     useEffect(() => {
@@ -56,7 +57,6 @@ export const CreateProfile = () => {
         ApiService.get("interests")
             .then((response) => {
                 setInterests(response.data);
-                console.log(response.data);
             })
             .catch((error) => {
                 console.error(error);
@@ -72,6 +72,7 @@ export const CreateProfile = () => {
                         console.log(
                             "profile posted TODO redirect to profile page"
                         );
+                        navigate("/");
                     })
                     .catch((error) => {
                         showError(error.response.data.detail);
@@ -120,7 +121,7 @@ export const CreateProfile = () => {
                 category={"Gender"}
                 options={genders}
                 onSelect={(gender) => {
-                    formRef.current.gender = gender;
+                    formRef.current.gender = gender.replace("-", "");
                 }}
             />
             <DropDownSelect
@@ -128,10 +129,10 @@ export const CreateProfile = () => {
                 category={"Gender"}
                 options={genders}
                 onSelect={(gender) => {
-                    formRef.current.lookingForGender = gender;
+                    formRef.current.lookingForGender = gender.replace("-", "");
                 }}
             />
-            <ScrollContainer>
+            <ScrollContainer label={"Preferences"}>
                 {sexualities &&
                     sexualities.map((sexuality) => (
                         <Checkbox
@@ -151,15 +152,21 @@ export const CreateProfile = () => {
                         />
                     ))}
             </ScrollContainer>
+
             {interests && (
                 <DropDownSelectWithList
-                    label={"Stuff i like"}
+                    label={"Things i like "}
                     category="interest"
                     options={interests.map((interest) => ({
                         id: interest.id,
                         value: interest.name,
                     }))}
-                    onSelect={(interest) => {}}
+                    getSelected={(interests) => {
+                        formRef.current.interests = interests.map(
+                            (interest) => interest.id
+                        );
+                        console.log(formRef.current.interests);
+                    }}
                 />
             )}
 
@@ -187,4 +194,5 @@ interface ProfileForm {
     sexualities: number[];
     dateOfBirth: string;
     imageId: number | null;
+    interests: number[];
 }

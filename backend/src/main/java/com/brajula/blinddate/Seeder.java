@@ -45,40 +45,41 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedInterests() {
-        List<String> interests =
+        List<Interest> interests =
                 Arrays.asList(
-                        "Photography",
-                        "Hiking",
-                        "Cooking",
-                        "Gardening",
-                        "Reading",
-                        "Writing",
-                        "Traveling",
-                        "Playing a musical instrument",
-                        "Drawing or painting",
-                        "Dancing",
-                        "Yoga",
-                        "Meditation",
-                        "Cycling",
-                        "Bird watching",
-                        "Astronomy",
-                        "Chess",
-                        "Board games",
-                        "Knitting or crocheting",
-                        "Pottery",
-                        "DIY projects",
-                        "Scrapbooking",
-                        "Learning new languages",
-                        "Volunteering",
-                        "Fitness and weightlifting",
-                        "Blogging or vlogging",
-                        "Fishing",
-                        "Camping",
-                        "Rock climbing",
-                        "Surfing",
-                        "Baking");
-        for (String interest : interests) {
-            interestService.save(new Interest(interest));
+                        new Interest("Photography"),
+                        new Interest("Hiking"),
+                        new Interest("Cooking"),
+                        new Interest("Gardening"),
+                        new Interest("Reading"),
+                        new Interest("Writing"),
+                        new Interest("Traveling"),
+                        new Interest("Playing a musical instrument"),
+                        new Interest("Drawing or painting"),
+                        new Interest("Dancing"),
+                        new Interest("Yoga"),
+                        new Interest("Meditation"),
+                        new Interest("Cycling"),
+                        new Interest("Bird watching"),
+                        new Interest("Astronomy"),
+                        new Interest("Chess"),
+                        new Interest("Board games"),
+                        new Interest("Knitting"),
+                        new Interest("Crocheting"),
+                        new Interest("Pottery"),
+                        new Interest("DIY projects"),
+                        new Interest("Scrapbooking"),
+                        new Interest("Learning new languages"),
+                        new Interest("Volunteering"),
+                        new Interest("Fitness"),
+                        new Interest("Blogging or vlogging"),
+                        new Interest("Fishing"),
+                        new Interest("Camping"),
+                        new Interest("Rock climbing"),
+                        new Interest("Surfing"),
+                        new Interest("Baking"));
+        for (Interest interest : interests) {
+            interestService.save(interest);
         }
     }
 
@@ -100,6 +101,7 @@ public class Seeder implements CommandLineRunner {
         if (!sexualityRepository.findAll().isEmpty()) return;
         List<Sexuality> sexualities =
                 Arrays.asList(
+                        (new Sexuality("Furry")),
                         (new Sexuality("Heterosexual")),
                         (new Sexuality("Homosexual")),
                         (new Sexuality("Bisexual")),

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { TbHttpDelete } from "react-icons/tb";
 
@@ -6,22 +6,34 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     label,
     category,
     options,
-    onSelect,
+    getSelected,
 }) => {
     const [showOptions, setShowOptions] = useState<Option[]>(options);
-    const [selected, setSelected] = useState<Option[]>();
-    console.log(options);
+    const [selected, setSelected] = useState<Option[]>([]);
 
-    const handleSelectChange = (e) => {
-        // als er 1 word geselecteerd, voeg toe aan selected
-        let newOps = showOptions.filter(
-            (option) => option.value != e.target.value
+    useEffect(() => {
+        getSelected(selected);
+    }, [showOptions, selected]);
+
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        if (e.target.value.includes("Select a ")) {
+            return;
+        }
+        const selectedOption = options.find(
+            (option) => option.value === e.target.value
         );
-        console.log("new", newOps);
-        console.log(e.target.value, e.target.id);
-        // filter de options lijst en haal de selected eruit.
-        // return een lijst met selected
-        onSelect(e.target.value);
+        setSelected((prev) => [...prev, selectedOption]);
+        setShowOptions(
+            (prev) =>
+                (prev = prev.filter((option) => option.value != e.target.value))
+        );
+    };
+
+    const handleDelete = (option: Option) => {
+        setSelected(
+            (prev) => (prev = prev.filter((item) => item.value != option.value))
+        );
+        setShowOptions((prev) => [...prev, option]);
     };
 
     return (
@@ -35,20 +47,32 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
                 }}
             >
                 <option>Select a {category}</option>
-                {options &&
-                    options.map((option) => (
+                {showOptions &&
+                    showOptions.map((option) => (
                         <option key={option.id} value={option.value}>
                             {option.value}
                         </option>
                     ))}
             </select>
             <div>
-                <ul>
+                <ul className="border-2 max-h-24 overflow-scroll">
                     {selected &&
                         selected.map((option) => (
-                            <li>
+                            <li
+                                className={
+                                    "flex flex-row justify-between border-2 px-2"
+                                }
+                                key={option.id}
+                            >
                                 <p>{option.value}</p>
-                                <TbHttpDelete />
+                                <TbHttpDelete
+                                    onClick={() => {
+                                        handleDelete(option);
+                                    }}
+                                    className={
+                                        "text-red-900 cursor-pointer text-2xl"
+                                    }
+                                />
                             </li>
                         ))}
                 </ul>
@@ -61,7 +85,7 @@ interface DropDownSelectProps {
     category: string;
     label?: string;
     options: Option[];
-    onSelect: (value: string) => void;
+    getSelected: (selected: Option[]) => void;
 }
 
 interface Option {
