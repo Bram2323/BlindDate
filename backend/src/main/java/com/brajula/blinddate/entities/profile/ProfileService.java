@@ -1,9 +1,9 @@
 package com.brajula.blinddate.entities.profile;
 
+import com.brajula.blinddate.entities.images.ImageRepository;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
 import com.brajula.blinddate.entities.user.User;
-import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.exceptions.BadRequestException;
 import com.brajula.blinddate.exceptions.NotFoundException;
 
@@ -26,7 +26,7 @@ public class ProfileService {
     private static final Logger logger = LoggerFactory.getLogger(ProfileService.class);
     private final ProfileRepository profileRepository;
     private final SexualityService sexualityService;
-    private final UserRepository userRepository;
+    private final ImageRepository imageRepository;
 
     public List<Profile> getAll() {
         return profileRepository.findAll();
@@ -43,6 +43,8 @@ public class ProfileService {
             throw new BadRequestException("This profile already exists");
         } else {
             Profile profile = dto.toProfile(user);
+            profile.setImage(
+                    imageRepository.findById(dto.imageId()).orElseThrow(NotFoundException::new));
             profile.setSexualities(convertToSexualities(dto.sexualities()));
             return profileRepository.save(profile);
         }

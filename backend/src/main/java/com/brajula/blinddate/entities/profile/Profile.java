@@ -9,8 +9,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,12 +28,7 @@ public class Profile {
 
     @ManyToMany @Setter private Set<Sexuality> sexualities;
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Image> images = new ArrayList<>();
-
-    public void addImage(Image image) {
-        this.images.add(image);
-    }
+    @OneToOne @Setter private Image image;
 
     public Profile(
             String description,
