@@ -1,5 +1,7 @@
 package com.brajula.blinddate;
 
+import com.brajula.blinddate.entities.interest.Interest;
+import com.brajula.blinddate.entities.interest.InterestService;
 import com.brajula.blinddate.entities.profile.ProfileRepository;
 import com.brajula.blinddate.entities.profile.ProfileService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
@@ -30,6 +32,7 @@ public class Seeder implements CommandLineRunner {
     private final SexualityRepository sexualityRepository;
     private final ProfileRepository profileRepository;
     private final ProfileService profileService;
+    private final InterestService interestService;
 
     @Value("${blinddate.admin-password}")
     private String adminPassword;
@@ -37,7 +40,46 @@ public class Seeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         seedSexuality();
+        seedInterests();
         updateOrCreateAdmin();
+    }
+
+    private void seedInterests() {
+        List<String> interests =
+                Arrays.asList(
+                        "Photography",
+                        "Hiking",
+                        "Cooking",
+                        "Gardening",
+                        "Reading",
+                        "Writing",
+                        "Traveling",
+                        "Playing a musical instrument",
+                        "Drawing or painting",
+                        "Dancing",
+                        "Yoga",
+                        "Meditation",
+                        "Cycling",
+                        "Bird watching",
+                        "Astronomy",
+                        "Chess",
+                        "Board games",
+                        "Knitting or crocheting",
+                        "Pottery",
+                        "DIY projects",
+                        "Scrapbooking",
+                        "Learning new languages",
+                        "Volunteering",
+                        "Fitness and weightlifting",
+                        "Blogging or vlogging",
+                        "Fishing",
+                        "Camping",
+                        "Rock climbing",
+                        "Surfing",
+                        "Baking");
+        for (String interest : interests) {
+            interestService.save(new Interest(interest));
+        }
     }
 
     public void updateOrCreateAdmin() {
