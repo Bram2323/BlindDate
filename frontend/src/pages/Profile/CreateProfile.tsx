@@ -8,13 +8,16 @@ import { Button } from "../../generic/Button";
 import useValidators from "../../services/useValidators";
 import { useNavigate } from "react-router-dom";
 import { ImageUpload } from "../../generic/ImageUpload";
+import { ScrollContainer } from "../../generic/ScrollContainer";
+import { DropDownSelectWithList } from "../../generic/DropdownSelectWithList";
 
 export const CreateProfile = () => {
     const { validateForm } = useValidators();
     const navigate = useNavigate();
-    const [error, setError] = useState<string>("");
-    const [sexualities, setSexualities] = useState<Sexuality[]>();
     const imageRef = useRef<File | null>(null);
+    const [error, setError] = useState<string>("");
+    const [sexualities, setSexualities] = useState<FetchOption[]>();
+    const [interests, setInterests] = useState<FetchOption[]>();
 
     const showError = (message: string) => {
         setTimeout(() => {
@@ -43,6 +46,17 @@ export const CreateProfile = () => {
         ApiService.get("sexualities")
             .then((response) => {
                 setSexualities(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
+    useEffect(() => {
+        ApiService.get("interests")
+            .then((response) => {
+                setInterests(response.data);
+                console.log(response.data);
             })
             .catch((error) => {
                 console.error(error);
@@ -117,7 +131,7 @@ export const CreateProfile = () => {
                     formRef.current.lookingForGender = gender;
                 }}
             />
-            <div className="border-2 overflow-scroll h-20 w-56 m-2">
+            <ScrollContainer>
                 {sexualities &&
                     sexualities.map((sexuality) => (
                         <Checkbox
@@ -136,7 +150,19 @@ export const CreateProfile = () => {
                             }}
                         />
                     ))}
-            </div>
+            </ScrollContainer>
+            {interests && (
+                <DropDownSelectWithList
+                    label={"Stuff i like"}
+                    category="interest"
+                    options={interests.map((interest) => ({
+                        id: interest.id,
+                        value: interest.name,
+                    }))}
+                    onSelect={(interest) => {}}
+                />
+            )}
+
             <FieldInput
                 type={"date"}
                 label={"date of birth"}
@@ -149,7 +175,7 @@ export const CreateProfile = () => {
     );
 };
 
-interface Sexuality {
+interface FetchOption {
     id: number;
     name: string;
 }
