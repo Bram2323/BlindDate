@@ -37,7 +37,7 @@ export const CreateProfile = () => {
         lookingForGender: "",
         sexualities: [],
         dateOfBirth: "",
-        imageId: "",
+        imageId: null,
     });
 
     useEffect(() => {
@@ -51,32 +51,37 @@ export const CreateProfile = () => {
     }, []);
 
     const saveProfile = () => {
-        // image saved succesfull, perform rest of post?
-        // if succes saved image, connect through profile
-        saveImage();
-        if (validateForm(formRef.current)) {
-            ApiService.post("profiles", formRef.current)
-                .then((res) => {
-                    console.log(res);
-                })
-                .catch((error) => {
-                    showError(error.response.data.detail);
-                });
-        } else {
-            showError("Fill in all fields");
-        }
+        saveImage().then(() => {
+            if (validateForm(formRef.current)) {
+                ApiService.post("profiles", formRef.current)
+                    .then((response) => {
+                        formRef.current.imageId = response.data.id;
+                    })
+                    .catch((error) => {
+                        showError(error.response.data.detail);
+                    });
+            } else {
+                showError("Fill in all fields");
+            }
+        });
     };
 
     const saveImage = () => {
-        const formData = new FormData();
-        if (imageRef.current) {
-            formData.append("image", imageRef.current);
-            ApiService.post("images", formData)
-                .then(
-                    (response) => (formRef.current.imageId = response.data.id)
-                )
-                .catch((error) => showError(error));
-        }
+        return new Promise((resolve) => {
+            const formData = new FormData();
+            if (imageRef.current) {
+                formData.append("image", imageRef.current);
+                ApiService.post("images", formData)
+                    .then((response) => {
+                        formRef.current.imageId = response.data.id;
+                        resolve(true);
+                    })
+                    .catch((error) => {
+                        showError("Image not uploaded: " + error);
+                        resolve(false);
+                    });
+            }
+        });
     };
 
     return (
@@ -85,7 +90,6 @@ export const CreateProfile = () => {
             <ImageUpload
                 getImage={(image) => {
                     imageRef.current = image;
-                    console.log(image);
                 }}
             />
             <TextArea
@@ -154,5 +158,5 @@ interface ProfileForm {
     lookingForGender: string;
     sexualities: number[];
     dateOfBirth: string;
-    imageId: number;
+    imageId: number | null;
 }
