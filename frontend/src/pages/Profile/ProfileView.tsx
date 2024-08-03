@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ApiService from "../../services/ApiService";
 
 export const ProfileView = () => {
@@ -8,7 +8,6 @@ export const ProfileView = () => {
     useEffect(() => {
         ApiService.get("profiles/my")
             .then((response) => {
-                console.log(response);
                 setProfile(response.data);
                 ApiService.get(
                     `images/${response.data.imageId}`,
@@ -29,13 +28,47 @@ export const ProfileView = () => {
         <div>
             {profile && (
                 <div id="image-container">
-                    <h3>My Profile</h3>
-                    {imageSrc && (
-                        <img src={`${imageSrc}`} alt="Profile picture" />
+                    {imageSrc && profile && (
+                        <div>
+                            <h3>{profile.username}</h3>
+                            <img
+                                src={`${imageSrc}`}
+                                alt={`Profile picture of ${profile.username}`}
+                            />
+                            <p>{profile.description}</p>
+                            <p>I am a {profile.gender}</p>
+                            <p>I am looking for a {profile.lookingForGender}</p>
+                            <h2>Sexuality</h2>
+                            <ul>
+                                {profile.sexualities.map((sexuality) => (
+                                    <li key={sexuality.id}>{sexuality.name}</li>
+                                ))}
+                            </ul>
+                            <h2>Interests</h2>
+                            <ul>
+                                {profile.interests.map((interest) => (
+                                    <li key={interest.id}>{interest.name}</li>
+                                ))}
+                            </ul>
+                        </div>
                     )}
                 </div>
             )}
         </div>
     );
 };
-interface Profile {}
+interface List {
+    id: number;
+    name: string;
+}
+
+interface Profile {
+    id: number;
+    username: string;
+    description: string;
+    gender: string;
+    lookingForGender: string;
+    sexualities: List[];
+    interests: List[];
+    imageId: number;
+}
