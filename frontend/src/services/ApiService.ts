@@ -60,16 +60,26 @@ class ApiService {
             url: url,
             data: data,
             baseURL: API_URL,
-            headers: this.#getHeaders(),
+            headers: this.#getHeaders(data),
         };
         return { ...defaultConfig, ...otherConfig };
     }
 
-    static #getHeaders() {
+    static #getHeaders(data: any = null) {
         let token = sessionStorage.getItem(TOKEN_STORAGE_LOCATION);
+        let headers: any = {};
 
-        if (token == null) return {};
-        return { Authorization: "Bearer " + token };
+        if (token != null) {
+            headers["Authorization"] = "Bearer " + token;
+        } else {
+            return {};
+        }
+
+        if (data instanceof FormData) {
+            headers["Content-Type"] = "multipart/form-data";
+        }
+
+        return headers;
     }
 }
 

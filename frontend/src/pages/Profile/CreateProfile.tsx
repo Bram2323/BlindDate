@@ -7,6 +7,7 @@ import ApiService from "../../services/ApiService";
 import { Button } from "../../generic/Button";
 import validateForm from "../../hooks/useProfileFormValidator";
 import { useNavigate } from "react-router-dom";
+import { ImageUpload } from "../../generic/ImageUpload";
 
 export const CreateProfile = () => {
     const navigate = useNavigate();
@@ -28,12 +29,15 @@ export const CreateProfile = () => {
 
     const [sexualities, setSexualities] = useState<Sexuality[]>();
 
+    const imageRef = useRef<File | null>(null);
+
     const formRef = useRef<ProfileForm>({
         description: "",
         gender: "",
         lookingForGender: "",
         sexualities: [],
         dateOfBirth: "",
+        imageId: null,
     });
 
     useEffect(() => {
@@ -47,21 +51,50 @@ export const CreateProfile = () => {
     }, []);
 
     const saveProfile = () => {
-        if (validateForm(formRef.current)) {
-            ApiService.post("profiles", formRef.current)
-                .then((res) => {
-                    console.log(res);
-                })
-                .catch((error) => {
-                    showError(error.response.data.detail);
-                });
-        } else {
-            showError("Fill in all fields");
-        }
+        saveImage().then(() => {
+            if (validateForm(formRef.current)) {
+                ApiService.post("profiles", formRef.current)
+                    .then((response) => {
+                        formRef.current.imageId = response.data.id;
+                        console.log(
+                            "profile posted TODO redirect to profile page"
+                        );
+                    })
+                    .catch((error) => {
+                        showError(error.response.data.detail);
+                    });
+            } else {
+                showError("Fill in all fields");
+            }
+        });
     };
+
+    const saveImage = () => {
+        return new Promise((resolve) => {
+            const formData = new FormData();
+            if (imageRef.current) {
+                formData.append("image", imageRef.current);
+                ApiService.post("images", formData)
+                    .then((response) => {
+                        formRef.current.imageId = response.data.id;
+                        resolve(true);
+                    })
+                    .catch((error) => {
+                        showError("Image not uploaded: " + error);
+                        resolve(false);
+                    });
+            }
+        });
+    };
+
     return (
         <div className="flex flex-col items-center justify-center border-2 w-96">
             <div className={"h-8 p-2 text-red-600"}>{error}</div>
+            <ImageUpload
+                getImage={(image) => {
+                    imageRef.current = image;
+                }}
+            />
             <TextArea
                 label={"description"}
                 content={"Write something about yourself"}
@@ -128,4 +161,5 @@ interface ProfileForm {
     lookingForGender: string;
     sexualities: number[];
     dateOfBirth: string;
+    imageId: number | null;
 }

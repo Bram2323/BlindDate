@@ -7,4 +7,5 @@ public class Routes {
     public static final String SEXUALITIES = BASE_ROUTE + "sexualities";
     public static final String PROFILES = BASE_ROUTE + "profiles";
     public static final String INTERESTS = BASE_ROUTE + "interests";
+    public static final String IMAGES = BASE_ROUTE + "images";
 }
