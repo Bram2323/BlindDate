@@ -69,10 +69,7 @@ export const CreateProfile = () => {
                 ApiService.post("profiles", formRef.current)
                     .then((response) => {
                         formRef.current.imageId = response.data.id;
-                        console.log(
-                            "profile posted TODO redirect to profile page"
-                        );
-                        navigate("/");
+                        navigate("/profile");
                     })
                     .catch((error) => {
                         showError(error.response.data.detail);
@@ -165,7 +162,6 @@ export const CreateProfile = () => {
                         formRef.current.interests = interests.map(
                             (interest) => interest.id
                         );
-                        console.log(formRef.current.interests);
                     }}
                 />
             )}

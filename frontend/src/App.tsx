@@ -13,6 +13,7 @@ import Register from "./pages/Register/Register";
 import { useUser } from "./services/UserService";
 import Login from "./pages/Login/Login";
 import { CreateProfile } from "./pages/Profile/CreateProfile";
+import { ProfileView } from "./pages/Profile/ProfileView";
 
 function App() {
     history.navigate = useNavigate();
@@ -33,6 +34,7 @@ function App() {
                                 path="/create-profile"
                                 element={<CreateProfile />}
                             />
+                            <Route path="/profile" element={<ProfileView />} />
                         </>
                     ) : (
                         <>
@@ -41,7 +43,7 @@ function App() {
                         </>
                     )}
 
-                    <Route path="*" element={<Navigate to="/" />} />
+                    {/* <Route path="*" element={<Navigate to="/" />} /> */}
                 </Routes>
             </div>
         </>

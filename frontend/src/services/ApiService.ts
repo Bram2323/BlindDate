@@ -7,8 +7,11 @@ const API_URL = "http://localhost:8080/api/v1/";
 export const TOKEN_STORAGE_LOCATION: string = "JWT";
 
 class ApiService {
-    static get(url: string, params: any = null) {
-        return this.#doRequest("get", url, null, { params: params });
+    static get(url: string, params: any = null, responseType: string = "json") {
+        return this.#doRequest("get", url, null, {
+            params: params,
+            responseType,
+        });
     }
 
     static post(url: string, data: any) {
@@ -61,6 +64,7 @@ class ApiService {
             data: data,
             baseURL: API_URL,
             headers: this.#getHeaders(data),
+            responseType: "json",
         };
         return { ...defaultConfig, ...otherConfig };
     }

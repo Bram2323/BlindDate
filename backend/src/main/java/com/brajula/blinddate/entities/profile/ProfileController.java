@@ -2,6 +2,9 @@ package com.brajula.blinddate.entities.profile;
 
 import com.brajula.blinddate.Routes;
 import com.brajula.blinddate.entities.user.User;
+import com.brajula.blinddate.exceptions.NotFoundException;
+
+import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +31,17 @@ public class ProfileController {
     @GetMapping("/{id}")
     public ResponseEntity<Profile> getAllById(@PathVariable Long id) {
         return ResponseEntity.ok(profileService.getById(id));
+    }
+
+    @Transactional
+    @GetMapping("/my") // ik heb geen idee hoe ik deze moet noemen, maar zonder param == ambiguity
+    public ResponseEntity<GetProfileDto> getByUser(Authentication authentication) {
+        User user = authentication == null ? null : (User) authentication.getPrincipal();
+        if (user == null) {
+            throw new NotFoundException();
+        } else {
+            return ResponseEntity.ok(GetProfileDto.toDto(profileService.getByUser(user)));
+        }
     }
 
     @PostMapping
