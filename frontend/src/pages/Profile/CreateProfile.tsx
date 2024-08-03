@@ -29,12 +29,15 @@ export const CreateProfile = () => {
 
     const [sexualities, setSexualities] = useState<Sexuality[]>();
 
+    const imageRef = useRef<File | null>(null);
+
     const formRef = useRef<ProfileForm>({
         description: "",
         gender: "",
         lookingForGender: "",
         sexualities: [],
         dateOfBirth: "",
+        imageId: "",
     });
 
     useEffect(() => {
@@ -48,6 +51,9 @@ export const CreateProfile = () => {
     }, []);
 
     const saveProfile = () => {
+        // image saved succesfull, perform rest of post?
+        // if succes saved image, connect through profile
+        saveImage();
         if (validateForm(formRef.current)) {
             ApiService.post("profiles", formRef.current)
                 .then((res) => {
@@ -60,11 +66,25 @@ export const CreateProfile = () => {
             showError("Fill in all fields");
         }
     };
+
+    const saveImage = () => {
+        const formData = new FormData();
+        if (imageRef.current) {
+            formData.append("image", imageRef.current);
+            ApiService.post("images", formData)
+                .then(
+                    (response) => (formRef.current.imageId = response.data.id)
+                )
+                .catch((error) => showError(error));
+        }
+    };
+
     return (
         <div className="flex flex-col items-center justify-center border-2 w-96">
             <div className={"h-8 p-2 text-red-600"}>{error}</div>
             <ImageUpload
                 getImage={(image) => {
+                    imageRef.current = image;
                     console.log(image);
                 }}
             />
@@ -134,4 +154,5 @@ interface ProfileForm {
     lookingForGender: string;
     sexualities: number[];
     dateOfBirth: string;
+    imageId: number;
 }

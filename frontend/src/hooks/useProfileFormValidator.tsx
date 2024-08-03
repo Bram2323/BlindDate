@@ -17,7 +17,9 @@ const validateForm = (form: ProfileForm) => {
     if (form.dateOfBirth === "") {
         return false;
     }
-
+    if (form.imageId === null || form.imageId < 0) {
+        return false;
+    }
     return true;
 };
 
@@ -29,4 +31,5 @@ interface ProfileForm {
     lookingForGender: string;
     sexualities: number[];
     dateOfBirth: string;
+    imageId: number;
 }

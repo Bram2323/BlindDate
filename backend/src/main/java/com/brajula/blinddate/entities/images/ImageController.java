@@ -16,6 +16,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping(IMAGES)
+@CrossOrigin(origins = "${blinddate.cors}")
 @RequiredArgsConstructor
 public class ImageController {
 
@@ -24,13 +25,13 @@ public class ImageController {
     @PostMapping
     public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file)
             throws IOException {
-        String uploadImage = imageService.uploadImage(file);
+        ImageUploadResponse uploadImage = imageService.uploadImage(file);
         return ResponseEntity.status(HttpStatus.OK).body(uploadImage);
     }
 
-    @GetMapping("/{fileName}")
-    public ResponseEntity<?> downloadImage(@PathVariable String fileName) {
-        byte[] imageData = imageService.downloadImage(fileName);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        byte[] imageData = imageService.downloadImage(id);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf(IMAGE_PNG_VALUE))
                 .body(imageData);

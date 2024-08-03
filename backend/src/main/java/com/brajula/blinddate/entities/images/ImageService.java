@@ -19,7 +19,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
 
     @Transactional
-    public String uploadImage(MultipartFile imageFile) throws IOException {
+    public ImageUploadResponse uploadImage(MultipartFile imageFile) throws IOException {
         var imageToSave =
                 Image.builder()
                         .name(imageFile.getOriginalFilename())
@@ -27,12 +27,12 @@ public class ImageService {
                         .imageData(ImageUtils.compressImage(imageFile.getBytes()))
                         .build();
         imageRepository.save(imageToSave);
-        return imageFile.getOriginalFilename();
+        return new ImageUploadResponse(imageToSave.id);
     }
 
     @Transactional
-    public byte[] downloadImage(String imageName) {
-        Optional<Image> dbImage = imageRepository.findByName(imageName);
+    public byte[] downloadImage(Long imageId) {
+        Optional<Image> dbImage = imageRepository.findById(imageId);
 
         return dbImage.map(
                         image -> {
@@ -42,7 +42,7 @@ public class ImageService {
                                 throw new ContextedRuntimeException(
                                                 "Error downloading an image", exception)
                                         .addContextValue("Image ID", image.getId())
-                                        .addContextValue("Image name", imageName);
+                                        .addContextValue("Image name", image.getName());
                             }
                         })
                 .orElse(null);
