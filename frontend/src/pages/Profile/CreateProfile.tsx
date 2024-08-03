@@ -5,13 +5,16 @@ import { DropDownSelect } from "../../generic/DropDownSelect";
 import FieldInput from "../../generic/FieldInput";
 import ApiService from "../../services/ApiService";
 import { Button } from "../../generic/Button";
-import validateForm from "../../hooks/useProfileFormValidator";
+import useValidators from "../../services/useValidators";
 import { useNavigate } from "react-router-dom";
 import { ImageUpload } from "../../generic/ImageUpload";
 
 export const CreateProfile = () => {
+    const { validateForm } = useValidators();
     const navigate = useNavigate();
     const [error, setError] = useState<string>("");
+    const [sexualities, setSexualities] = useState<Sexuality[]>();
+    const imageRef = useRef<File | null>(null);
 
     const showError = (message: string) => {
         setTimeout(() => {
@@ -26,10 +29,6 @@ export const CreateProfile = () => {
         { id: 3, value: "non-binary" },
         { id: 4, value: "other" },
     ];
-
-    const [sexualities, setSexualities] = useState<Sexuality[]>();
-
-    const imageRef = useRef<File | null>(null);
 
     const formRef = useRef<ProfileForm>({
         description: "",
