@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +29,10 @@ public class ProfileService {
     private final SexualityService sexualityService;
     private final ImageRepository imageRepository;
 
-    public List<Profile> getAll() {
-        return profileRepository.findAll();
+    public List<GetProfileDto> getAll() {
+        return profileRepository.findAll().stream()
+                .map(GetProfileDto::toDto)
+                .collect(Collectors.toList());
     }
 
     public Profile getById(Long id) {
@@ -37,7 +40,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public Profile save(ProfileDto dto, User user) {
+    public Profile save(PostProfileDto dto, User user) {
         Optional<Profile> profileExists = profileRepository.findByUser(user);
         if (profileExists.isPresent()) {
             throw new BadRequestException("This profile already exists");
@@ -50,7 +53,7 @@ public class ProfileService {
         }
     }
 
-    public Profile update(Long id, ProfileDto patch) {
+    public Profile update(Long id, PostProfileDto patch) {
         Profile patchedProfile = profileRepository.findById(id).orElseThrow(NotFoundException::new);
         if (patch.description() != null) patchedProfile.setDescription(patch.description());
         if (patch.gender() != null)

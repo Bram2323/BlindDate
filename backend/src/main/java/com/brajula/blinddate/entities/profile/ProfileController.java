@@ -21,7 +21,7 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping
-    public ResponseEntity<List<Profile>> getAll() {
+    public ResponseEntity<List<GetProfileDto>> getAll() {
         return ResponseEntity.ok(profileService.getAll());
     }
 
@@ -32,7 +32,7 @@ public class ProfileController {
 
     @PostMapping
     public ResponseEntity<Profile> create(
-            @RequestBody ProfileDto dto, Authentication authentication) {
+            @RequestBody PostProfileDto dto, Authentication authentication) {
         User user = authentication == null ? null : (User) authentication.getPrincipal();
         Profile savedProfile = profileService.save(dto, user);
         URI location =
@@ -44,7 +44,8 @@ public class ProfileController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Profile> update(@PathVariable Long id, @RequestBody ProfileDto patch) {
+    public ResponseEntity<Profile> update(
+            @PathVariable Long id, @RequestBody PostProfileDto patch) {
         return ResponseEntity.ok(profileService.update(id, patch));
     }
 
