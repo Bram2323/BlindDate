@@ -165,7 +165,6 @@ export const CreateProfile = () => {
                         formRef.current.interests = interests.map(
                             (interest) => interest.id
                         );
-                        console.log(formRef.current.interests);
                     }}
                 />
             )}
