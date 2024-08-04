@@ -1,7 +1,7 @@
 import { useState } from "react";
 import FieldInput from "../../generic/FieldInput";
 import { Button } from "../../generic/Button";
-import useValidators from "../../services/useValidators";
+import useValidators from "../../hooks/useValidators";
 import { register } from "../../services/UserService";
 import { useNavigate } from "react-router-dom";
 
