@@ -52,6 +52,7 @@ export const CreateProfile = () => {
                 .then((res) => {
                     console.log(res);
                 })
+                .then(() => navigate("/account"))
                 .catch((error) => {
                     showError(error.response.data.detail);
                 });
