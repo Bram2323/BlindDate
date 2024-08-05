@@ -1,6 +1,4 @@
-import Genders from "./Genders";
 import Profile from "./Profile";
-import Sexualities from "./Sexualities";
 
 function ProfileBox() {
     let profile: Profile = {
@@ -8,8 +6,6 @@ function ProfileBox() {
         userName: "SuperJohn",
         description: "I'm a cool person",
         dateOfBirth: new Date("05-05-1995"),
-        gender: Genders.male,
-        sexuality: Sexualities.heteroSexual,
     };
 
     let profileAge: number = Math.floor(
@@ -25,8 +21,6 @@ function ProfileBox() {
                     <p>{profile.userName}</p>
                     <p>{profileAge}</p>
                     <p>{profile.description}</p>
-                    <p>{profile.gender}</p>
-                    <p>{profile.sexuality}</p>
                 </div>
             </div>
         </>
