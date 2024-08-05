@@ -1,4 +1,4 @@
-package com.brajula.blinddate.entities.question;
+package com.brajula.blinddate.entities.trait;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,12 +13,12 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 @Entity
-public class Question {
+public class Trait {
     @Id @GeneratedValue private Long id;
 
     @Setter private String question;
 
-    public Question(String question) {
+    public Trait(String question) {
         this.question = question;
     }
 }

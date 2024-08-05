@@ -2,11 +2,11 @@ package com.brajula.blinddate;
 
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
-import com.brajula.blinddate.entities.profile.ProfileRepository;
-import com.brajula.blinddate.entities.profile.ProfileService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityRepository;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
+import com.brajula.blinddate.entities.trait.Trait;
+import com.brajula.blinddate.entities.trait.TraitService;
 import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.entities.user.UserService;
@@ -30,9 +30,8 @@ public class Seeder implements CommandLineRunner {
     private final UserRepository userRepository;
     private final SexualityService sexualityService;
     private final SexualityRepository sexualityRepository;
-    private final ProfileRepository profileRepository;
-    private final ProfileService profileService;
     private final InterestService interestService;
+    private final TraitService traitService;
 
     @Value("${blinddate.admin-password}")
     private String adminPassword;
@@ -42,6 +41,7 @@ public class Seeder implements CommandLineRunner {
         seedSexuality();
         seedInterests();
         updateOrCreateAdmin();
+        seedQuestions();
     }
 
     private void seedInterests() {
@@ -118,6 +118,24 @@ public class Seeder implements CommandLineRunner {
                         (new Sexuality("Polysexual")));
         for (Sexuality sexuality : sexualities) {
             sexualityService.save(sexuality);
+        }
+    }
+
+    private void seedQuestions() {
+        List<Trait> traits =
+                Arrays.asList(
+                        new Trait("Do you enjoy outdoor activities?"),
+                        new Trait("Are you a morning person?"),
+                        new Trait("Do you like trying new foods?"),
+                        new Trait("Is traveling a passion of yours?"),
+                        new Trait("Do you prefer reading books over watching movies?"),
+                        new Trait("Are you a dog person?"),
+                        new Trait("Do you enjoy cooking?"),
+                        new Trait("Is fitness a priority for you?"),
+                        new Trait("Do you like going to parties?"),
+                        new Trait("Are you a fan of spontaneous plans?"));
+        for (Trait trait : traits) {
+            traitService.save(trait);
         }
     }
 }
