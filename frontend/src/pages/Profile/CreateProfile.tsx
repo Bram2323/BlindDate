@@ -29,7 +29,7 @@ export const CreateProfile = () => {
     const genders = [
         { id: 1, value: "male" },
         { id: 2, value: "female" },
-        { id: 3, value: "non-binary" },
+        { id: 3, value: "nonbinary" },
         { id: 4, value: "other" },
     ];
 
@@ -69,10 +69,7 @@ export const CreateProfile = () => {
                 ApiService.post("profiles", formRef.current)
                     .then((response) => {
                         formRef.current.imageId = response.data.id;
-                        console.log(
-                            "profile posted TODO redirect to profile page"
-                        );
-                        navigate("/");
+                        navigate("/account");
                     })
                     .catch((error) => {
                         showError(error.response.data.detail);
