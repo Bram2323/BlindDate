@@ -44,9 +44,6 @@ function App() {
                         </>
                     )}
                 </Routes>
-                <ProfileBox
-                // profile={profile}
-                />
             </div>
         </>
     );
