@@ -69,7 +69,7 @@ export const CreateProfile = () => {
                 ApiService.post("profiles", formRef.current)
                     .then((response) => {
                         formRef.current.imageId = response.data.id;
-                        navigate("/account");
+                        navigate("/profile");
                     })
                     .catch((error) => {
                         showError(error.response.data.detail);

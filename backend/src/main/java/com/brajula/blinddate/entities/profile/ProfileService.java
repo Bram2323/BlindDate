@@ -42,6 +42,10 @@ public class ProfileService {
         return profileRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
+    public Profile getByUser(User user) {
+        return profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
+    }
+
     @Transactional
     public Profile save(PostProfileDto dto, User user) {
         Optional<Profile> profileExists = profileRepository.findByUser(user);
