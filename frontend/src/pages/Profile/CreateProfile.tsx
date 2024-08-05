@@ -5,7 +5,7 @@ import { DropDownSelect } from "../../generic/DropDownSelect";
 import FieldInput from "../../generic/FieldInput";
 import ApiService from "../../services/ApiService";
 import { Button } from "../../generic/Button";
-import useValidators from "../../services/useValidators";
+import useValidators from "../../hooks/useValidators";
 import { useNavigate } from "react-router-dom";
 import { ImageUpload } from "../../generic/ImageUpload";
 import { ScrollContainer } from "../../generic/ScrollContainer";
