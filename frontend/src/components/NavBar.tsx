@@ -35,7 +35,7 @@ function NavBar() {
                         <>
                             <button
                                 className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded shadow-xl"
-                                onClick={() => navigate("/account")}
+                                onClick={() => navigate("/profile")}
                             >
                                 Account
                             </button>
