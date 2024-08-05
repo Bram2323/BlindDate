@@ -23,7 +23,7 @@ export const CreateProfile = () => {
     const genders = [
         { id: 1, value: "male" },
         { id: 2, value: "female" },
-        { id: 3, value: "non-binary" },
+        { id: 3, value: "nonbinary" },
         { id: 4, value: "other" },
     ];
 
