@@ -1,11 +1,12 @@
 import { useState } from "react";
 import FieldInput from "../../generic/FieldInput";
 import { Button } from "../../generic/Button";
-import isValidPassword from "../../hooks/usePasswordValidator";
+import useValidators from "../../hooks/useValidators";
 import { register } from "../../services/UserService";
 import { useNavigate } from "react-router-dom";
 
 function Register() {
+    const { isValidPassword } = useValidators();
     const [username, setUsername] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");

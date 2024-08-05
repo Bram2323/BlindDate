@@ -1,6 +1,8 @@
 package com.brajula.blinddate.entities.profile;
 
 import com.brajula.blinddate.entities.images.ImageRepository;
+import com.brajula.blinddate.entities.interest.Interest;
+import com.brajula.blinddate.entities.interest.InterestService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
 import com.brajula.blinddate.entities.user.User;
@@ -28,6 +30,7 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final SexualityService sexualityService;
     private final ImageRepository imageRepository;
+    private final InterestService interestService;
 
     public List<GetProfileDto> getAll() {
         return profileRepository.findAll().stream()
@@ -49,6 +52,7 @@ public class ProfileService {
             profile.setImage(
                     imageRepository.findById(dto.imageId()).orElseThrow(NotFoundException::new));
             profile.setSexualities(convertToSexualities(dto.sexualities()));
+            profile.setInterests(convertToInterests(dto.interests()));
             return profileRepository.save(profile);
         }
     }
@@ -71,6 +75,14 @@ public class ProfileService {
             sexualities.add(sexualityService.getById(id));
         }
         return sexualities;
+    }
+
+    public Set<Interest> convertToInterests(List<Long> interestIdList) {
+        Set<Interest> interests = new HashSet<>();
+        for (Long id : interestIdList) {
+            interests.add(interestService.getById(id));
+        }
+        return interests;
     }
 
     public void delete(Long id) {

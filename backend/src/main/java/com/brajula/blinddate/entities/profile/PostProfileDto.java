@@ -17,6 +17,7 @@ public record PostProfileDto(
         String lookingForGender,
         LocalDate dateOfBirth,
         List<Long> sexualities,
+        List<Long> interests,
         Long imageId) {
     public Profile toProfile(User user) {
         if (this.description == null
@@ -24,6 +25,7 @@ public record PostProfileDto(
                 || this.lookingForGender == null
                 || this.dateOfBirth == null
                 || this.sexualities.isEmpty()
+                || this.interests.isEmpty()
                 || this.imageId == null) {
             throw new BadRequestException("incomplete profile");
         }

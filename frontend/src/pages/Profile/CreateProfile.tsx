@@ -5,13 +5,19 @@ import { DropDownSelect } from "../../generic/DropDownSelect";
 import FieldInput from "../../generic/FieldInput";
 import ApiService from "../../services/ApiService";
 import { Button } from "../../generic/Button";
-import validateForm from "../../hooks/useProfileFormValidator";
+import useValidators from "../../hooks/useValidators";
 import { useNavigate } from "react-router-dom";
 import { ImageUpload } from "../../generic/ImageUpload";
+import { ScrollContainer } from "../../generic/ScrollContainer";
+import { DropDownSelectWithList } from "../../generic/DropdownSelectWithList";
 
 export const CreateProfile = () => {
+    const { validateForm } = useValidators();
     const navigate = useNavigate();
+    const imageRef = useRef<File | null>(null);
     const [error, setError] = useState<string>("");
+    const [sexualities, setSexualities] = useState<FetchOption[]>();
+    const [interests, setInterests] = useState<FetchOption[]>();
 
     const showError = (message: string) => {
         setTimeout(() => {
@@ -27,10 +33,6 @@ export const CreateProfile = () => {
         { id: 4, value: "other" },
     ];
 
-    const [sexualities, setSexualities] = useState<Sexuality[]>();
-
-    const imageRef = useRef<File | null>(null);
-
     const formRef = useRef<ProfileForm>({
         description: "",
         gender: "",
@@ -38,12 +40,23 @@ export const CreateProfile = () => {
         sexualities: [],
         dateOfBirth: "",
         imageId: null,
+        interests: [],
     });
 
     useEffect(() => {
         ApiService.get("sexualities")
             .then((response) => {
                 setSexualities(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
+    useEffect(() => {
+        ApiService.get("interests")
+            .then((response) => {
+                setInterests(response.data);
             })
             .catch((error) => {
                 console.error(error);
@@ -105,7 +118,7 @@ export const CreateProfile = () => {
                 category={"Gender"}
                 options={genders}
                 onSelect={(gender) => {
-                    formRef.current.gender = gender;
+                    formRef.current.gender = gender.replace("-", "");
                 }}
             />
             <DropDownSelect
@@ -113,10 +126,10 @@ export const CreateProfile = () => {
                 category={"Gender"}
                 options={genders}
                 onSelect={(gender) => {
-                    formRef.current.lookingForGender = gender;
+                    formRef.current.lookingForGender = gender.replace("-", "");
                 }}
             />
-            <div className="border-2 overflow-scroll h-20 w-56 m-2">
+            <ScrollContainer label={"Preferences"}>
                 {sexualities &&
                     sexualities.map((sexuality) => (
                         <Checkbox
@@ -135,7 +148,24 @@ export const CreateProfile = () => {
                             }}
                         />
                     ))}
-            </div>
+            </ScrollContainer>
+
+            {interests && (
+                <DropDownSelectWithList
+                    label={"Things i like "}
+                    category="interest"
+                    options={interests.map((interest) => ({
+                        id: interest.id,
+                        value: interest.name,
+                    }))}
+                    getSelected={(interests) => {
+                        formRef.current.interests = interests.map(
+                            (interest) => interest.id
+                        );
+                    }}
+                />
+            )}
+
             <FieldInput
                 type={"date"}
                 label={"date of birth"}
@@ -148,7 +178,7 @@ export const CreateProfile = () => {
     );
 };
 
-interface Sexuality {
+interface FetchOption {
     id: number;
     name: string;
 }
@@ -160,4 +190,5 @@ interface ProfileForm {
     sexualities: number[];
     dateOfBirth: string;
     imageId: number | null;
+    interests: number[];
 }
