@@ -1,5 +1,6 @@
 package com.brajula.blinddate.entities.profile;
 
+import com.brajula.blinddate.entities.images.Image;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.user.User;
 
@@ -26,6 +27,8 @@ public class Profile {
     @OneToOne @Setter private User user;
 
     @ManyToMany @Setter private Set<Sexuality> sexualities;
+
+    @OneToOne @Setter private Image image;
 
     public Profile(
             String description,
