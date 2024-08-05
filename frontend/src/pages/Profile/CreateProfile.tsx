@@ -56,9 +56,7 @@ export const CreateProfile = () => {
                 ApiService.post("profiles", formRef.current)
                     .then((response) => {
                         formRef.current.imageId = response.data.id;
-                        console.log(
-                            "profile posted TODO redirect to profile page"
-                        );
+                        navigate("/account");
                     })
                     .catch((error) => {
                         showError(error.response.data.detail);
