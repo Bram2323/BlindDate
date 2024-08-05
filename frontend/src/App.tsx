@@ -27,8 +27,6 @@ function App() {
             <NavBar />
             <div className="w-full h-full overflow-y-auto">
                 <Routes>
-                    <Route path="/" element={<Home />} />
-
                     {isLoggedIn ? (
                         <>
                             <Route
@@ -39,6 +37,7 @@ function App() {
                         </>
                     ) : (
                         <>
+                            <Route path="/" element={<Home />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
                         </>
