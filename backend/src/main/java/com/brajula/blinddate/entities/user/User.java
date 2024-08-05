@@ -1,11 +1,9 @@
 package com.brajula.blinddate.entities.user;
 
+import com.brajula.blinddate.entities.profile.Profile;
 import com.brajula.blinddate.security.Role;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

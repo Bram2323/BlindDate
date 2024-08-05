@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import UserService from "../services/UserService";
+import { useUser, logout } from "../services/UserService";
 
 function NavBar() {
     const navigate = useNavigate();
+
+    const [, isLoggedIn] = useUser();
 
     return (
         <>
@@ -14,7 +16,7 @@ function NavBar() {
                     Blind Date
                 </button>
                 <div className="flex text-xl">
-                    {!UserService.isLoggedIn() ? (
+                    {!isLoggedIn ? (
                         <>
                             <button
                                 className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded shadow-xl"
@@ -38,8 +40,8 @@ function NavBar() {
                                 Account
                             </button>
                             <button
-                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
-                                onClick={UserService.logout()}
+                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded"
+                                onClick={() => logout()}
                             >
                                 Uitloggen
                             </button>
