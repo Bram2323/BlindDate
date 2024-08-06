@@ -18,7 +18,7 @@ export const CreateProfile = () => {
     const [error, setError] = useState<string>("");
     const [sexualities, setSexualities] = useState<FetchOption[]>();
     const [interests, setInterests] = useState<FetchOption[]>();
-    const [traits, setTraits] = useState<FetchOption[]>();
+    const [traits, setTraits] = useState<FetchTrait[]>();
 
     const showError = (message: string) => {
         setError(message);
@@ -45,12 +45,12 @@ export const CreateProfile = () => {
         traits: [],
     });
 
-    const fetchData = (
-        url: string,
-        setState: (list: FetchOption[]) => void
-    ) => {
+    const fetchData = (url: string, setState: any) => {
         ApiService.get(url)
-            .then((response) => setState(response.data))
+            .then((response) => {
+                console.log(response.data);
+                setState(response.data);
+            })
             .catch((error) => console.error(error));
     };
 
@@ -96,7 +96,11 @@ export const CreateProfile = () => {
         });
     };
 
-    const handleCheckboxChange = (list, id, isChecked) => {
+    const handleCheckboxChange = (
+        list: number[],
+        id: number,
+        isChecked: boolean
+    ) => {
         if (isChecked) {
             list.push(id);
         } else {
@@ -195,9 +199,11 @@ export const CreateProfile = () => {
 interface FetchOption {
     id: number;
     name: string;
-    question?: string;
 }
-
+interface FetchTrait {
+    id: number;
+    question: string;
+}
 interface ProfileForm {
     description: string;
     gender: string;
@@ -206,5 +212,10 @@ interface ProfileForm {
     dateOfBirth: string;
     imageId: number | null;
     interests: number[];
-    traits: Traits;
+    traits: Trait[];
+}
+
+interface Trait {
+    id: number;
+    answer: string;
 }

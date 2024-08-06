@@ -8,11 +8,12 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     extraOptions,
     getSelected,
 }) => {
-    const [showOptions, setShowOptions] = useState<Option[]>(options);
+    const [showOptions, setShowOptions] = useState<Option[]>([]);
     const [selected, setSelected] = useState<SelectedOption[]>([]);
 
     useEffect(() => {
         getSelected(selected);
+        setShowOptions(options);
     }, [selected]);
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
