@@ -1,27 +1,22 @@
 import Profile from "./Profile";
 
-function ProfileBox() {
-    let profile: Profile = {
-        id: 1,
-        userName: "SuperJohn",
-        description: "I'm a cool person",
-        dateOfBirth: new Date("05-05-1995"),
-    };
-
+function ProfileBox({ profile, pfpSrc }: { profile: Profile; pfpSrc: string }) {
     let profileAge: number = Math.floor(
-        Math.abs(Date.now() - profile.dateOfBirth.getTime()) /
+        Math.abs(Date.now() - new Date(profile.dateOfBirth).getTime()) /
             (1000 * 3600 * 24) /
             365.25
     );
 
     return (
         <>
-            <div className="flex justify-center">
-                <div className="bg-blue-300 flex flex-col items-center px-20 rounded-lg">
-                    <p>{profile.userName}</p>
-                    <p>{profileAge}</p>
-                    <p>{profile.description}</p>
-                </div>
+            <div className="bg-blue-300 flex flex-col items-center my-8 px-16 py-8 rounded-lg shadow-xl">
+                <img
+                    src={`${pfpSrc}`}
+                    alt={`Profile picture of ${profile.username}`}
+                />
+                <p>{profile.username}</p>
+                <p>{profileAge}</p>
+                <p>{profile.description}</p>
             </div>
         </>
     );
