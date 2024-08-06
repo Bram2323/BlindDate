@@ -47,10 +47,7 @@ export const CreateProfile = () => {
 
     const fetchData = (url: string, setState: any) => {
         ApiService.get(url)
-            .then((response) => {
-                console.log(response.data);
-                setState(response.data);
-            })
+            .then((response) => setState(response.data))
             .catch((error) => console.error(error));
     };
 
