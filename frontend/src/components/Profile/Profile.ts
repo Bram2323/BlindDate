@@ -8,7 +8,7 @@ interface Profile {
     lookingForGender: string;
     dateOfBirth: Date;
     userId: string;
-    userName: string;
+    username: string;
     sexualities: Sexualities[];
     interests: Interests[];
     imageId: number;
