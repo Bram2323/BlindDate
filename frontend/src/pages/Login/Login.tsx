@@ -36,6 +36,7 @@ const Login = () => {
             <div className={"h-8 p-2 text-red-600"}>{error}</div>
             <FieldInput
                 label={"username"}
+                content={username}
                 handleChange={(value) => {
                     setUsername(value);
                 }}
@@ -43,6 +44,7 @@ const Login = () => {
             <FieldInput
                 label={"password"}
                 type={"password"}
+                content={password}
                 handleChange={(value) => {
                     setPassword(value);
                 }}
