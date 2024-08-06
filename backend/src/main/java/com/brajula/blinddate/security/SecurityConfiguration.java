@@ -31,10 +31,10 @@ public class SecurityConfiguration {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         requests ->
-                                requests.requestMatchers(Routes.USERS, Routes.PROFILES)
-                                        .authenticated()
+                                requests.requestMatchers(Routes.AUTHENTICATION + "/**")
+                                        .permitAll()
                                         .anyRequest()
-                                        .permitAll())
+                                        .authenticated())
                 .addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(
