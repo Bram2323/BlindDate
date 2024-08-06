@@ -41,7 +41,10 @@ function NavBar() {
                             </button>
                             <button
                                 className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
-                                onClick={() => logout()}
+                                onClick={() => {
+                                    logout();
+                                    navigate("/");
+                                }}
                             >
                                 Uitloggen
                             </button>
