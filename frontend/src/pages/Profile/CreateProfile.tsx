@@ -18,6 +18,7 @@ export const CreateProfile = () => {
     const [error, setError] = useState<string>("");
     const [sexualities, setSexualities] = useState<FetchOption[]>();
     const [interests, setInterests] = useState<FetchOption[]>();
+    const [traits, setTraits] = useState<FetchOption[]>();
 
     const showError = (message: string) => {
         setTimeout(() => {
@@ -41,30 +42,26 @@ export const CreateProfile = () => {
         dateOfBirth: "",
         imageId: null,
         interests: [],
+        traits: [],
     });
 
-    useEffect(() => {
-        ApiService.get("sexualities")
+    const fetchData = (url, callback) => {
+        ApiService.get(url)
             .then((response) => {
-                setSexualities(response.data);
+                callback(response.data);
             })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, []);
+            .catch((error) => console.error(error));
+    };
 
     useEffect(() => {
-        ApiService.get("interests")
-            .then((response) => {
-                setInterests(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        fetchData("sexualities", setSexualities);
+        fetchData("interests", setInterests);
+        fetchData("traits", setTraits);
     }, []);
 
     const saveProfile = () => {
         saveImage().then(() => {
+            console.log(formRef.current);
             if (validateForm(formRef.current)) {
                 ApiService.post("profiles", formRef.current)
                     .then((response) => {
@@ -166,6 +163,24 @@ export const CreateProfile = () => {
                 />
             )}
 
+            {traits && (
+                <DropDownSelectWithList
+                    label={"Traits"}
+                    category={"Trait"}
+                    options={traits.map((trait) => ({
+                        id: trait.id,
+                        value: trait.question,
+                    }))}
+                    extraOptions={["yes", "no", "it depends"]}
+                    getSelected={(traits) => {
+                        formRef.current.traits = traits.map((trait) => ({
+                            id: trait.id,
+                            answer: trait.extra.replace(" ", "_"),
+                        }));
+                    }}
+                />
+            )}
+
             <FieldInput
                 type={"date"}
                 label={"date of birth"}
@@ -191,4 +206,10 @@ interface ProfileForm {
     dateOfBirth: string;
     imageId: number | null;
     interests: number[];
+    traits: Trait[];
+}
+
+interface Trait {
+    id: number;
+    answer: string;
 }

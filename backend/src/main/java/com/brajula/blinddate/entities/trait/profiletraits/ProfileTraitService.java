@@ -30,9 +30,9 @@ public class ProfileTraitService {
         ProfileTrait patchedProfileTrait =
                 profileTraitRepository.findById(id).orElseThrow(NotFoundException::new);
 
-        Answers formattedAnswer;
+        Answer formattedAnswer;
         try {
-            formattedAnswer = Answers.valueOf(patch.answer().toUpperCase().replace(" ", "_"));
+            formattedAnswer = Answer.valueOf(patch.answer().toUpperCase().replace(" ", "_"));
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Invalid answer");
         }

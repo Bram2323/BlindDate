@@ -17,9 +17,9 @@ public class ProfileTrait {
 
     @ManyToOne private Trait trait;
 
-    private Answers answer;
+    private Answer answer;
 
-    public ProfileTrait(Trait trait, Answers answer) {
+    public ProfileTrait(Trait trait, Answer answer) {
         this.trait = trait;
         this.answer = answer;
     }

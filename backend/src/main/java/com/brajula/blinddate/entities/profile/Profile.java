@@ -33,7 +33,7 @@ public class Profile {
 
     @ManyToMany @Setter private Set<Interest> interests = new HashSet<>();
 
-    @OneToMany private Set<ProfileTrait> profileTraits;
+    @OneToMany @Setter private Set<ProfileTrait> profileTraits;
 
     @OneToOne @Setter private Image image;
 

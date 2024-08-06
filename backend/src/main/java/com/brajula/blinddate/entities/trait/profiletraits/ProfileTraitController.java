@@ -35,8 +35,7 @@ public class ProfileTraitController {
     @PostMapping
     public ResponseEntity<ProfileTrait> create(@RequestBody PostProfileTraitDto dto)
             throws BadRequestException {
-        Trait trait =
-                traitRepository.findById(dto.questionId()).orElseThrow(BadRequestException::new);
+        Trait trait = traitRepository.findById(dto.id()).orElseThrow(BadRequestException::new);
         ProfileTrait profileTrait = dto.toAnswer(trait);
         profileTraitService.save(profileTrait);
         URI location =

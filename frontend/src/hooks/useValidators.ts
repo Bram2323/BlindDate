@@ -44,6 +44,9 @@ const useValidators = () => {
         if (form.interests.length === 0) {
             return false;
         }
+        if (form.traits.length === 0) {
+            return false;
+        }
         return true;
     }, []);
 
@@ -64,4 +67,10 @@ interface ProfileForm {
     dateOfBirth: string;
     imageId: number;
     interests: number[];
+    traits: Trait[];
+}
+
+interface Trait {
+    id: number;
+    answer: string;
 }

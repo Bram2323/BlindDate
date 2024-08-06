@@ -9,6 +9,7 @@ export const ProfileView = () => {
         ApiService.get("profiles/my")
             .then((response) => {
                 setProfile(response.data);
+                console.log(response.data);
                 ApiService.get(
                     `images/${response.data.imageId}`,
                     null,
@@ -47,7 +48,17 @@ export const ProfileView = () => {
                             <h2>Interests</h2>
                             <ul>
                                 {profile.interests.map((interest) => (
-                                    <li key={interest.id}>{interest.name}</li>
+                                    <li className="border-2" key={interest.id}>
+                                        {interest.name}
+                                    </li>
+                                ))}
+                            </ul>
+                            <ul>
+                                {profile.traits.map((trait) => (
+                                    <li className={"border-2"} key={trait.id}>
+                                        <p>{trait.trait.question}</p>
+                                        <p>{trait.answer}</p>
+                                    </li>
                                 ))}
                             </ul>
                         </div>
