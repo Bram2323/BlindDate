@@ -21,10 +21,10 @@ export const CreateProfile = () => {
     const [traits, setTraits] = useState<FetchOption[]>();
 
     const showError = (message: string) => {
+        setError(message);
         setTimeout(() => {
             setError("");
         }, 3000);
-        setError(message);
     };
 
     const genders = [
@@ -45,11 +45,12 @@ export const CreateProfile = () => {
         traits: [],
     });
 
-    const fetchData = (url, callback) => {
+    const fetchData = (
+        url: string,
+        setState: (list: FetchOption[]) => void
+    ) => {
         ApiService.get(url)
-            .then((response) => {
-                callback(response.data);
-            })
+            .then((response) => setState(response.data))
             .catch((error) => console.error(error));
     };
 
@@ -60,12 +61,10 @@ export const CreateProfile = () => {
     }, []);
 
     const saveProfile = () => {
-        saveImage().then(() => {
-            console.log(formRef.current);
-            if (validateForm(formRef.current)) {
+        saveImage().then((imageSaved) => {
+            if (imageSaved && validateForm(formRef.current)) {
                 ApiService.post("profiles", formRef.current)
-                    .then((response) => {
-                        formRef.current.imageId = response.data.id;
+                    .then(() => {
                         navigate("/profile");
                     })
                     .catch((error) => {
@@ -79,8 +78,8 @@ export const CreateProfile = () => {
 
     const saveImage = () => {
         return new Promise((resolve) => {
-            const formData = new FormData();
             if (imageRef.current) {
+                const formData = new FormData();
                 formData.append("image", imageRef.current);
                 ApiService.post("images", formData)
                     .then((response) => {
@@ -91,78 +90,79 @@ export const CreateProfile = () => {
                         showError("Image not uploaded: " + error);
                         resolve(false);
                     });
+            } else {
+                resolve(true);
             }
         });
+    };
+
+    const handleCheckboxChange = (list, id, isChecked) => {
+        if (isChecked) {
+            list.push(id);
+        } else {
+            const index = list.indexOf(id);
+            if (index > -1) list.splice(index, 1);
+        }
     };
 
     return (
         <div className="flex flex-col items-center justify-center border-2 w-96">
             <div className={"h-8 p-2 text-red-600"}>{error}</div>
-            <ImageUpload
-                getImage={(image) => {
-                    imageRef.current = image;
-                }}
-            />
+            <ImageUpload getImage={(image) => (imageRef.current = image)} />
             <TextArea
-                label={"description"}
+                label={"Description"}
                 content={"Write something about yourself"}
-                handleChange={(description) => {
-                    formRef.current.description = description;
-                }}
+                handleChange={(description) =>
+                    (formRef.current.description = description)
+                }
             />
             <DropDownSelect
                 label={"I am a"}
                 category={"Gender"}
                 options={genders}
-                onSelect={(gender) => {
-                    formRef.current.gender = gender.replace("-", "");
-                }}
+                onSelect={(gender) =>
+                    (formRef.current.gender = gender.replace("-", ""))
+                }
             />
             <DropDownSelect
                 label={"I am looking for a "}
                 category={"Gender"}
                 options={genders}
-                onSelect={(gender) => {
-                    formRef.current.lookingForGender = gender.replace("-", "");
-                }}
+                onSelect={(gender) =>
+                    (formRef.current.lookingForGender = gender.replace("-", ""))
+                }
             />
             <ScrollContainer label={"Preferences"}>
-                {sexualities &&
-                    sexualities.map((sexuality) => (
-                        <Checkbox
-                            key={sexuality.id}
-                            content={sexuality.name}
-                            targetId={sexuality.id}
-                            handleChange={(targetId, isChecked) => {
-                                if (isChecked) {
-                                    formRef.current.sexualities.push(targetId);
-                                } else {
-                                    formRef.current.sexualities =
-                                        formRef.current.sexualities.filter(
-                                            (id) => id !== targetId
-                                        );
-                                }
-                            }}
-                        />
-                    ))}
+                {sexualities?.map((sexuality) => (
+                    <Checkbox
+                        key={sexuality.id}
+                        content={sexuality.name}
+                        targetId={sexuality.id}
+                        handleChange={(id, isChecked) =>
+                            handleCheckboxChange(
+                                formRef.current.sexualities,
+                                id,
+                                isChecked
+                            )
+                        }
+                    />
+                ))}
             </ScrollContainer>
-
             {interests && (
                 <DropDownSelectWithList
-                    label={"Things i like "}
+                    label={"Things I like "}
                     category="interest"
                     options={interests.map((interest) => ({
                         id: interest.id,
                         value: interest.name,
                     }))}
-                    getSelected={(interests) => {
-                        formRef.current.interests = interests.map(
+                    getSelected={(selectedInterests) => {
+                        formRef.current.interests = selectedInterests.map(
                             (interest) => interest.id
                         );
                     }}
                 />
             )}
-
             {traits && (
                 <DropDownSelectWithList
                     label={"Traits"}
@@ -172,23 +172,22 @@ export const CreateProfile = () => {
                         value: trait.question,
                     }))}
                     extraOptions={["yes", "no", "it depends"]}
-                    getSelected={(traits) => {
-                        formRef.current.traits = traits.map((trait) => ({
-                            id: trait.id,
-                            answer: trait.extra.replace(" ", "_"),
-                        }));
+                    getSelected={(selectedTraits) => {
+                        formRef.current.traits = selectedTraits.map(
+                            (trait) => ({
+                                id: trait.id,
+                                answer: trait.extra.replace(" ", "_"),
+                            })
+                        );
                     }}
                 />
             )}
-
             <FieldInput
                 type={"date"}
-                label={"date of birth"}
-                handleChange={(value) => {
-                    formRef.current.dateOfBirth = value;
-                }}
+                label={"Date of Birth"}
+                handleChange={(value) => (formRef.current.dateOfBirth = value)}
             />
-            <Button content={"submit"} handleClick={saveProfile} />
+            <Button content={"Submit"} handleClick={saveProfile} />
         </div>
     );
 };
@@ -196,6 +195,7 @@ export const CreateProfile = () => {
 interface FetchOption {
     id: number;
     name: string;
+    question?: string;
 }
 
 interface ProfileForm {
@@ -206,10 +206,5 @@ interface ProfileForm {
     dateOfBirth: string;
     imageId: number | null;
     interests: number[];
-    traits: Trait[];
-}
-
-interface Trait {
-    id: number;
-    answer: string;
+    traits: Traits;
 }

@@ -107,7 +107,7 @@ interface DropDownSelectProps {
     category: string;
     label?: string;
     options: Option[];
-    extraOptions: string[];
+    extraOptions?: string[];
     getSelected: (selected: SelectedOption[]) => void;
 }
 

@@ -65,7 +65,7 @@ interface ProfileForm {
     lookingForGender: string;
     sexualities: number[];
     dateOfBirth: string;
-    imageId: number;
+    imageId: number | null;
     interests: number[];
     traits: Trait[];
 }
