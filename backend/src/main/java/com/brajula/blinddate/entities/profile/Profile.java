@@ -3,6 +3,7 @@ package com.brajula.blinddate.entities.profile;
 import com.brajula.blinddate.entities.images.Image;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
+import com.brajula.blinddate.entities.trait.profiletraits.ProfileTrait;
 import com.brajula.blinddate.entities.user.User;
 
 import jakarta.persistence.*;
@@ -31,6 +32,8 @@ public class Profile {
     @ManyToMany @Setter private Set<Sexuality> sexualities;
 
     @ManyToMany @Setter private Set<Interest> interests = new HashSet<>();
+
+    @OneToMany @Setter private Set<ProfileTrait> profileTraits;
 
     @OneToOne @Setter private Image image;
 

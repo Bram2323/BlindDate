@@ -5,6 +5,12 @@ import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
+import com.brajula.blinddate.entities.trait.Trait;
+import com.brajula.blinddate.entities.trait.TraitService;
+import com.brajula.blinddate.entities.trait.profiletraits.Answer;
+import com.brajula.blinddate.entities.trait.profiletraits.PostProfileTraitDto;
+import com.brajula.blinddate.entities.trait.profiletraits.ProfileTrait;
+import com.brajula.blinddate.entities.trait.profiletraits.ProfileTraitService;
 import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.exceptions.BadRequestException;
 import com.brajula.blinddate.exceptions.NotFoundException;
@@ -31,6 +37,8 @@ public class ProfileService {
     private final SexualityService sexualityService;
     private final ImageRepository imageRepository;
     private final InterestService interestService;
+    private final ProfileTraitService profileTraitService;
+    private final TraitService traitService;
 
     public List<GetProfileDto> getAll() {
         return profileRepository.findAll().stream()
@@ -57,6 +65,7 @@ public class ProfileService {
                     imageRepository.findById(dto.imageId()).orElseThrow(NotFoundException::new));
             profile.setSexualities(convertToSexualities(dto.sexualities()));
             profile.setInterests(convertToInterests(dto.interests()));
+            profile.setProfileTraits(convertToProfileTraits(dto.traits()));
             return profileRepository.save(profile);
         }
     }
@@ -87,6 +96,23 @@ public class ProfileService {
             interests.add(interestService.getById(id));
         }
         return interests;
+    }
+
+    public Set<ProfileTrait> convertToProfileTraits(List<PostProfileTraitDto> profileTraitList) {
+        Set<ProfileTrait> traits = new HashSet<>();
+        for (PostProfileTraitDto pf : profileTraitList) {
+            Trait trait = traitService.getById(pf.id());
+            Answer answer;
+            try {
+                answer = Answer.valueOf(pf.answer().toUpperCase().replace(" ", "_"));
+            } catch (IllegalArgumentException e) {
+                throw new BadRequestException("answer not valid");
+            }
+            ProfileTrait profileTrait = new ProfileTrait(trait, answer);
+            profileTraitService.save(profileTrait);
+            traits.add(profileTrait);
+        }
+        return traits;
     }
 
     public void delete(Long id) {

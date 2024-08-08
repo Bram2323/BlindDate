@@ -44,6 +44,9 @@ const useValidators = () => {
         if (form.interests.length === 0) {
             return false;
         }
+        if (form.traits.length === 0) {
+            return false;
+        }
         return true;
     }, []);
 
@@ -62,6 +65,12 @@ interface ProfileForm {
     lookingForGender: string;
     sexualities: number[];
     dateOfBirth: string;
-    imageId: number;
+    imageId: number | null;
     interests: number[];
+    traits: Trait[];
+}
+
+interface Trait {
+    id: number;
+    answer: string;
 }
