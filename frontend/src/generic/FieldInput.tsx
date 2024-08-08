@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const FieldInput: React.FC<FieldInputProps> = ({
     label,
     content,
@@ -7,11 +5,10 @@ const FieldInput: React.FC<FieldInputProps> = ({
     layout,
     style,
     handleChange,
+    onSubmit,
 }) => {
-    const [value, setValue] = useState<string | number>(content ? content : "");
-
     return (
-        <div className={`${layout} border-2 p-2`} data-value={value}>
+        <div className={`${layout} border-2 p-2`} data-value={content}>
             {label && (
                 <label htmlFor="label" className={`${style}`}>
                     {label}
@@ -19,13 +16,15 @@ const FieldInput: React.FC<FieldInputProps> = ({
             )}
             <input
                 onChange={(e) => {
-                    setValue(e.target.value);
                     handleChange(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                    if (e.key == "Enter" && onSubmit) onSubmit();
                 }}
                 className={`${style} border-2 p-2`}
                 name={label}
                 type={type ? type : "text"}
-                value={value}
+                value={content}
             />
         </div>
     );
@@ -36,10 +35,11 @@ export default FieldInput;
 interface FieldInputProps {
     label?: string;
     type?: string;
-    content?: string | number;
+    content: string | number;
     layout?: string;
     style?: string;
     handleChange: (e: string) => void;
+    onSubmit?: () => void;
 }
 
 /**

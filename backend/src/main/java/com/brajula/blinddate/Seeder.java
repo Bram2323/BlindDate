@@ -1,12 +1,18 @@
 package com.brajula.blinddate;
 
+import com.brajula.blinddate.entities.chat.Chat;
+import com.brajula.blinddate.entities.chat.ChatRepository;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
+import com.brajula.blinddate.entities.message.Message;
+import com.brajula.blinddate.entities.message.MessageRepository;
 import com.brajula.blinddate.entities.profile.ProfileRepository;
 import com.brajula.blinddate.entities.profile.ProfileService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityRepository;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
+import com.brajula.blinddate.entities.trait.Trait;
+import com.brajula.blinddate.entities.trait.TraitService;
 import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.entities.user.UserService;
@@ -18,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -30,18 +37,46 @@ public class Seeder implements CommandLineRunner {
     private final UserRepository userRepository;
     private final SexualityService sexualityService;
     private final SexualityRepository sexualityRepository;
-    private final ProfileRepository profileRepository;
-    private final ProfileService profileService;
     private final InterestService interestService;
+    private final ChatRepository chatRepository;
+    private final MessageRepository messageRepository;
+    private final TraitService traitService;
 
     @Value("${blinddate.admin-password}")
     private String adminPassword;
 
     @Override
     public void run(String... args) throws Exception {
+        updateOrCreateAdmin();
         seedSexuality();
         seedInterests();
-        updateOrCreateAdmin();
+        seedQuestions();
+        seedChats();
+    }
+
+    private void seedChats() {
+        if (chatRepository.count() != 0) return;
+
+        Optional<User> possibleUser1 = userRepository.findByUsernameIgnoreCase("test1");
+        Optional<User> possibleUser2 = userRepository.findByUsernameIgnoreCase("test2");
+
+        User user1 =
+                possibleUser1.orElse(
+                        userService.register("test1", "test", "test", "test", "test@test.test"));
+        User user2 =
+                possibleUser2.orElse(
+                        userService.register("test2", "test", "test", "test", "test@test.test"));
+
+        Chat chat = new Chat(user1, user2, LocalDateTime.now());
+        chatRepository.save(chat);
+
+        Message message1 =
+                new Message(chat, user1, "This is a normal conversation", LocalDateTime.now());
+        Message message2 =
+                new Message(chat, user2, "Exactly, nothing suspicious here", LocalDateTime.now());
+
+        messageRepository.save(message1);
+        messageRepository.save(message2);
     }
 
     private void seedInterests() {
@@ -118,6 +153,24 @@ public class Seeder implements CommandLineRunner {
                         (new Sexuality("Polysexual")));
         for (Sexuality sexuality : sexualities) {
             sexualityService.save(sexuality);
+        }
+    }
+
+    private void seedQuestions() {
+        List<Trait> traits =
+                Arrays.asList(
+                        new Trait("Do you enjoy outdoor activities?"),
+                        new Trait("Are you a morning person?"),
+                        new Trait("Do you like trying new foods?"),
+                        new Trait("Is traveling a passion of yours?"),
+                        new Trait("Do you prefer reading books over watching movies?"),
+                        new Trait("Are you a dog person?"),
+                        new Trait("Do you enjoy cooking?"),
+                        new Trait("Is fitness a priority for you?"),
+                        new Trait("Do you like going to parties?"),
+                        new Trait("Are you a fan of spontaneous plans?"));
+        for (Trait trait : traits) {
+            traitService.save(trait);
         }
     }
 }

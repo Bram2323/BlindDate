@@ -1,5 +1,6 @@
 package com.brajula.blinddate.entities.profile;
 
+import com.brajula.blinddate.entities.trait.profiletraits.PostProfileTraitDto;
 import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.exceptions.BadRequestException;
 
@@ -18,6 +19,7 @@ public record PostProfileDto(
         LocalDate dateOfBirth,
         List<Long> sexualities,
         List<Long> interests,
+        List<PostProfileTraitDto> traits,
         Long imageId) {
     public Profile toProfile(User user) {
         if (this.description == null
