@@ -9,4 +9,6 @@ public class Routes {
     public static final String INTERESTS = BASE_ROUTE + "interests";
     public static final String IMAGES = BASE_ROUTE + "images";
     public static final String CHATS = BASE_ROUTE + "chats";
+    public static final String TRAITS = BASE_ROUTE + "traits";
+    public static final String ANSWERS = BASE_ROUTE + "profile-traits";
 }

@@ -29,7 +29,7 @@ public class SexualityController {
     }
 
     @PostMapping
-    public ResponseEntity<Sexuality> create(@RequestBody SexualityCreationDto dto) {
+    public ResponseEntity<Sexuality> create(@RequestBody PostCreationDto dto) {
         Sexuality sexuality = dto.toSexuality();
         sexualityService.save(sexuality);
         URI location =
