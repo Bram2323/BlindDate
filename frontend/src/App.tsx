@@ -7,6 +7,7 @@ import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
 import { CreateProfile } from "./pages/Profile/CreateProfile";
 import { ProfileView } from "./pages/Profile/ProfileView";
+import Chat from "./pages/chat/Chat";
 import Judging from "./pages/Judging/Judging";
 
 function App() {
@@ -23,8 +24,10 @@ function App() {
                     ) : (
                         <Route path="/" element={<Home />} />
                     )}
+
                     <Route path="/create-profile" element={<CreateProfile />} />
                     <Route path="/profile" element={<ProfileView />} />
+                    <Route path="/chat/:id" element={<Chat />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                 </Routes>
