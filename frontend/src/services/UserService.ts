@@ -65,9 +65,9 @@ class UserService {
         return sessionStorage.getItem(TOKEN_STORAGE_LOCATION) !== null;
     }
 
-    static getUser(): User | undefined {
+    static getUser(): User {
         let userString = sessionStorage.getItem(USER_STORAGE_LOCATION);
-        if (userString === null) return undefined;
+        if (userString === null) return defaultUser;
         return JSON.parse(userString);
     }
 }
@@ -88,8 +88,8 @@ export function register(
 
 export const logout = UserService.logout;
 
-export function useUser(): [User | undefined, boolean] {
-    const [user, setUser] = useState<User>();
+export function useUser(): [User, boolean] {
+    const [user, setUser] = useState<User>(defaultUser);
     const [loggedIn, setLoggedIn] = useState(false);
 
     useEffect(() => {
@@ -98,7 +98,7 @@ export function useUser(): [User | undefined, boolean] {
             setLoggedIn(true);
         }
         function handleLogout() {
-            setUser(undefined);
+            setUser(defaultUser);
             setLoggedIn(false);
         }
         window.addEventListener("login", handleLogin);
@@ -125,3 +125,12 @@ export interface User {
     role: string;
     id: string;
 }
+
+const defaultUser: User = {
+    username: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "",
+    id: "",
+};
