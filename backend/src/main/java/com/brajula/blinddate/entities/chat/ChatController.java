@@ -12,6 +12,7 @@ import com.brajula.blinddate.exceptions.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,8 @@ public class ChatController {
 
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
+
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @GetMapping("{id}")
     private ChatFullDTO get(@PathVariable Long id, Authentication authentication) {
@@ -55,12 +58,16 @@ public class ChatController {
         Optional<Chat> possibleChat = chatRepository.findById(id);
         Chat chat = possibleChat.orElseThrow(NotFoundException::new);
 
-        if (!chat.getUserOne().equals(user) && !chat.getUserTwo().equals(user))
-            throw new ForbiddenException();
+        User userOne = chat.getUserOne();
+        User userTwo = chat.getUserTwo();
+        if (!userOne.equals(user) && !userTwo.equals(user)) throw new ForbiddenException();
+
+        User otherUser = userOne.equals(user) ? userTwo : userOne;
 
         Message newMessage =
                 messageRepository.save(new Message(chat, user, trimmedText, LocalDateTime.now()));
 
+        simpMessagingTemplate.convertAndSendToUser(otherUser.getUsername(), "/chat", newMessage);
         return MessageDTO.from(newMessage);
     }
 }
