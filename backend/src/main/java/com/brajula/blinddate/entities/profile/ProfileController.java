@@ -34,7 +34,7 @@ public class ProfileController {
     }
 
     @Transactional
-    @GetMapping("/my") // ik heb geen idee hoe ik deze moet noemen, maar zonder param == ambiguity
+    @GetMapping("/my")
     public ResponseEntity<GetProfileDto> getByUser(Authentication authentication) {
         User user = authentication == null ? null : (User) authentication.getPrincipal();
         if (user == null) {

@@ -6,8 +6,9 @@ import NavBar from "./components/NavBar";
 import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
 import { CreateProfile } from "./pages/Profile/CreateProfile";
-import { ProfileView } from "./pages/Profile/ProfileView";
+
 import Chat from "./pages/chat/Chat";
+import { Profile } from "./pages/Profile/Profile";
 
 function App() {
     history.navigate = useNavigate();
@@ -21,7 +22,7 @@ function App() {
                     <Route path="/" element={<Home />} />
 
                     <Route path="/create-profile" element={<CreateProfile />} />
-                    <Route path="/profile" element={<ProfileView />} />
+                    <Route path="/profile" element={<Profile />} />
                     <Route path="/chat/:id" element={<Chat />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />

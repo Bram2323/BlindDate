@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-export const ImageUpload: React.FC<ImageUploadProps> = ({ getImage }) => {
+export const ImageUpload: React.FC<ImageUploadProps> = ({
+    getImage,
+    initialValue,
+}) => {
     const [imageSrc, setImageSrc] = useState<string>();
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -8,22 +11,22 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ getImage }) => {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImageSrc(reader.result);
+                setImageSrc(reader.result?.toString());
                 getImage(file);
             };
             reader.readAsDataURL(file);
         }
     };
-    useEffect(() => {}, []);
+    useEffect(() => {
+        if (initialValue || initialValue != "") {
+            setImageSrc(initialValue);
+        }
+    }, [initialValue]);
 
     return (
         <div>
             <div id="img-container" className="border-2 min-h-48">
-                {imageSrc ? (
-                    <img src={imageSrc.toString()} />
-                ) : (
-                    <p>No image selected</p>
-                )}
+                {imageSrc ? <img src={imageSrc} /> : <p>No image selected</p>}
             </div>
             <input
                 type="file"
@@ -38,4 +41,5 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ getImage }) => {
 
 interface ImageUploadProps {
     getImage(file: File): void;
+    initialValue?: string;
 }
