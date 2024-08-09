@@ -6,8 +6,6 @@ import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
 import com.brajula.blinddate.entities.message.Message;
 import com.brajula.blinddate.entities.message.MessageRepository;
-import com.brajula.blinddate.entities.profile.ProfileRepository;
-import com.brajula.blinddate.entities.profile.ProfileService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityRepository;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
@@ -80,6 +78,9 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedInterests() {
+        if (!interestService.getAll().isEmpty()) {
+            return;
+        }
         List<Interest> interests =
                 Arrays.asList(
                         new Interest("Photography"),
@@ -157,6 +158,9 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedQuestions() {
+        if (!traitService.getAll().isEmpty()) {
+            return;
+        }
         List<Trait> traits =
                 Arrays.asList(
                         new Trait("Do you enjoy outdoor activities?"),

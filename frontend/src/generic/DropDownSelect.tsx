@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 export const DropDownSelect: React.FC<DropDownSelectProps> = ({
     label,
     category,
+    id,
     options,
     onSelect,
     initialValue,
@@ -26,9 +27,9 @@ export const DropDownSelect: React.FC<DropDownSelectProps> = ({
             <label htmlFor={label}>{label}</label>
             <select
                 name={category}
-                id={category}
+                id={id ? id : category}
                 onChange={(e) => {
-                    onSelect(e.target.value);
+                    onSelect(e.target.value, id);
                 }}
             >
                 {initialValue ? (
@@ -50,6 +51,7 @@ export const DropDownSelect: React.FC<DropDownSelectProps> = ({
 interface DropDownSelectProps {
     category: string;
     label?: string;
+    id?: number;
     options: Option[];
     initialValue?: string;
     onSelect: (value: string) => void;

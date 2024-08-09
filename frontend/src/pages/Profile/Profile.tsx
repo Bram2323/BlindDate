@@ -9,6 +9,7 @@ import { ScrollContainer } from "../../generic/ScrollContainer";
 import Checkbox from "../../generic/Checkbox";
 import { DropDownSelectWithList } from "../../generic/DropdownSelectWithList";
 import { DropCeption } from "./components/DropCeption";
+import { Button } from "../../generic/Button";
 
 const genders = [
     { id: 1, value: "male" },
@@ -57,43 +58,27 @@ export const Profile = () => {
             console.log(res.profile);
             setProfile(res.profile);
             setImageUrl(res.imageUrl);
-            fetchData("sexualities", setSexualities);
-            fetchData("interests", setInterests);
-            fetchData("traits", setTraits);
         });
+        fetchData("sexualities", setSexualities);
+        fetchData("interests", setInterests);
+        fetchData("traits", setTraits);
     }, []);
 
     const fetchData = (url: string, setState: any) => {
         ApiService.get(url)
             .then((response) => {
                 setState(response.data);
-                //console.log(response.data);
+                console.log(response.data);
             })
             .catch((error) => console.error(error));
     };
 
+    const saveProfile = () => {
+        console.log("saving profile");
+    };
     return (
         <div className="p-6">
             Attempt 45: {user.username}
-            {traits && (
-                <DropDownSelectWithList
-                    label={"Traits"}
-                    category={"Trait"}
-                    options={traits.map((trait) => ({
-                        id: trait.id,
-                        value: trait.question,
-                    }))}
-                    extraOptions={["yes", "no", "it depends"]}
-                    initialValues={profile?.traits.map((trait) => ({
-                        id: trait.id,
-                        value: trait.trait.question,
-                        extra: trait.answer,
-                    }))}
-                    getSelected={(selectedTraits) => {
-                        //console.log(selectedTraits);
-                    }}
-                />
-            )}
             <div>
                 <FieldInput
                     content={profile?.username ? profile.username : ""}
@@ -171,6 +156,46 @@ export const Profile = () => {
                         )}
                     </ul>
                 </ScrollContainer>
+
+                {traits && (
+                    <DropDownSelectWithList
+                        label={"Traits"}
+                        category={"Trait"}
+                        options={traits.map((trait) => ({
+                            id: trait.id,
+                            value: trait.question,
+                        }))}
+                        extraOptions={["yes", "no", "it depends"]}
+                        initialValues={profile?.traits.map((trait) => ({
+                            id: trait.id,
+                            value: trait.trait.question,
+                            extra: trait.answer,
+                        }))}
+                        getSelected={(selectedTraits) => {
+                            console.log(selectedTraits);
+                        }}
+                    />
+                )}
+
+                {interests && (
+                    <DropDownSelectWithList
+                        label={"Things I like "}
+                        category="interest"
+                        options={interests.map((interest) => ({
+                            id: interest.id,
+                            value: interest.name,
+                        }))}
+                        getSelected={(selectedInterests) => {
+                            console.log(selectedInterests);
+                        }}
+                    />
+                )}
+                <FieldInput
+                    type={"date"}
+                    label={"Date of Birth"}
+                    handleChange={() => console.log("birthdate")}
+                />
+                <Button content={"Submit"} handleClick={saveProfile} />
             </div>
         </div>
     );
