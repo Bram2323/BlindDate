@@ -7,6 +7,8 @@ import { ImageUpload } from "../../generic/ImageUpload";
 import { DropDownSelect } from "../../generic/DropDownSelect";
 import { ScrollContainer } from "../../generic/ScrollContainer";
 import Checkbox from "../../generic/Checkbox";
+import { DropDownSelectWithList } from "../../generic/DropdownSelectWithList";
+import { DropCeption } from "./components/DropCeption";
 
 const genders = [
     { id: 1, value: "male" },
@@ -52,6 +54,7 @@ export const Profile = () => {
 
     useEffect(() => {
         fetchProfileData().then((res) => {
+            console.log(res.profile);
             setProfile(res.profile);
             setImageUrl(res.imageUrl);
             fetchData("sexualities", setSexualities);
@@ -70,8 +73,27 @@ export const Profile = () => {
     };
 
     return (
-        <div>
+        <div className="p-6">
             Attempt 45: {user.username}
+            {traits && (
+                <DropDownSelectWithList
+                    label={"Traits"}
+                    category={"Trait"}
+                    options={traits.map((trait) => ({
+                        id: trait.id,
+                        value: trait.question,
+                    }))}
+                    extraOptions={["yes", "no", "it depends"]}
+                    initialValues={profile?.traits.map((trait) => ({
+                        id: trait.id,
+                        value: trait.trait.question,
+                        extra: trait.answer,
+                    }))}
+                    getSelected={(selectedTraits) => {
+                        //console.log(selectedTraits);
+                    }}
+                />
+            )}
             <div>
                 <FieldInput
                     content={profile?.username ? profile.username : ""}
@@ -139,7 +161,7 @@ export const Profile = () => {
                                             console.log(profile?.sexualities);
                                         }}
                                         isChecked={profile?.sexualities.some(
-                                            (s) => s.id === sex.id
+                                            (s: FetchOption) => s.id === sex.id
                                         )}
                                     />
                                 </li>
