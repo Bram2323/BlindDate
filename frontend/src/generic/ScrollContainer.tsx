@@ -16,6 +16,6 @@ export const ScrollContainer: React.FC<ScrollContainerProps> = ({
 };
 
 interface ScrollContainerProps {
-    label: string;
+    label?: string;
     children: any;
 }
