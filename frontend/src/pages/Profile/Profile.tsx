@@ -3,7 +3,7 @@ import { useUser } from "../../services/UserService";
 import ApiService from "../../services/ApiService";
 import FieldInput from "../../generic/FieldInput";
 import { TextArea } from "../../generic/TextArea";
-import { ImageUpload } from "../../generic/ImageUpload";
+import { ImageUpload } from "./components/ImageUpload";
 import { DropDownSelect } from "../../generic/DropDownSelect";
 import { ScrollContainer } from "../../generic/ScrollContainer";
 import Checkbox from "../../generic/Checkbox";
@@ -12,6 +12,13 @@ import { Button } from "../../generic/Button";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useValidators from "../../hooks/useValidators";
+import {
+    IProfile,
+    IFetchOption,
+    IFetchTrait,
+    IProfileForm,
+    ITrait,
+} from "./ProfileInterfaces";
 
 const genders = [
     { id: 1, value: "male" },
@@ -40,16 +47,17 @@ const fetchProfileData = () => {
 };
 
 export const Profile = () => {
-    const { validateForm } = useValidators();
     const [user, loggedIn] = useUser();
-    const [profile, setProfile] = useState<Profile | null>(null);
+    const navigate = useNavigate();
+    const { validateForm } = useValidators();
+    const [profile, setProfile] = useState<IProfile | null>(null);
     const [imageSrc, setImageUrl] = useState<string>();
     const [error, setError] = useState<string>("");
-    const [sexualities, setSexualities] = useState<FetchOption[]>();
-    const [interests, setInterests] = useState<FetchOption[]>();
-    const [traits, setTraits] = useState<FetchTrait[]>();
+    const [sexualities, setSexualities] = useState<IFetchOption[]>();
+    const [interests, setInterests] = useState<IFetchOption[]>();
+    const [traits, setTraits] = useState<IFetchTrait[]>();
     const imageRef = useRef<File | null>(null);
-    const navigate = useNavigate();
+    const formRef = useRef<IProfileForm>();
 
     const saveImage = () => {
         return new Promise((resolve) => {
@@ -72,6 +80,7 @@ export const Profile = () => {
     };
 
     const saveProfile = () => {
+        console.log(formRef);
         saveImage().then((imageSaved) => {
             if (imageSaved && validateForm(formRef.current)) {
                 ApiService.post("profiles", formRef.current)
@@ -93,17 +102,6 @@ export const Profile = () => {
             setError("");
         }, 3000);
     };
-
-    const formRef = useRef<ProfileForm>({
-        description: "",
-        gender: "",
-        lookingForGender: "",
-        sexualities: [],
-        dateOfBirth: "",
-        imageId: null,
-        interests: [],
-        traits: [],
-    });
 
     useEffect(() => {
         fetchProfileData().then((res) => {
@@ -139,16 +137,14 @@ export const Profile = () => {
     };
     return (
         <div className="p-6">
-            Attempt 45: {user.username}
+            <h1 className="text-5xl capitalize">{user.username}</h1>
+            <span className="text-red-700 text-5xl absolute left-1/2">
+                {/* todo maak een pop up for dit */}
+                {error}
+            </span>
             <div>
-                <FieldInput
-                    content={profile?.username ? profile.username : ""}
-                    handleChange={(value) => {
-                        console.log("new value ", value);
-                    }}
-                />
-
                 <ImageUpload
+                    style={"h-72"}
                     initialValue={imageSrc ? imageSrc : ""}
                     getImage={(image) => (imageRef.current = image)}
                 />
@@ -204,14 +200,10 @@ export const Profile = () => {
                                         targetId={sex.id}
                                         content={sex.name}
                                         handleChange={(id, isChecked) =>
-                                            handleCheckboxChange(
-                                                formRef.current.sexualities,
-                                                id,
-                                                isChecked
-                                            )
+                                            console.log(id, isChecked)
                                         }
                                         isChecked={profile?.sexualities.some(
-                                            (s: FetchOption) => s.id === sex.id
+                                            (s: IFetchOption) => s.id === sex.id
                                         )}
                                     />
                                 </li>
@@ -271,41 +263,3 @@ export const Profile = () => {
         </div>
     );
 };
-
-interface Profile {
-    dateOfBirth: string;
-    description: string;
-    gender: string;
-    id: number;
-    imageId: number;
-    interests: [];
-    lookingForGender: string;
-    sexualities: [];
-    traits: [];
-    userId: string;
-    username: string;
-}
-
-interface FetchOption {
-    id: number;
-    name: string;
-}
-interface FetchTrait {
-    id: number;
-    question: string;
-}
-interface ProfileForm {
-    description: string;
-    gender: string;
-    lookingForGender: string;
-    sexualities: number[];
-    dateOfBirth: string;
-    imageId: number | null;
-    interests: number[];
-    traits: Trait[];
-}
-
-interface Trait {
-    id: number;
-    answer: string;
-}

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 export const ImageUpload: React.FC<ImageUploadProps> = ({
     getImage,
     initialValue,
+    style,
 }) => {
     const [imageSrc, setImageSrc] = useState<string>();
 
@@ -25,8 +26,12 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
     return (
         <div>
-            <div id="img-container" className="border-2 min-h-48">
-                {imageSrc ? <img src={imageSrc} /> : <p>No image selected</p>}
+            <div id="img-container" className={`${style} border-2`}>
+                {imageSrc ? (
+                    <img src={imageSrc} className="h-full rounded-lg" />
+                ) : (
+                    <p>No image selected</p>
+                )}
             </div>
             <input
                 type="file"
@@ -42,4 +47,5 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 interface ImageUploadProps {
     getImage(file: File): void;
     initialValue?: string;
+    style?: string;
 }

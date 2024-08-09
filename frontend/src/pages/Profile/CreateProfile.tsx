@@ -7,7 +7,7 @@ import ApiService from "../../services/ApiService";
 import { Button } from "../../generic/Button";
 import useValidators from "../../hooks/useValidators";
 import { useNavigate } from "react-router-dom";
-import { ImageUpload } from "../../generic/ImageUpload";
+import { ImageUpload } from "./components/ImageUpload";
 import { ScrollContainer } from "../../generic/ScrollContainer";
 import { DropDownSelectWithList } from "../../generic/DropdownSelectWithList";
 
@@ -34,16 +34,7 @@ export const CreateProfile = () => {
         { id: 4, value: "other" },
     ];
 
-    const formRef = useRef<ProfileForm>({
-        description: "",
-        gender: "",
-        lookingForGender: "",
-        sexualities: [],
-        dateOfBirth: "",
-        imageId: null,
-        interests: [],
-        traits: [],
-    });
+    const formRef = useRef<ProfileForm>();
 
     const fetchData = (url: string, setState: any) => {
         ApiService.get(url)
