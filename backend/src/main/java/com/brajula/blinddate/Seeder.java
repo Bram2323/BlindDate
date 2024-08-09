@@ -112,7 +112,7 @@ public class Seeder implements CommandLineRunner {
         interestRepository.saveAll(interests);
     }
 
-    public void updateOrCreateAdmin() {
+    private void updateOrCreateAdmin() {
         Optional<User> possibleAdmin = userRepository.findByUsernameIgnoreCase("admin");
         if (possibleAdmin.isEmpty()) {
             User admin =
