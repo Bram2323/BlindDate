@@ -8,8 +8,10 @@ import { DropDownSelect } from "../../generic/DropDownSelect";
 import { ScrollContainer } from "../../generic/ScrollContainer";
 import Checkbox from "../../generic/Checkbox";
 import { DropDownSelectWithList } from "../../generic/DropdownSelectWithList";
-import { DropCeption } from "./components/DropCeption";
 import { Button } from "../../generic/Button";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import useValidators from "../../hooks/useValidators";
 
 const genders = [
     { id: 1, value: "male" },
@@ -38,6 +40,7 @@ const fetchProfileData = () => {
 };
 
 export const Profile = () => {
+    const { validateForm } = useValidators();
     const [user, loggedIn] = useUser();
     const [profile, setProfile] = useState<Profile | null>(null);
     const [imageSrc, setImageUrl] = useState<string>();
@@ -45,6 +48,44 @@ export const Profile = () => {
     const [sexualities, setSexualities] = useState<FetchOption[]>();
     const [interests, setInterests] = useState<FetchOption[]>();
     const [traits, setTraits] = useState<FetchTrait[]>();
+    const imageRef = useRef<File | null>(null);
+    const navigate = useNavigate();
+
+    const saveImage = () => {
+        return new Promise((resolve) => {
+            if (imageRef.current) {
+                const formData = new FormData();
+                formData.append("image", imageRef.current);
+                ApiService.post("images", formData)
+                    .then((response) => {
+                        formRef.current.imageId = response.data.id;
+                        resolve(true);
+                    })
+                    .catch((error) => {
+                        showError("Image not uploaded: " + error);
+                        resolve(false);
+                    });
+            } else {
+                resolve(true);
+            }
+        });
+    };
+
+    const saveProfile = () => {
+        saveImage().then((imageSaved) => {
+            if (imageSaved && validateForm(formRef.current)) {
+                ApiService.post("profiles", formRef.current)
+                    .then(() => {
+                        navigate("/profile");
+                    })
+                    .catch((error) => {
+                        showError(error.response.data.detail);
+                    });
+            } else {
+                showError("Fill in all fields");
+            }
+        });
+    };
 
     const showError = (message: string) => {
         setError(message);
@@ -52,6 +93,17 @@ export const Profile = () => {
             setError("");
         }, 3000);
     };
+
+    const formRef = useRef<ProfileForm>({
+        description: "",
+        gender: "",
+        lookingForGender: "",
+        sexualities: [],
+        dateOfBirth: "",
+        imageId: null,
+        interests: [],
+        traits: [],
+    });
 
     useEffect(() => {
         fetchProfileData().then((res) => {
@@ -73,8 +125,17 @@ export const Profile = () => {
             .catch((error) => console.error(error));
     };
 
-    const saveProfile = () => {
-        console.log("saving profile");
+    const handleCheckboxChange = (
+        list: number[],
+        id: number,
+        isChecked: boolean
+    ) => {
+        if (isChecked) {
+            list.push(id);
+        } else {
+            const index = list.indexOf(id);
+            if (index > -1) list.splice(index, 1);
+        }
     };
     return (
         <div className="p-6">
@@ -89,27 +150,25 @@ export const Profile = () => {
 
                 <ImageUpload
                     initialValue={imageSrc ? imageSrc : ""}
-                    getImage={(e) => {
-                        console.log(e);
-                    }}
+                    getImage={(image) => (imageRef.current = image)}
                 />
 
                 <TextArea
                     initialValue={
                         profile?.description ? profile.description : ""
                     }
-                    handleChange={(value) => {
-                        console.log(value);
-                    }}
+                    handleChange={(description) =>
+                        (formRef.current.description = description)
+                    }
                 />
 
                 <DropDownSelect
                     label={"Gender"}
                     category={"gender"}
                     options={genders}
-                    onSelect={(value) => {
-                        console.log(value);
-                    }}
+                    onSelect={(gender) =>
+                        (formRef.current.gender = gender.replace("-", ""))
+                    }
                     initialValue={
                         profile?.gender
                             ? profile.gender.toLowerCase().replace("_", " ")
@@ -121,9 +180,12 @@ export const Profile = () => {
                     label={"Gender"}
                     category={"gender"}
                     options={genders}
-                    onSelect={(value) => {
-                        console.log(value);
-                    }}
+                    onSelect={(gender) =>
+                        (formRef.current.lookingForGender = gender.replace(
+                            "-",
+                            ""
+                        ))
+                    }
                     initialValue={
                         profile?.lookingForGender
                             ? profile.lookingForGender
@@ -135,25 +197,25 @@ export const Profile = () => {
 
                 <ScrollContainer label={"Preferences"}>
                     <ul>
-                        {sexualities ? (
+                        {sexualities &&
                             sexualities.map((sex) => (
                                 <li key={sex.id}>
                                     <Checkbox
                                         targetId={sex.id}
                                         content={sex.name}
-                                        handleChange={(id, isChecked) => {
-                                            console.log(id, " ", isChecked);
-                                            console.log(profile?.sexualities);
-                                        }}
+                                        handleChange={(id, isChecked) =>
+                                            handleCheckboxChange(
+                                                formRef.current.sexualities,
+                                                id,
+                                                isChecked
+                                            )
+                                        }
                                         isChecked={profile?.sexualities.some(
                                             (s: FetchOption) => s.id === sex.id
                                         )}
                                     />
                                 </li>
-                            ))
-                        ) : (
-                            <p>Error loading list</p>
-                        )}
+                            ))}
                     </ul>
                 </ScrollContainer>
 
@@ -172,7 +234,12 @@ export const Profile = () => {
                             extra: trait.answer,
                         }))}
                         getSelected={(selectedTraits) => {
-                            console.log(selectedTraits);
+                            formRef.current.traits = selectedTraits.map(
+                                (trait) => ({
+                                    id: trait.id,
+                                    answer: trait.extra.replace(" ", "_"),
+                                })
+                            );
                         }}
                     />
                 )}
@@ -186,14 +253,18 @@ export const Profile = () => {
                             value: interest.name,
                         }))}
                         getSelected={(selectedInterests) => {
-                            console.log(selectedInterests);
+                            formRef.current.interests = selectedInterests.map(
+                                (interest) => interest.id
+                            );
                         }}
                     />
                 )}
                 <FieldInput
                     type={"date"}
                     label={"Date of Birth"}
-                    handleChange={() => console.log("birthdate")}
+                    handleChange={(value) =>
+                        (formRef.current.dateOfBirth = value)
+                    }
                 />
                 <Button content={"Submit"} handleClick={saveProfile} />
             </div>

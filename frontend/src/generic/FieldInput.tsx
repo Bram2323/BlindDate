@@ -35,7 +35,7 @@ export default FieldInput;
 interface FieldInputProps {
     label?: string;
     type?: string;
-    content: string | number;
+    content?: string | number;
     layout?: string;
     style?: string;
     handleChange: (e: string) => void;

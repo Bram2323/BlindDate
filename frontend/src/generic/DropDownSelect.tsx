@@ -51,10 +51,10 @@ export const DropDownSelect: React.FC<DropDownSelectProps> = ({
 interface DropDownSelectProps {
     category: string;
     label?: string;
-    id?: number;
+    id?: number | string;
     options: Option[];
     initialValue?: string;
-    onSelect: (value: string) => void;
+    onSelect: (value: string, id?: number) => void;
 }
 
 interface Option {

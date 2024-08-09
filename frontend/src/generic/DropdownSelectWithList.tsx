@@ -10,6 +10,7 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     initialValues,
     getSelected,
 }) => {
+    //TODO als er geen extra opties worden gegeven dan worden die initialvalues niet goed gefiltered uit de showOptions List
     const [showOptions, setShowOptions] = useState<Option[]>([]);
     const [selected, setSelected] = useState<SelectedOption[]>([]);
 
@@ -42,15 +43,14 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
             (option) => option.value === selectedValue
         );
         if (selectedOption) {
-            setSelected((prev) => [...prev, { ...selectedOption, extra: "" }]);
+            setSelected((prev) => [{ ...selectedOption, extra: "" }, ...prev]);
             setShowOptions((prev) =>
                 prev.filter((option) => option.value !== selectedValue)
             );
-            //TODO sorteer de opties
         }
     };
 
-    const handleExtraChange = (newValue, id) => {
+    const handleExtraChange = (newValue: string, id: number) => {
         console.log("Extra: ", newValue, "ID: ", id);
 
         const updatedSelected = selected.map((item) => {
