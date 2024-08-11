@@ -34,7 +34,16 @@ export const CreateProfile = () => {
         { id: 4, value: "other" },
     ];
 
-    const formRef = useRef<ProfileForm>();
+    const formRef = useRef<ProfileForm>({
+        description: "",
+        gender: "",
+        lookingForGender: "",
+        sexualities: [],
+        dateOfBirth: "",
+        imageId: null,
+        interests: [],
+        traits: [],
+    });
 
     const fetchData = (url: string, setState: any) => {
         ApiService.get(url)

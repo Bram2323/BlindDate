@@ -12,6 +12,8 @@ import { Button } from "../../generic/Button";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useValidators from "../../hooks/useValidators";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import {
     IProfile,
     IFetchOption,
@@ -41,7 +43,8 @@ const fetchProfileData = () => {
             });
         })
         .catch((error) => {
-            console.error(error);
+            console.log("there is no existing");
+            // als deze dan is er dus geen bestaand profiel aanwezig
             return { profile: null, imageUrl: "" };
         });
 };
@@ -57,7 +60,16 @@ export const Profile = () => {
     const [interests, setInterests] = useState<IFetchOption[]>();
     const [traits, setTraits] = useState<IFetchTrait[]>();
     const imageRef = useRef<File | null>(null);
-    const formRef = useRef<IProfileForm>();
+    const formRef = useRef<IProfileForm>({
+        description: "",
+        gender: "",
+        lookingForGender: "",
+        sexualities: [],
+        dateOfBirth: "",
+        imageId: null,
+        interests: [],
+        traits: [],
+    });
 
     const saveImage = () => {
         return new Promise((resolve) => {
@@ -85,7 +97,7 @@ export const Profile = () => {
             if (imageSaved && validateForm(formRef.current)) {
                 ApiService.post("profiles", formRef.current)
                     .then(() => {
-                        navigate("/profile");
+                        console.log("saving profile");
                     })
                     .catch((error) => {
                         showError(error.response.data.detail);
@@ -104,14 +116,13 @@ export const Profile = () => {
     };
 
     useEffect(() => {
-        fetchProfileData().then((res) => {
-            console.log(res.profile);
-            setProfile(res.profile);
-            setImageUrl(res.imageUrl);
-        });
         fetchData("sexualities", setSexualities);
         fetchData("interests", setInterests);
         fetchData("traits", setTraits);
+        fetchProfileData().then((res) => {
+            setProfile(res.profile);
+            setImageUrl(res.imageUrl);
+        });
     }, []);
 
     const fetchData = (url: string, setState: any) => {
@@ -200,7 +211,11 @@ export const Profile = () => {
                                         targetId={sex.id}
                                         content={sex.name}
                                         handleChange={(id, isChecked) =>
-                                            console.log(id, isChecked)
+                                            handleCheckboxChange(
+                                                formRef.current.sexualities,
+                                                id,
+                                                isChecked
+                                            )
                                         }
                                         isChecked={profile?.sexualities.some(
                                             (s: IFetchOption) => s.id === sex.id
@@ -244,6 +259,10 @@ export const Profile = () => {
                             id: interest.id,
                             value: interest.name,
                         }))}
+                        initialValues={profile?.interests.map((interest) => ({
+                            id: interest.id,
+                            value: interest.name,
+                        }))}
                         getSelected={(selectedInterests) => {
                             formRef.current.interests = selectedInterests.map(
                                 (interest) => interest.id
@@ -251,13 +270,23 @@ export const Profile = () => {
                         }}
                     />
                 )}
-                <FieldInput
-                    type={"date"}
-                    label={"Date of Birth"}
-                    handleChange={(value) =>
-                        (formRef.current.dateOfBirth = value)
-                    }
-                />
+                <div>
+                    <label>Date of Birth</label>
+                    <DatePicker
+                        selected={new Date()}
+                        onChange={(date) =>
+                            (formRef.current.dateOfBirth = date
+                                ? date.toLocaleDateString("nl-NL", {
+                                      day: "2-digit",
+                                      month: "2-digit",
+                                      year: "numeric",
+                                  })
+                                : "")
+                        }
+                        dateFormat={"dd-MM-yyyy"}
+                        className="border-2"
+                    />
+                </div>
                 <Button content={"Submit"} handleClick={saveProfile} />
             </div>
         </div>

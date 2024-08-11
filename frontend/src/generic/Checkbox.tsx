@@ -13,7 +13,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         if (isChecked) {
             setChecked(isChecked);
         }
-    }, []);
+    }, [isChecked]);
 
     const handleOnChange = (e) => {
         setChecked(!checked);

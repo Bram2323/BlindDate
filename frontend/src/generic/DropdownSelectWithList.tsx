@@ -10,7 +10,6 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     initialValues,
     getSelected,
 }) => {
-    //TODO als er geen extra opties worden gegeven dan worden die initialvalues niet goed gefiltered uit de showOptions List
     const [showOptions, setShowOptions] = useState<Option[]>([]);
     const [selected, setSelected] = useState<SelectedOption[]>([]);
 
