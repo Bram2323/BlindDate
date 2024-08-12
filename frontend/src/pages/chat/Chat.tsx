@@ -8,7 +8,7 @@ import { useUser } from "../../services/UserService";
 function Chat() {
     const [message, setMessage] = useState("");
     const [chat, setChat] = useState<any>();
-    const [user, loggedIn] = useUser();
+    const [currentUser, loggedIn] = useUser();
     const { id } = useParams();
 
     useEffect(() => {
@@ -28,24 +28,30 @@ function Chat() {
 
     if (chat == undefined) return <></>;
 
-    let otherUser = undefined;
-    if (loggedIn) {
-        if (user.id == chat.userOne.id) otherUser = chat.userTwo;
-        if (user.id == chat.userTwo.id) otherUser = chat.userOne;
-    }
+    const users = [chat.userOne, chat.userTwo];
+    const otherUsers = users.filter((user) => user.id != currentUser.id);
+    const containsCurrentUser = otherUsers.length != users.length;
+
+    let userText =
+        (containsCurrentUser ? "You, " : "") +
+        otherUsers.map((user) => user.username).join(", ");
 
     return (
         <>
             <div className="flex h-full items-center justify-center">
-                <div className=" bg-gray-100 w-[500px] h-[750px] p-1 rounded-xl border border-gray-500 flex flex-col items-center justify-center gap-1">
-                    <div></div>
+                <div className=" bg-gray-100 w-[500px] h-[750px] rounded-xl border-2 border-gray-500 flex flex-col items-center justify-center overflow-hidden">
+                    <div className="p-2 bg-gray-200 w-full text-center font-bold border-b-2 border-gray-500">
+                        {userText}
+                    </div>
                     <MessageContainer
                         messages={chat.messages}
-                        leftUser={otherUser ? otherUser : chat.userTwo}
+                        rightUser={
+                            containsCurrentUser ? currentUser : chat.userOne
+                        }
                     />
                     <FieldInput
                         content={message}
-                        layout="border-none w-full p-0 justify-self-end"
+                        layout="border-x-0 border-b-0 w-full justify-self-end border-t-2"
                         style="w-full rounded-xl"
                         handleChange={(e) => setMessage(e)}
                         onSubmit={postMessage}
