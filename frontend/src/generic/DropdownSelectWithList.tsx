@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TbHttpDelete } from "react-icons/tb";
 import { DropDownSelect } from "./DropDownSelect";
+import { ScrollContainer } from "./ScrollContainer";
 
 export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     label,
@@ -49,7 +50,7 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
         }
     };
 
-    const handleExtraChange = (newValue: string, id: number) => {
+    const handleExtraChange = (newValue: string, id: number | undefined) => {
         const updatedSelected = selected.map((item) => {
             if (item.id === id) {
                 return {
@@ -72,63 +73,73 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     }, [handleDelete, handleExtraChange]);
 
     return (
-        <div className="m-2">
-            <div>
+        <div className="m-2 w-full p-4 flex flex-col items-center justify-center">
+            <div className="w-full">
                 {label && <label htmlFor={label}>{label}</label>}
                 <select
+                    className="bg-white px-2 py-1 rounded-lg border-feminine-secondary-dark border-2 m-2"
                     name={label}
                     id={label}
                     onChange={(e) => {
                         handleSelectChange(e);
                     }}
                 >
-                    <option>Select a {category}</option>
+                    <option className="bg-white">Select a {category}</option>
 
                     {showOptions.map((option) => (
                         <option
                             key={option.id + option.value}
                             value={option.value}
+                            className="bg-white"
                         >
                             {option.value.toLowerCase()}
                         </option>
                     ))}
                 </select>
             </div>
-            <ul className="overflow-scroll h-24">
-                {selected &&
-                    selected.map((selection) => (
-                        <li
-                            className="flex flex-row items-center border-2"
-                            key={selection.id + selection.value}
-                        >
-                            <span>{selection.value}</span>
-                            {extraOptions && (
-                                <DropDownSelect
-                                    category={"choice"}
-                                    id={selection.id}
-                                    options={extraOptions.map((option, i) => ({
-                                        id: i,
-                                        value: option,
-                                    }))}
-                                    onSelect={(value, id) => {
-                                        handleExtraChange(value, id);
-                                    }}
-                                    initialValue={
-                                        selection.extra
-                                            ? selection.extra
-                                                  .toLowerCase()
-                                                  .replace("_", " ")
-                                            : undefined
-                                    }
-                                />
-                            )}
-                            <TbHttpDelete
-                                onClick={() => handleDelete(selection)}
-                                className="text-red-900 cursor-pointer text-2xl"
-                            />
-                        </li>
-                    ))}
-            </ul>
+            <ScrollContainer>
+                <ul className="bg-white w-full rounded-lg flex flex-col items-center justify-center">
+                    {selected &&
+                        selected.map((selection) => (
+                            <li
+                                className="flex flex-row items-center justify-between px-2 w-full"
+                                key={selection.id + selection.value}
+                            >
+                                <div>{selection.value}</div>
+                                <div>
+                                    {extraOptions && (
+                                        <DropDownSelect
+                                            category={"choice"}
+                                            id={selection.id}
+                                            options={extraOptions.map(
+                                                (option, i) => ({
+                                                    id: i,
+                                                    value: option,
+                                                })
+                                            )}
+                                            onSelect={(value, id) => {
+                                                handleExtraChange(value, id);
+                                            }}
+                                            initialValue={
+                                                selection.extra
+                                                    ? selection.extra
+                                                          .toLowerCase()
+                                                          .replace("_", " ")
+                                                    : undefined
+                                            }
+                                        />
+                                    )}
+                                </div>
+                                <div>
+                                    <TbHttpDelete
+                                        onClick={() => handleDelete(selection)}
+                                        className="text-red-900 cursor-pointer text-3xl"
+                                    />
+                                </div>
+                            </li>
+                        ))}
+                </ul>
+            </ScrollContainer>
         </div>
     );
 };

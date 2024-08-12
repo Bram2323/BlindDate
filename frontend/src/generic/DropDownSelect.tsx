@@ -23,11 +23,12 @@ export const DropDownSelect: React.FC<DropDownSelectProps> = ({
     }, [initialValue, options]);
 
     return (
-        <div className="m-2">
+        <div className="m-2 w-full p-4 flex flex-col items-center justify-center">
             <label htmlFor={label}>{label}</label>
             <select
+                className="bg-white border-2 border-feminine-secondary-dark rounded-lg px-2 py-1 mx-2"
                 name={category}
-                id={id ? id : category}
+                id={id ? String(id) : category}
                 onChange={(e) => {
                     onSelect(e.target.value, id);
                 }}
@@ -54,7 +55,7 @@ interface DropDownSelectProps {
     id?: number | string;
     options: Option[];
     initialValue?: string;
-    onSelect: (value: string, id?: number) => void;
+    onSelect: (value: string, id?: number | string | undefined) => void;
 }
 
 interface Option {

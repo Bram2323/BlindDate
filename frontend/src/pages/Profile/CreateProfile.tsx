@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "../../services/UserService";
 import ApiService from "../../services/ApiService";
 import { TextArea } from "../../generic/TextArea";
-import { ImageUpload } from "./components/ImageUpload";
+import { ImageUpload } from "../../generic/ImageUpload";
 import { DropDownSelect } from "../../generic/DropDownSelect";
 import { ScrollContainer } from "../../generic/ScrollContainer";
 import Checkbox from "../../generic/Checkbox";
@@ -19,6 +19,8 @@ import {
     IProfileForm,
 } from "./ProfileInterfaces";
 import { DateInput } from "../../generic/DateInput";
+import { Warning } from "../../generic/Warning";
+import { Section } from "./components/Section";
 export const CreateProfile = () => {
     const [profileExists, setProfileExists] = useState<boolean>(false);
     const [user, loggedIn] = useUser();
@@ -83,7 +85,7 @@ export const CreateProfile = () => {
                     resolve(true);
                 })
                 .catch((error) => {
-                    showError("Image not uploaded: " + error);
+                    setError("Image not uploaded: " + error);
                     resolve(false);
                 });
         });
@@ -91,7 +93,7 @@ export const CreateProfile = () => {
 
     const saveProfile = () => {
         if (!profileExists && !validateForm(formRef.current)) {
-            showError("Fill in all fields");
+            setError("Fill in all fields");
             return;
         }
         console.log("form ref: ", formRef);
@@ -114,17 +116,10 @@ export const CreateProfile = () => {
                     })
                     .catch((error) => {
                         // console.error(error);
-                        showError(error.response.data.detail);
+                        setError(error.response.data.detail);
                     });
             }
         });
-    };
-
-    const showError = (message: string) => {
-        setError(message);
-        setTimeout(() => {
-            setError("");
-        }, 3000);
     };
 
     useEffect(() => {
@@ -173,19 +168,25 @@ export const CreateProfile = () => {
         }
     };
     return (
-        <div className="p-6">
-            <h1 className="text-5xl capitalize">{user.username}</h1>
-            <span className="text-red-700 text-5xl absolute left-1/2">
-                {/* todo maak een pop up for dit */}
-                {error}
-            </span>
-            <div>
+        <div className="w-full flex flex-col items-center justify-center">
+            <Warning
+                message={error}
+                duration={3000}
+                warningColor={"bg-red-500"}
+            />
+            <Section label={"img-container"}>
+                <h1 className="text-5xl font-extrabold tracking-wider capitalize m-2">
+                    {user.username}
+                </h1>
                 <ImageUpload
                     style={"h-72"}
                     initialValue={imageSrc ? imageSrc : ""}
                     getImage={(image) => (imageRef.current = image)}
                 />
+            </Section>
 
+            <Section label={"about-container"}>
+                <h1>What you should know about me</h1>
                 <TextArea
                     initialValue={
                         profile?.description ? profile.description : ""
@@ -194,9 +195,18 @@ export const CreateProfile = () => {
                         (formRef.current.description = description)
                     }
                 />
-
+                <div>
+                    <DateInput
+                        label={"BirthDate"}
+                        initialDate={profile?.dateOfBirth}
+                        getDate={(date) => {
+                            console.log(date);
+                            formRef.current.dateOfBirth = date;
+                        }}
+                    />
+                </div>
                 <DropDownSelect
-                    label={"Gender"}
+                    label={"I am a"}
                     category={"gender"}
                     options={genders}
                     onSelect={(gender) =>
@@ -206,7 +216,6 @@ export const CreateProfile = () => {
                         profile?.gender ? profile.gender.toLowerCase() : ""
                     }
                 />
-
                 <DropDownSelect
                     label={"Looking for"}
                     category={"gender"}
@@ -221,7 +230,9 @@ export const CreateProfile = () => {
                             : ""
                     }
                 />
+            </Section>
 
+            <Section label={"personal-details-container"}>
                 <ScrollContainer label={"Preferences"}>
                     <ul>
                         {sexualities &&
@@ -245,7 +256,6 @@ export const CreateProfile = () => {
                             ))}
                     </ul>
                 </ScrollContainer>
-
                 {traits && (
                     <DropDownSelectWithList
                         label={"Traits"}
@@ -272,7 +282,6 @@ export const CreateProfile = () => {
                         }}
                     />
                 )}
-
                 {interests && (
                     <DropDownSelectWithList
                         label={"Things I like "}
@@ -292,18 +301,8 @@ export const CreateProfile = () => {
                         }}
                     />
                 )}
-                <div>
-                    <DateInput
-                        label={"BirthDate"}
-                        initialDate={profile?.dateOfBirth}
-                        getDate={(date) => {
-                            console.log(date);
-                            formRef.current.dateOfBirth = date;
-                        }}
-                    />
-                </div>
-                <Button content={"Submit"} handleClick={saveProfile} />
-            </div>
+            </Section>
+            <Button content={"Submit"} handleClick={saveProfile} />
         </div>
     );
 };

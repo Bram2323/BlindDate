@@ -15,7 +15,7 @@ export const DateInput: React.FC<DateInputProps> = ({
         }
     }, [initialDate]);
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newDate = e.target.value;
         setDate(newDate);
         const formattedDate = format(new Date(newDate), "yyyy-MM-dd");
@@ -23,9 +23,18 @@ export const DateInput: React.FC<DateInputProps> = ({
     };
 
     return (
-        <div className={`${style} `}>
+        <div
+            className={`${style} flex flex-col items-center justify-center p-2`}
+        >
             <label>{label}</label>
-            <input type="date" value={date || ""} onChange={handleChange} />
+            <input
+                className={
+                    "border-2 border-feminine-secondary-dark rounded-lg m-2 px-2 py-1"
+                }
+                type="date"
+                value={date || ""}
+                onChange={handleChange}
+            />
         </div>
     );
 };
