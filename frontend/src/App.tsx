@@ -22,7 +22,7 @@ function App() {
 
                     <Route path="/create-profile" element={<CreateProfile />} />
                     <Route path="/profile" element={<ProfileView />} />
-                    <Route path="/chat/:id" element={<Chat />} />
+                    <Route path="/chats/:id" element={<Chat />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                 </Routes>
