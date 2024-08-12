@@ -50,18 +50,15 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     };
 
     const handleExtraChange = (newValue: string, id: number) => {
-        console.log("Extra: ", newValue, "ID: ", id);
-
         const updatedSelected = selected.map((item) => {
             if (item.id === id) {
                 return {
                     ...item,
-                    extra: newValue,
+                    extra: newValue.toUpperCase(),
                 };
             }
             return item;
         });
-        console.log("Updated Selected: ", updatedSelected);
         setSelected(updatedSelected);
     };
 
@@ -85,12 +82,14 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
                         handleSelectChange(e);
                     }}
                 >
+                    <option>Select a {category}</option>
+
                     {showOptions.map((option) => (
                         <option
                             key={option.id + option.value}
                             value={option.value}
                         >
-                            {option.value}
+                            {option.value.toLowerCase()}
                         </option>
                     ))}
                 </select>
@@ -106,7 +105,7 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
                             {extraOptions && (
                                 <DropDownSelect
                                     category={"choice"}
-                                    id={selection.id + selection.value}
+                                    id={selection.id}
                                     options={extraOptions.map((option, i) => ({
                                         id: i,
                                         value: option,

@@ -21,6 +21,7 @@ export interface IFetchTrait {
     question: string;
 }
 export interface IProfileForm {
+    id?: number;
     description: string;
     gender: string;
     lookingForGender: string;
@@ -28,7 +29,7 @@ export interface IProfileForm {
     dateOfBirth: string;
     imageId: number | null;
     interests: number[];
-    traits: Trait[];
+    traits: ITrait[];
 }
 
 export interface ITrait {

@@ -59,7 +59,7 @@ public class ProfileController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Profile> update(
-            @PathVariable Long id, @RequestBody PostProfileDto patch) {
+            @PathVariable Long id, @RequestBody PatchProfileDto patch) {
         return ResponseEntity.ok(profileService.update(id, patch));
     }
 

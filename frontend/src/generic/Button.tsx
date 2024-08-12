@@ -5,7 +5,7 @@ export const Button: React.FC<ButtonProps> = ({
     style,
     handleClick,
 }) => {
-    const defaultStyle = "bg-emerald-600"; // TODO set default styling
+    const defaultStyle = "bg-pink-400 hover:bg-pink-600 font-bold py-2 rounded"; // TODO set default styling
     const styling = style === undefined ? defaultStyle : style;
     return (
         <>

@@ -38,9 +38,6 @@ const useValidators = () => {
         if (form.dateOfBirth === "") {
             return false;
         }
-        if (form.imageId === null || form.imageId < 0) {
-            return false;
-        }
         if (form.interests.length === 0) {
             return false;
         }

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import ApiService from "../../services/ApiService";
 import { ProfileSection } from "./components/ProfileSection";
+import { Button } from "../../generic/Button";
+import { useNavigate } from "react-router-dom";
 
 const fetchProfileData = () => {
     return ApiService.get("profiles/my")
@@ -23,11 +25,15 @@ const fetchProfileData = () => {
 
 const ProfileDetails: React.FC<ProfileDetails> = ({ profile, imageSrc }) => (
     <div>
-        <h3>{profile.username}</h3>
-        <img src={imageSrc} alt={`Profile picture of ${profile.username}`} />
+        <h3 className="text-2xl">{profile.username}</h3>
+        <img
+            className="w-44"
+            src={imageSrc}
+            alt={`Profile picture of ${profile.username}`}
+        />
         <p>{profile.description}</p>
-        <p>I am a {profile.gender}</p>
-        <p>I am looking for a {profile.lookingForGender}</p>
+        <p>I am a {profile.gender.toLowerCase()}</p>
+        <p>I am looking for a {profile.lookingForGender.toLowerCase()}</p>
         <ProfileSection title="Sexuality" items={profile.sexualities} />
         <ProfileSection
             title="Interests"
@@ -51,10 +57,11 @@ const TraitsList = ({ traits }: Traits) => (
 export const ProfileView = () => {
     const [profile, setProfile] = useState<Profile | null>(null);
     const [imageSrc, setImageSrc] = useState<string>("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchProfileData().then(({ profile, imageUrl }) => {
-            console.log(profile);
+            //console.log(profile);
             setProfile(profile);
             setImageSrc(imageUrl);
         });
@@ -62,6 +69,12 @@ export const ProfileView = () => {
 
     return (
         <div>
+            <Button
+                content={"edit"}
+                handleClick={() => {
+                    navigate("/create-profile");
+                }}
+            />
             {profile && (
                 <div id="image-container">
                     <ProfileDetails profile={profile} imageSrc={imageSrc} />
