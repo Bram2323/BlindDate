@@ -4,7 +4,7 @@ import { useUser, logout } from "../services/UserService";
 function NavBar() {
     const navigate = useNavigate();
 
-    const [, isLoggedIn] = useUser();
+    const [user, isLoggedIn] = useUser();
 
     return (
         <>
@@ -35,7 +35,7 @@ function NavBar() {
                         <>
                             <button
                                 className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded"
-                                onClick={() => navigate("/account")}
+                                onClick={() => navigate("/profile")}
                             >
                                 Account
                             </button>

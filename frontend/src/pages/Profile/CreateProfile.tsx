@@ -112,7 +112,7 @@ export const CreateProfile = () => {
 
                 apiCall
                     .then((response) => {
-                        navigate(`/profile/${response.data.id}`);
+                        navigate(`/profile`);
                     })
                     .catch((error) => {
                         // console.error(error);
