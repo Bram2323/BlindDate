@@ -18,10 +18,12 @@ public class Chat {
     @Id @GeneratedValue private Long id;
 
     @ManyToOne private User userOne;
-    private Boolean closedByUserOne;
+    private Boolean closedByUserOne = false;
+    private Boolean readByUserOne = false;
 
     @ManyToOne private User userTwo;
-    private Boolean closedByUserTwo;
+    private Boolean closedByUserTwo = false;
+    private Boolean readByUserTwo = false;
 
     private LocalDateTime createdOn;
 
@@ -32,5 +34,8 @@ public class Chat {
 
         closedByUserOne = false;
         closedByUserTwo = false;
+
+        readByUserOne = false;
+        readByUserTwo = false;
     }
 }
