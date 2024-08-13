@@ -8,9 +8,7 @@ interface MessageContainerProps {
 
 function MessageContainer({ messages, rightUser }: MessageContainerProps) {
     const messageObjects = messages.map((message: any, index: number) => (
-        <>
-            <Message key={index} message={message} rightUser={rightUser} />
-        </>
+        <Message key={index} message={message} rightUser={rightUser} />
     ));
 
     return (

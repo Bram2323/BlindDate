@@ -19,13 +19,11 @@ function ChatList({ userId }: ChatListProps) {
         <>
             <div className="h-full w-[800px] flex flex-col gap-2">
                 {chats.map((chat, index) => (
-                    <>
-                        <ChatItem
-                            key={index}
-                            id={chat.id}
-                            users={[chat.userOne, chat.userTwo]}
-                        />
-                    </>
+                    <ChatItem
+                        key={index}
+                        id={chat.id}
+                        users={[chat.userOne, chat.userTwo]}
+                    />
                 ))}
             </div>
         </>
