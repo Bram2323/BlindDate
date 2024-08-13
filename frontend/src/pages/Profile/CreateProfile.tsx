@@ -123,29 +123,35 @@ export const CreateProfile = () => {
     };
 
     useEffect(() => {
-        fetchData("sexualities", setSexualities);
-        fetchData("interests", setInterests);
-        fetchData("traits", setTraits);
+        fetchProfileData()
+            .then((profileRes) => {
+                setProfile(profileRes.profile);
+                setImageUrl(profileRes.imageUrl);
+
+                return Promise.all([
+                    ApiService.get("sexualities"),
+                    ApiService.get("interests"),
+                    ApiService.get("traits"),
+                ]);
+            })
+            .then(([sexualitiesRes, interestsRes, traitsRes]) => {
+                setSexualities(sexualitiesRes.data);
+                setInterests(interestsRes.data);
+                setTraits(traitsRes.data);
+
+                if (profile) {
+                    formRef.current = profile;
+                    formRef.current.sexualities =
+                        formRef.current.sexualities.map((sex) => sex.id);
+                    formRef.current.interests = formRef.current.interests.map(
+                        (interest) => interest.id
+                    );
+                }
+            })
+            .catch((error) => {
+                console.error("Error", error);
+            });
     }, []);
-
-    useEffect(() => {
-        fetchProfileData().then((res) => {
-            setProfile(res.profile);
-            setImageUrl(res.imageUrl);
-        });
-    }, [traits, sexualities, interests]);
-
-    useEffect(() => {
-        if (profile != null) {
-            formRef.current = profile;
-            formRef.current.sexualities = formRef.current.sexualities.map(
-                (sex) => sex.id
-            );
-            formRef.current.interests = formRef.current.interests.map(
-                (interest) => interest.id
-            );
-        }
-    }, [profileExists]);
 
     const fetchData = (url: string, setState: any) => {
         ApiService.get(url)
