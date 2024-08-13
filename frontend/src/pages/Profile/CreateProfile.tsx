@@ -99,10 +99,6 @@ export const CreateProfile = () => {
         console.log("form ref: ", formRef);
         saveImage().then((imageSaved) => {
             if (imageSaved) {
-                console.log(
-                    `PATCH profiles/${Number(profile?.id)}`,
-                    formRef.current
-                );
                 const apiCall = profileExists
                     ? ApiService.patch(
                           `profiles/${Number(profile?.id)}`,
@@ -115,7 +111,6 @@ export const CreateProfile = () => {
                         navigate(`/profile`);
                     })
                     .catch((error) => {
-                        // console.error(error);
                         setError(error.response.data.detail);
                     });
             }
