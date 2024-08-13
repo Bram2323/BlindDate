@@ -3,14 +3,13 @@ package com.brajula.blinddate;
 import com.brajula.blinddate.entities.chat.Chat;
 import com.brajula.blinddate.entities.chat.ChatRepository;
 import com.brajula.blinddate.entities.interest.Interest;
-import com.brajula.blinddate.entities.interest.InterestService;
+import com.brajula.blinddate.entities.interest.InterestRepository;
 import com.brajula.blinddate.entities.message.Message;
 import com.brajula.blinddate.entities.message.MessageRepository;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityRepository;
-import com.brajula.blinddate.entities.sexuality.SexualityService;
 import com.brajula.blinddate.entities.trait.Trait;
-import com.brajula.blinddate.entities.trait.TraitService;
+import com.brajula.blinddate.entities.trait.TraitRepository;
 import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.entities.user.UserService;
@@ -23,7 +22,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,12 +31,11 @@ public class Seeder implements CommandLineRunner {
 
     private final UserService userService;
     private final UserRepository userRepository;
-    private final SexualityService sexualityService;
     private final SexualityRepository sexualityRepository;
-    private final InterestService interestService;
+    private final InterestRepository interestRepository;
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
-    private final TraitService traitService;
+    private final TraitRepository traitRepository;
 
     @Value("${blinddate.admin-password}")
     private String adminPassword;
@@ -82,7 +79,7 @@ public class Seeder implements CommandLineRunner {
             return;
         }
         List<Interest> interests =
-                Arrays.asList(
+                List.of(
                         new Interest("Photography"),
                         new Interest("Hiking"),
                         new Interest("Cooking"),
@@ -114,12 +111,10 @@ public class Seeder implements CommandLineRunner {
                         new Interest("Rock climbing"),
                         new Interest("Surfing"),
                         new Interest("Baking"));
-        for (Interest interest : interests) {
-            interestService.save(interest);
-        }
+        interestRepository.saveAll(interests);
     }
 
-    public void updateOrCreateAdmin() {
+    private void updateOrCreateAdmin() {
         Optional<User> possibleAdmin = userRepository.findByUsernameIgnoreCase("admin");
         if (possibleAdmin.isEmpty()) {
             User admin =
@@ -134,10 +129,9 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedSexuality() {
-        if (!sexualityRepository.findAll().isEmpty()) return;
+        if (sexualityRepository.count() != 0) return;
         List<Sexuality> sexualities =
-                Arrays.asList(
-                        (new Sexuality("Furry")),
+                List.of(
                         (new Sexuality("Heterosexual")),
                         (new Sexuality("Homosexual")),
                         (new Sexuality("Bisexual")),
@@ -147,14 +141,14 @@ public class Seeder implements CommandLineRunner {
                         (new Sexuality("Demisexual")),
                         (new Sexuality("Omnisexual")),
                         (new Sexuality("Sexual Fluidity")),
+                        (new Sexuality("Furry")),
                         (new Sexuality("Androsexual")),
                         (new Sexuality("Gynosexual")),
                         (new Sexuality("Graysexual")),
                         (new Sexuality("Skoliosexual")),
                         (new Sexuality("Polysexual")));
-        for (Sexuality sexuality : sexualities) {
-            sexualityService.save(sexuality);
-        }
+
+        sexualityRepository.saveAll(sexualities);
     }
 
     private void seedQuestions() {
@@ -162,7 +156,7 @@ public class Seeder implements CommandLineRunner {
             return;
         }
         List<Trait> traits =
-                Arrays.asList(
+                List.of(
                         new Trait("Do you enjoy outdoor activities?"),
                         new Trait("Are you a morning person?"),
                         new Trait("Do you like trying new foods?"),
@@ -173,8 +167,6 @@ public class Seeder implements CommandLineRunner {
                         new Trait("Is fitness a priority for you?"),
                         new Trait("Do you like going to parties?"),
                         new Trait("Are you a fan of spontaneous plans?"));
-        for (Trait trait : traits) {
-            traitService.save(trait);
-        }
+        traitRepository.saveAll(traits);
     }
 }
