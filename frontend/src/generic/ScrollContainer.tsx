@@ -5,17 +5,20 @@ export const ScrollContainer: React.FC<ScrollContainerProps> = ({
     label,
 }: any) => {
     return (
-        <>
-            {label && <h3>{label}</h3>}
-            <div className="border-2 overflow-scroll h-20 w-72 m-2">
-                {" "}
+        <div className="w-full p-4 ">
+            {label && (
+                <h3 className="font-extrabold tracking-wider m-4 text-center">
+                    {label}
+                </h3>
+            )}
+            <div className="border-2 bg-white border-feminine-secondary-dark overflow-scroll h-36 w-full m-2 rounded-lg">
                 {children}
             </div>
-        </>
+        </div>
     );
 };
 
 interface ScrollContainerProps {
-    label: string;
+    label?: string;
     children: any;
 }

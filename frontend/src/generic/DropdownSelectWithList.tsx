@@ -1,43 +1,66 @@
 import React, { useEffect, useState } from "react";
 import { TbHttpDelete } from "react-icons/tb";
+import { DropDownSelect } from "./DropDownSelect";
+import { ScrollContainer } from "./ScrollContainer";
 
 export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     label,
     category,
     options,
     extraOptions,
+    initialValues,
     getSelected,
 }) => {
     const [showOptions, setShowOptions] = useState<Option[]>([]);
     const [selected, setSelected] = useState<SelectedOption[]>([]);
 
     useEffect(() => {
-        getSelected(selected);
         setShowOptions(options);
-    }, [selected]);
+        if (initialValues) {
+            const initialSelected = initialValues as SelectedOption[];
+            setSelected(initialSelected);
+            deleteInitFromShow(initialSelected);
+        }
+    }, [options, initialValues]);
+
+    const deleteInitFromShow = (initialSelected: SelectedOption[]) => {
+        const selectedValues = new Set(
+            initialSelected.map((option) => option.value)
+        );
+
+        const filteredShowOptions = showOptions.filter(
+            (option) => !selectedValues.has(option.value)
+        );
+        setShowOptions(filteredShowOptions);
+    };
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedValue = e.target.value;
-        if (selectedValue.includes("Select a ")) {
+        if (selectedValue.includes("Select")) {
             return;
         }
         const selectedOption = options.find(
             (option) => option.value === selectedValue
         );
         if (selectedOption) {
-            setSelected((prev) => [...prev, { ...selectedOption, extra: "" }]);
+            setSelected((prev) => [{ ...selectedOption, extra: "" }, ...prev]);
             setShowOptions((prev) =>
                 prev.filter((option) => option.value !== selectedValue)
             );
         }
     };
 
-    const handleExtraChange = (optionId: number, extraValue: string) => {
-        setSelected((prev) =>
-            prev.map((item) =>
-                item.id === optionId ? { ...item, extra: extraValue } : item
-            )
-        );
+    const handleExtraChange = (newValue: string, id: number | undefined) => {
+        const updatedSelected = selected.map((item) => {
+            if (item.id === id) {
+                return {
+                    ...item,
+                    extra: newValue.toUpperCase(),
+                };
+            }
+            return item;
+        });
+        setSelected(updatedSelected);
     };
 
     const handleDelete = (option: Option) => {
@@ -45,61 +68,78 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
         setShowOptions((prev) => [...prev, option]);
     };
 
+    useEffect(() => {
+        getSelected(selected);
+    }, [handleDelete, handleExtraChange]);
+
     return (
-        <div className="m-2">
-            <label htmlFor={label}>{label}</label>
-            <select name={category} id={category} onChange={handleSelectChange}>
-                <option>Select a {category}</option>
-                {showOptions.map((option) => (
-                    <option key={option.id} value={option.value}>
-                        {option.value}
-                    </option>
-                ))}
-            </select>
-            <div>
-                <ul className="border-2 max-h-24 overflow-scroll">
-                    {selected.map((option) => (
-                        <li
-                            className="flex flex-row justify-between border-2 px-2"
-                            key={option.id}
+        <div className="m-2 w-full p-4 flex flex-col items-center justify-center">
+            <div className="w-full">
+                {label && <label htmlFor={label}>{label}</label>}
+                <select
+                    className="bg-white px-2 py-1 rounded-lg border-feminine-secondary-dark border-2 m-2"
+                    name={label}
+                    id={label}
+                    onChange={(e) => {
+                        handleSelectChange(e);
+                    }}
+                >
+                    <option className="bg-white">Select a {category}</option>
+
+                    {showOptions.map((option) => (
+                        <option
+                            key={option.id + option.value}
+                            value={option.value}
+                            className="bg-white"
                         >
-                            <p>{option.value}</p>
-                            <div className={extraOptions ? "flex " : ""}>
-                                {extraOptions &&
-                                    extraOptions.map((extra) => (
-                                        <div
-                                            key={option.id + extra}
-                                            className="flex flex-col border-2"
-                                        >
-                                            <label
-                                                htmlFor={`${option.id}-${extra}`}
-                                            >
-                                                {extra}
-                                            </label>
-                                            <input
-                                                type="radio"
-                                                name={`radio-${option.id}`}
-                                                id={`${option.id}-${extra}`}
-                                                value={extra}
-                                                checked={option.extra === extra}
-                                                onChange={(e) => {
-                                                    handleExtraChange(
-                                                        option.id,
-                                                        e.target.value
-                                                    );
-                                                }}
-                                            />
-                                        </div>
-                                    ))}
-                                <TbHttpDelete
-                                    onClick={() => handleDelete(option)}
-                                    className="text-red-900 cursor-pointer text-2xl"
-                                />
-                            </div>
-                        </li>
+                            {option.value.toLowerCase()}
+                        </option>
                     ))}
-                </ul>
+                </select>
             </div>
+            <ScrollContainer>
+                <ul className="bg-white w-full rounded-lg flex flex-col items-center justify-center">
+                    {selected &&
+                        selected.map((selection) => (
+                            <li
+                                className="flex flex-row items-center justify-between px-2 w-full"
+                                key={selection.id + selection.value}
+                            >
+                                <div>{selection.value}</div>
+                                <div>
+                                    {extraOptions && (
+                                        <DropDownSelect
+                                            category={"choice"}
+                                            id={selection.id}
+                                            options={extraOptions.map(
+                                                (option, i) => ({
+                                                    id: i,
+                                                    value: option,
+                                                })
+                                            )}
+                                            onSelect={(value, id) => {
+                                                handleExtraChange(value, id);
+                                            }}
+                                            initialValue={
+                                                selection.extra
+                                                    ? selection.extra
+                                                          .toLowerCase()
+                                                          .replace("_", " ")
+                                                    : undefined
+                                            }
+                                        />
+                                    )}
+                                </div>
+                                <div>
+                                    <TbHttpDelete
+                                        onClick={() => handleDelete(selection)}
+                                        className="text-red-900 cursor-pointer text-3xl"
+                                    />
+                                </div>
+                            </li>
+                        ))}
+                </ul>
+            </ScrollContainer>
         </div>
     );
 };
@@ -109,6 +149,7 @@ interface DropDownSelectProps {
     label?: string;
     options: Option[];
     extraOptions?: string[];
+    initialValues?: Option[] | SelectedOption[];
     getSelected: (selected: SelectedOption[]) => void;
 }
 

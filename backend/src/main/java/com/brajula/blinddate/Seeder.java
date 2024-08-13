@@ -75,7 +75,9 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedInterests() {
-        if (interestRepository.count() != 0) return;
+        if (!interestService.getAll().isEmpty()) {
+            return;
+        }
         List<Interest> interests =
                 List.of(
                         new Interest("Photography"),
@@ -150,7 +152,9 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedQuestions() {
-        if (traitRepository.count() != 0) return;
+        if (!traitService.getAll().isEmpty()) {
+            return;
+        }
         List<Trait> traits =
                 List.of(
                         new Trait("Do you enjoy outdoor activities?"),
