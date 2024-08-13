@@ -70,16 +70,35 @@ public class ProfileService {
         }
     }
 
-    public Profile update(Long id, PostProfileDto patch) {
-        Profile patchedProfile = profileRepository.findById(id).orElseThrow(NotFoundException::new);
+    public Profile update(Long id, PatchProfileDto patch) {
+        Profile patchedProfile =
+                profileRepository
+                        .findById(id)
+                        .orElseThrow(() -> new BadRequestException("Cannot find profile"));
         if (patch.description() != null) patchedProfile.setDescription(patch.description());
-        if (patch.gender() != null)
-            patchedProfile.setGender(Gender.valueOf(patch.gender().toUpperCase()));
-        if (patch.dateOfBirth() != null) patchedProfile.setDateOfBirth(patch.dateOfBirth());
+        if (patch.imageId() != null)
+            patchedProfile.setImage(
+                    imageRepository.findById(patch.imageId()).orElseThrow(NotFoundException::new));
+        if (patch.gender() != null) patchedProfile.setGender(convertToGender(patch.gender()));
+        if (patch.lookingForGender() != null)
+            patchedProfile.setLookingForGender(convertToGender(patch.lookingForGender()));
         if (patch.sexualities() != null)
             patchedProfile.setSexualities(convertToSexualities(patch.sexualities()));
+        if (patch.traits() != null)
+            patchedProfile.setProfileTraits(convertToProfileTraits(patch.traits()));
+        if (patch.interests() != null)
+            patchedProfile.setInterests(convertToInterests(patch.interests()));
+        if (patch.dateOfBirth() != null) patchedProfile.setDateOfBirth(patch.dateOfBirth());
         profileRepository.save(patchedProfile);
         return patchedProfile;
+    }
+
+    public Gender convertToGender(String value) {
+        try {
+            return Gender.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("gender not valid");
+        }
     }
 
     public Set<Sexuality> convertToSexualities(List<Long> sexualityIdList) {

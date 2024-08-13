@@ -6,16 +6,21 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
     style,
 }) => {
     return (
-        <>
-            <h2>{title}</h2>
-            <ul>
+        <div className="w-full flex flex-col items-center justify-center bg-white rounded-lg m-4 p-4">
+            <h2 className="font-extrabold text-2xl m-4 tracking-wider">
+                {title}
+            </h2>
+            <ul className="w-full flex flex-col items-center justify-center">
                 {items.map((item: Item) => (
-                    <li key={item.id} className={`${style} `}>
+                    <li
+                        key={item.id}
+                        className={`${style} w-full text-center border-b-2 border-feminine-primary-dark rounded-lg shadow-lg p-4 m-4`}
+                    >
                         {item.name}
                     </li>
                 ))}
             </ul>
-        </>
+        </div>
     );
 };
 
