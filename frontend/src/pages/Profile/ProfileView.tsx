@@ -20,7 +20,7 @@ const fetchProfileData = () => {
         })
         .catch((error) => {
             console.error(error);
-            return { profile: null, imageUrl: "" };
+            throw error;
         });
 };
 
@@ -49,10 +49,14 @@ export const ProfileView = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchProfileData().then(({ profile, imageUrl }) => {
-            setProfile(profile);
-            setImageSrc(imageUrl);
-        });
+        fetchProfileData()
+            .then(({ profile, imageUrl }) => {
+                setProfile(profile);
+                setImageSrc(imageUrl);
+            })
+            .catch((error) => {
+                if (error.response.status == 404) navigate("/create-profile");
+            });
     }, []);
 
     return (

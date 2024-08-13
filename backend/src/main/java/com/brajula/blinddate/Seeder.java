@@ -50,7 +50,7 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedChats() {
-        if (chatRepository.count() != 0) return;
+        if (chatRepository.count() > 0) return;
 
         Optional<User> possibleUser1 = userRepository.findByUsernameIgnoreCase("test1");
         Optional<User> possibleUser2 = userRepository.findByUsernameIgnoreCase("test2");
@@ -75,9 +75,7 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedInterests() {
-        if (!interestService.getAll().isEmpty()) {
-            return;
-        }
+        if (interestRepository.count() > 0) return;
         List<Interest> interests =
                 List.of(
                         new Interest("Photography"),
@@ -129,7 +127,7 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedSexuality() {
-        if (sexualityRepository.count() != 0) return;
+        if (sexualityRepository.count() > 0) return;
         List<Sexuality> sexualities =
                 List.of(
                         (new Sexuality("Heterosexual")),
@@ -152,9 +150,7 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedQuestions() {
-        if (!traitService.getAll().isEmpty()) {
-            return;
-        }
+        if (traitRepository.count() > 0) return;
         List<Trait> traits =
                 List.of(
                         new Trait("Do you enjoy outdoor activities?"),
