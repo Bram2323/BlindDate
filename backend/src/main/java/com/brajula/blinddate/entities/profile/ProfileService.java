@@ -5,6 +5,7 @@ import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
+import com.brajula.blinddate.entities.specification.ProfileSpecification;
 import com.brajula.blinddate.entities.trait.Trait;
 import com.brajula.blinddate.entities.trait.TraitService;
 import com.brajula.blinddate.entities.trait.profiletraits.Answer;
@@ -44,10 +45,13 @@ public class ProfileService {
     public List<GetProfileDto> getAll(String searchGender) {
         Specification<Profile> specification = Specification.where(null);
         if (searchGender != null) {
-            // add to spec
+            specification =
+                    specification.and(
+                            ProfileSpecification.hasGender(
+                                    Gender.valueOf(searchGender.toUpperCase())));
         }
 
-        return profileRepository.findAll().stream()
+        return profileRepository.findAll(specification).stream()
                 .map(GetProfileDto::toDto)
                 .collect(Collectors.toList());
     }

@@ -25,8 +25,8 @@ public class ProfileController {
 
     @GetMapping
     public ResponseEntity<List<GetProfileDto>> getAll(
-            @RequestParam(required = false) String searchGender) {
-        return ResponseEntity.ok(profileService.getAll(searchGender));
+            @RequestParam(required = false) String gender) {
+        return ResponseEntity.ok(profileService.getAll(gender));
     }
 
     @GetMapping("/{id}")
