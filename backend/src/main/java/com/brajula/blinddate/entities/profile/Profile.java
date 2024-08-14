@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -56,5 +57,10 @@ public class Profile {
         this.gender = gender;
         this.lookingForGender = lookingForGender;
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public int getAge() {
+        LocalDate today = LocalDate.now();
+        return Period.between(dateOfBirth, today).getYears();
     }
 }

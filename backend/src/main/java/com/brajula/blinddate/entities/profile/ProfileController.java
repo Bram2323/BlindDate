@@ -25,8 +25,10 @@ public class ProfileController {
 
     @GetMapping
     public ResponseEntity<List<GetProfileDto>> getAll(
-            @RequestParam(required = false) String gender) {
-        return ResponseEntity.ok(profileService.getAll(gender));
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) Integer minAge,
+            @RequestParam(required = false) Integer maxAge) {
+        return ResponseEntity.ok(profileService.getAll(gender, minAge, maxAge));
     }
 
     @GetMapping("/{id}")

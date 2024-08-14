@@ -42,13 +42,17 @@ public class ProfileService {
     private final ProfileTraitService profileTraitService;
     private final TraitService traitService;
 
-    public List<GetProfileDto> getAll(String searchGender) {
+    public List<GetProfileDto> getAll(String gender, Integer minAge, Integer maxAge) {
         Specification<Profile> specification = Specification.where(null);
-        if (searchGender != null) {
+        if (gender != null) {
             specification =
                     specification.and(
-                            ProfileSpecification.hasGender(
-                                    Gender.valueOf(searchGender.toUpperCase())));
+                            ProfileSpecification.hasGender(Gender.valueOf(gender.toUpperCase())));
+        }
+        if (minAge != null && maxAge != null) {
+            specification =
+                    specification.and(
+                            ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
         }
 
         return profileRepository.findAll(specification).stream()
