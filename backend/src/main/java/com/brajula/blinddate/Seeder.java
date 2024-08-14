@@ -145,17 +145,32 @@ public class Seeder implements CommandLineRunner {
         return profileTraitList;
     }
 
+    private List<Sexuality> getPreferences() {
+        List<Sexuality> sexualityList = sexualityRepository.findAll();
+        int max = sexualityList.size();
+        List<Sexuality> randomPreferences = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < 5; i++) {
+            randomPreferences.add(sexualityList.get(random.nextInt(0, max)));
+        }
+        return randomPreferences;
+    }
+
+    private List<Interest> getInterests() {
+        List<Interest> interestList = interestRepository.findAll();
+        int max = interestList.size();
+        List<Interest> randomInterests = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < 5; i++) {
+            randomInterests.add(interestList.get(random.nextInt(0, max)));
+        }
+        return randomInterests;
+    }
+
     private void SeedProfilesWithUsersAndImages() throws IOException {
         if (userRepository.count() > 4) return;
-        List<Sexuality> sexualityList = sexualityRepository.findAll();
-        int maxS = sexualityList.size();
-
         int count = MockProfiles.PROFILES.size();
-
         Random random = new Random();
-
-        List<Interest> interestList = interestRepository.findAll();
-        int maxI = interestList.size();
 
         for (com.brajula.blinddate.SeedUserDto user : USERS) {
             User savedUser = seedUser(user);
@@ -167,10 +182,8 @@ public class Seeder implements CommandLineRunner {
                             MockImage.ONE_PIXEL_IMAGE, user.username() + "img.png", "image/png");
             profile.setImage(
                     imageRepository.findById(image.id()).orElseThrow(NotFoundException::new));
-            profile.setSexualities(
-                    new HashSet<>(sexualityList.subList(random.nextInt(0, maxS), maxS)));
-            profile.setInterests(
-                    new HashSet<>(interestList.subList(random.nextInt(0, maxI), maxI)));
+            profile.setSexualities(new HashSet<>(getPreferences()));
+            profile.setInterests(new HashSet<>(getInterests()));
             profile.setProfileTraits(new HashSet<>(seedProfileTraits()));
 
             profileRepository.save(profile);
