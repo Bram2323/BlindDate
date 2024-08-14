@@ -46,9 +46,12 @@ public class ProfileService {
             String gender, Integer minAge, Integer maxAge, List<Long> preferences) {
         Specification<Profile> specification = Specification.where(null);
         if (gender != null) {
-            specification =
-                    specification.and(
-                            ProfileSpecification.hasGender(Gender.valueOf(gender.toUpperCase())));
+            if (!gender.equalsIgnoreCase(Gender.OTHER.toString())) {
+                specification =
+                        specification.and(
+                                ProfileSpecification.hasGender(
+                                        Gender.valueOf(gender.toUpperCase())));
+            }
         }
         if (minAge != null && maxAge != null) {
             specification =
@@ -56,10 +59,11 @@ public class ProfileService {
                             ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
         }
 
-        if (preferences != null && !preferences.isEmpty()) {
-            List<Sexuality> pref = preferences.stream().map(sexualityService::getById).toList();
-            specification = specification.and(ProfileSpecification.hasPreferencesTest(pref));
-        }
+        // todo preferences ordenen op meeste overeenkomsten
+
+        // todo interests ordenen op meeste overeenkomsten
+
+        // todo profiletraits ordenen op meeste overeenkomsten
 
         return profileRepository.findAll(specification).stream()
                 .map(GetProfileDto::toDto)
