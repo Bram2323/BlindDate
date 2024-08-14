@@ -18,9 +18,8 @@ public class ProfileSpecification {
 
     // Param -> Gender
     public static Specification<Profile> hasGender(Gender gender) {
-        return (Root<Profile> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-            return builder.equal(root.get("gender"), gender);
-        };
+        return (Root<Profile> root, CriteriaQuery<?> query, CriteriaBuilder builder) ->
+                builder.equal(root.get("gender"), gender);
     }
 
     // Param -> Age Range
@@ -42,6 +41,15 @@ public class ProfileSpecification {
                 inClause.value(preference);
             }
             return inClause;
+        };
+    }
+
+    public static Specification<Profile> hasPreferencesTest(List<Sexuality> preferences) {
+        return (root, query, criteriaBuilder) -> {
+            if (preferences == null || preferences.isEmpty()) {
+                return criteriaBuilder.conjunction();
+            }
+            return root.join("sexualities").in(preferences);
         };
     }
 

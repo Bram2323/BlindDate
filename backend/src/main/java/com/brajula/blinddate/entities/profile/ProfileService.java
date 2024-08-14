@@ -42,7 +42,8 @@ public class ProfileService {
     private final ProfileTraitService profileTraitService;
     private final TraitService traitService;
 
-    public List<GetProfileDto> getAll(String gender, Integer minAge, Integer maxAge) {
+    public List<GetProfileDto> getAll(
+            String gender, Integer minAge, Integer maxAge, List<Long> preferences) {
         Specification<Profile> specification = Specification.where(null);
         if (gender != null) {
             specification =
@@ -53,6 +54,11 @@ public class ProfileService {
             specification =
                     specification.and(
                             ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
+        }
+
+        if (preferences != null && !preferences.isEmpty()) {
+            List<Sexuality> pref = preferences.stream().map(sexualityService::getById).toList();
+            specification = specification.and(ProfileSpecification.hasPreferencesTest(pref));
         }
 
         return profileRepository.findAll(specification).stream()
