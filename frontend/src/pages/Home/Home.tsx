@@ -1,5 +1,5 @@
 import { useUser } from "../../services/UserService";
-import ChatList from "./ChatList/ChatList";
+import PersonalHome from "./PersonalHome/PersonalHome";
 
 export const Home = () => {
     const [user, isLoggedIn] = useUser();
@@ -9,7 +9,7 @@ export const Home = () => {
             <div className="flex flex-col h-full justify-center items-center p-4">
                 {isLoggedIn ? (
                     <>
-                        <ChatList userId={user.id} />
+                        <PersonalHome userId={user.id} />
                     </>
                 ) : (
                     <>Home Page</>

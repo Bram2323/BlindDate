@@ -6,7 +6,7 @@ interface MessageProps {
 }
 
 function Message({ message, rightUser }: MessageProps) {
-    const displayRight = message.userId == rightUser.id;
+    const displayRight = message.user.id == rightUser.id;
 
     return (
         <>
