@@ -44,6 +44,7 @@ public class Seeder implements CommandLineRunner {
         seedInterests();
         seedQuestions();
         seedChats();
+        seedUsers();
     }
 
     private void seedChats() {
@@ -101,7 +102,9 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedUsers() {
-        if (userRepository.count() > 0) return;
+        if (userRepository.count() > 3)
+            return; // volgens mij worden er standaard 3 users aangemaakt, maar als je er meer in je
+                    // db hebt staan comment deze regel ff weg
         for (SeedUsersDto user : MockData.USERS) {
             userService.register(
                     user.username(),
