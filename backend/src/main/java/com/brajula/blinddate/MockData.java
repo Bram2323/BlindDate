@@ -1,13 +1,10 @@
 package com.brajula.blinddate;
 
 import com.brajula.blinddate.entities.interest.Interest;
-import com.brajula.blinddate.entities.profile.PostProfileDto;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.trait.Trait;
-import com.brajula.blinddate.entities.trait.profiletraits.PostProfileTraitDto;
 import com.brajula.blinddate.entities.user.SeedUsersDto;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class MockData {
@@ -137,20 +134,5 @@ public class MockData {
                     new Trait("Is fitness a priority for you?"),
                     new Trait("Do you like going to parties?"),
                     new Trait("Are you a fan of spontaneous plans?"));
-
-    public static final List<PostProfileDto> PROFILES =
-            List.of(
-                    new PostProfileDto(
-                            "I love exploring new places and meeting new people.",
-                            "MALE",
-                            "FEMALE",
-                            LocalDate.of(1990, 5, 20),
-                            List.of(1L, 2L),
-                            List.of(1L, 3L),
-                            List.of(
-                                    new PostProfileTraitDto(1L, "IT_DEPENDS"),
-                                    new PostProfileTraitDto(2L, "YES")),
-                            null));
-
-    // todo seed images. kan in een map in project en dan iets met classpaths. morgen nieuwe dag
+    
 }
