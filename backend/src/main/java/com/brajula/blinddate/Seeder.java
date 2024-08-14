@@ -101,7 +101,7 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void seedUsers() {
-        if (userRepository.count() > 0) return;
+        if (userRepository.count() > 3) return;
         for (SeedUsersDto user : MockData.USERS) {
             userService.register(
                     user.username(),

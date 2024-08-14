@@ -102,24 +102,47 @@ public class MockData {
                     new Interest("Surfing"),
                     new Interest("Baking"));
 
-    // sexualities
+    // sexualities //TODO BESPREKEN MET BRAM EN JULIAN OF ZE DIT EEN LEUK ALTERNATIEF VINDEN?
     public static final List<Sexuality> SEXUALITIES =
             List.of(
-                    (new Sexuality("Heterosexual")),
-                    (new Sexuality("Homosexual")),
-                    (new Sexuality("Bisexual")),
-                    (new Sexuality("Pansexual")),
-                    (new Sexuality("Asexual")),
-                    (new Sexuality("Queer")),
-                    (new Sexuality("Demisexual")),
-                    (new Sexuality("Omnisexual")),
-                    (new Sexuality("Sexual Fluidity")),
-                    (new Sexuality("Furry")),
-                    (new Sexuality("Androsexual")),
-                    (new Sexuality("Gynosexual")),
-                    (new Sexuality("Graysexual")),
-                    (new Sexuality("Skoliosexual")),
-                    (new Sexuality("Polysexual")));
+                    new Sexuality("Integrity"),
+                    new Sexuality("Respect"),
+                    new Sexuality("Courage"),
+                    new Sexuality("Humility"),
+                    new Sexuality("Compassion"),
+                    new Sexuality("Accountability"),
+                    new Sexuality("Generosity"),
+                    new Sexuality("Perseverance"),
+                    new Sexuality("Gratitude"),
+                    new Sexuality("Wisdom"),
+                    new Sexuality("Fairness"),
+                    new Sexuality("Kindness"),
+                    new Sexuality("Optimism"),
+                    new Sexuality("Independence"),
+                    new Sexuality("Authenticity"),
+                    new Sexuality("Balance"),
+                    new Sexuality("Creativity"),
+                    new Sexuality("Ambition"),
+                    new Sexuality("Innovation"),
+                    new Sexuality("Trustworthiness"));
+    /*
+    List.of(
+            (new Sexuality("Heterosexual")),
+            (new Sexuality("Homosexual")),
+            (new Sexuality("Bisexual")),
+            (new Sexuality("Pansexual")),
+            (new Sexuality("Asexual")),
+            (new Sexuality("Queer")),
+            (new Sexuality("Demisexual")),
+            (new Sexuality("Omnisexual")),
+            (new Sexuality("Sexual Fluidity")),
+            (new Sexuality("Furry")),
+            (new Sexuality("Androsexual")),
+            (new Sexuality("Gynosexual")),
+            (new Sexuality("Graysexual")),
+            (new Sexuality("Skoliosexual")),
+            (new Sexuality("Polysexual")));
+    */
 
     // traits
     public static final List<Trait> TRAITS =
@@ -134,5 +157,4 @@ public class MockData {
                     new Trait("Is fitness a priority for you?"),
                     new Trait("Do you like going to parties?"),
                     new Trait("Are you a fan of spontaneous plans?"));
-    
 }
