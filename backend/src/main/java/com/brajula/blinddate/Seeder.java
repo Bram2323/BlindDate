@@ -146,6 +146,7 @@ public class Seeder implements CommandLineRunner {
     }
 
     private void SeedProfilesWithUsersAndImages() throws IOException {
+        if (userRepository.count() > 4) return;
         List<Sexuality> sexualityList = sexualityRepository.findAll();
         int maxS = sexualityList.size();
 
