@@ -1,5 +1,6 @@
 package com.brajula.blinddate;
 
+import static com.brajula.blinddate.mockdata.MockImage.ONE_PIXEL_IMAGE;
 import static com.brajula.blinddate.mockdata.MockInterests.INTERESTS;
 import static com.brajula.blinddate.mockdata.MockSexualities.SEXUALITIES;
 import static com.brajula.blinddate.mockdata.MockTraits.TRAITS;
@@ -27,7 +28,6 @@ import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.entities.user.UserService;
 import com.brajula.blinddate.exceptions.NotFoundException;
-import com.brajula.blinddate.mockdata.MockImage;
 import com.brajula.blinddate.mockdata.MockProfiles;
 import com.brajula.blinddate.security.Role;
 
@@ -179,7 +179,7 @@ public class Seeder implements CommandLineRunner {
             // dit genereert een gebroken image,is de bedoeling totdat beter alternatief
             ImageUploadResponse image =
                     imageService.uploadImage(
-                            MockImage.ONE_PIXEL_IMAGE, user.username() + "img.png", "image/png");
+                            ONE_PIXEL_IMAGE, user.username() + "img.png", "image/png");
             profile.setImage(
                     imageRepository.findById(image.id()).orElseThrow(NotFoundException::new));
             profile.setSexualities(new HashSet<>(getPreferences()));

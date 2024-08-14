@@ -1,21 +1,16 @@
 package com.brajula.blinddate.mockdata;
 
 public class MockImage {
-    // One-pixel PNG image byte array
-    public static final byte[] ONE_PIXEL_IMAGE =
-            new byte[] {
-                (byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47, (byte) 0x0D, (byte) 0x0A,
-                        (byte) 0x1A, (byte) 0x0A,
-                (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x0D, (byte) 0x49, (byte) 0x48,
-                        (byte) 0x44, (byte) 0x52,
-                (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x01, (byte) 0x00, (byte) 0x00,
-                        (byte) 0x00, (byte) 0x01,
-                (byte) 0x08, (byte) 0x02, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-                        (byte) 0x00, (byte) 0x00,
-                (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-                        (byte) 0x00, (byte) 0x00,
-                (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x49, (byte) 0x45,
-                        (byte) 0x4E, (byte) 0x44,
-                (byte) 0xAE, (byte) 0x42, (byte) 0x60, (byte) 0x82
-            };
+    // echt 1 witte pixel
+    public static final byte[] ONE_PIXEL_IMAGE = {
+        -119, 80, 78, 71, 13, 10, 26, 10,
+        0, 0, 0, 13, 73, 72, 68, 82,
+        0, 0, 0, 1, 0, 0, 0, 1,
+        8, 2, 0, 0, 0, -112, 119, 83,
+        -34, 0, 0, 0, 10, 73, 68, 65,
+        84, 8, -41, 99, 96, 0, 0, 0,
+        2, 0, 1, -30, 33, -68, 51, 0,
+        0, 0, 0, 73, 69, 78, 68, -82,
+        66, 96, -126
+    };
 }
