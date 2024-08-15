@@ -43,11 +43,7 @@ public class ProfileService {
     private final PreferenceService preferenceService;
 
     public List<GetProfileDto> getAll(
-            List<String> genders,
-            Integer minAge,
-            Integer maxAge,
-            List<Long> preferences,
-            Priority priority) {
+            List<String> genders, Integer minAge, Integer maxAge, List<Long> preferences) {
         Specification<Profile> specification = Specification.where(null);
         if (genders != null && !genders.isEmpty()) {
             specification =
@@ -59,25 +55,6 @@ public class ProfileService {
             specification =
                     specification.and(
                             ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
-        }
-
-        if (priority != null) {
-            // misschien iets van een profile met matchscore dto aanmaken.
-            // en dan erdoorheen loopen en een score geven als er een overeenkomst is.
-            if (priority == Priority.PREFERENCES) {
-                // todo preferences ordenen op meeste overeenkomsten
-                System.out.println("Sort by most similar preferences");
-            }
-            if (priority == Priority.INTERESTS) {
-                // todo interests ordenen op meeste overeenkomsten
-                System.out.println("Sort by most similar interests");
-            }
-            if (priority == Priority.TRAITS) {
-                // todo traits ordenen op meeste overeenkomsten
-                System.out.println("Sort by most similar traits");
-            }
-        } else {
-            // er is geen priority dus totale match score doorgeven.
         }
         return profileRepository.findAll(specification).stream()
                 .map(GetProfileDto::toDto)

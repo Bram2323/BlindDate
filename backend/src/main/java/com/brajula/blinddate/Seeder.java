@@ -197,7 +197,7 @@ public class Seeder implements CommandLineRunner {
         int count = MockProfiles.PROFILES.size();
         Random random = new Random();
 
-        for (com.brajula.blinddate.SeedUserDto user : USERS) {
+        for (SeedUserDto user : USERS) {
             User savedUser = seedUser(user);
             Profile profile = MockProfiles.PROFILES.get(random.nextInt(0, count));
             profile.setUser(savedUser);
