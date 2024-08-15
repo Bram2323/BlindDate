@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import ApiService from "../../services/ApiService";
-import Profile from "../../components/Profile/Profile";
-import ProfileBox from "../../components/Profile/ProfileBox";
+import JudgeProfile from "../../components/Profile/JudgeProfile";
+import JudgeProfileBox from "../../components/Profile/JudgeProfileBox";
 
 function Judging() {
-    const [profiles, setProfiles] = useState<Profile[]>();
+    const [profiles, setProfiles] = useState<JudgeProfile[]>();
 
     useEffect(() => {
-        ApiService.get("profiles")
+        ApiService.get("profiles/judge-list")
             .then((response) => {
                 setProfiles(response.data);
             })
@@ -24,7 +24,7 @@ function Judging() {
                         ❌
                     </button>
                 </div>
-                {profiles && <ProfileBox profile={profiles[0]} />}
+                {profiles && <JudgeProfileBox profile={profiles[0]} />}
                 <div className="flex items-center">
                     <button className="text-8xl text-green-600 bg-green-300 hover:text-green-800 hover:bg-green-500 p-8 rounded-full">
                         ✔
