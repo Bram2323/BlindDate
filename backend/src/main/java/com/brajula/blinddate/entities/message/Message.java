@@ -23,18 +23,15 @@ public class Message {
 
     @ManyToOne private User user;
 
+    @Column(columnDefinition = "Text")
     private String text;
 
     private LocalDateTime createdOn;
-
-    private Boolean isRead;
 
     public Message(Chat chat, User user, String text, LocalDateTime createdOn) {
         this.chat = chat;
         this.user = user;
         this.text = text;
         this.createdOn = createdOn;
-
-        isRead = false;
     }
 }

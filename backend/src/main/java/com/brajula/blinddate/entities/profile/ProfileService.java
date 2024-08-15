@@ -13,10 +13,13 @@ import com.brajula.blinddate.entities.trait.profiletraits.PostProfileTraitDto;
 import com.brajula.blinddate.entities.trait.profiletraits.ProfileTrait;
 import com.brajula.blinddate.entities.trait.profiletraits.ProfileTraitService;
 import com.brajula.blinddate.entities.user.User;
+import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.exceptions.BadRequestException;
 import com.brajula.blinddate.exceptions.NotFoundException;
 import com.brajula.blinddate.preferences.Preference;
 import com.brajula.blinddate.preferences.PreferenceService;
+import com.brajula.blinddate.exceptions.UserNotFoundException;
+
 
 import jakarta.transaction.Transactional;
 
@@ -40,7 +43,11 @@ public class ProfileService {
     private final InterestService interestService;
     private final ProfileTraitService profileTraitService;
     private final TraitService traitService;
+
     private final PreferenceService preferenceService;
+
+    private final UserRepository userRepository;
+
 
     public List<GetProfileDto> getAll(
             List<String> genders, Integer minAge, Integer maxAge, List<Long> preferences) {
@@ -81,7 +88,17 @@ public class ProfileService {
             profile.setSexualities(convertToSexualities(dto.sexualities()));
             profile.setInterests(convertToInterests(dto.interests()));
             profile.setProfileTraits(convertToProfileTraits(dto.traits()));
+
             profile.setPreferences(convertToPreferences(dto.preferences()));
+
+            // set imageId to user object
+            User getUser =
+                    userRepository
+                            .findByUsernameIgnoreCase(user.getUsername())
+                            .orElseThrow(UserNotFoundException::new);
+            getUser.setImageId(dto.imageId());
+            userRepository.save(getUser);
+
             return profileRepository.save(profile);
         }
     }

@@ -30,6 +30,7 @@ import java.util.UUID;
 public class ChatController {
 
     private final ChatRepository chatRepository;
+    private final ChatService chatService;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
@@ -42,7 +43,41 @@ public class ChatController {
         if (!authUser.hasRole(Role.ADMIN) && !user.equals(authUser)) throw new ForbiddenException();
 
         Set<Chat> chats = chatRepository.findByUser(user);
-        return chats.stream().map(ChatDTO::from).toList();
+
+        return chats.stream()
+                .map(
+                        (chat) -> {
+                            Optional<Message> lastMessage =
+                                    messageRepository.findFirstByChatOrderByCreatedOnDesc(chat);
+                            return ChatDTO.from(chat, lastMessage.orElse(null));
+                        })
+                .toList();
+    }
+
+    @GetMapping("user/{userId}/unread")
+    private List<ChatDTO> getFromUserUnread(
+            @PathVariable UUID userId, Authentication authentication) {
+        User authUser = (User) authentication.getPrincipal();
+        Optional<User> possibleUser = userRepository.findById(userId);
+        User user = possibleUser.orElseThrow(NotFoundException::new);
+
+        if (!authUser.hasRole(Role.ADMIN) && !user.equals(authUser)) throw new ForbiddenException();
+
+        Set<Chat> chats = chatRepository.findByUser(user);
+
+        List<Chat> filteredChats =
+                chats.stream()
+                        .filter((chat -> chatService.isChatUnreadByUser(chat, user)))
+                        .toList();
+
+        return filteredChats.stream()
+                .map(
+                        (chat) -> {
+                            Optional<Message> lastMessage =
+                                    messageRepository.findFirstByChatOrderByCreatedOnDesc(chat);
+                            return ChatDTO.from(chat, lastMessage.orElse(null));
+                        })
+                .toList();
     }
 
     @GetMapping("{id}")
@@ -52,8 +87,13 @@ public class ChatController {
         Optional<Chat> possibleChat = chatRepository.findById(id);
         Chat chat = possibleChat.orElseThrow(NotFoundException::new);
 
-        if (!chat.getUserOne().equals(user) && !chat.getUserTwo().equals(user))
-            throw new ForbiddenException();
+        if (user.equals(chat.getUserOne())) {
+            chat.setReadByUserOne(true);
+        } else if (user.equals(chat.getUserTwo())) {
+            chat.setReadByUserTwo(true);
+        } else throw new ForbiddenException();
+
+        chat = chatRepository.save(chat);
 
         Set<Message> messages = messageRepository.findByChatOrderByCreatedOn(chat);
 
@@ -66,8 +106,7 @@ public class ChatController {
         User user = (User) authentication.getPrincipal();
 
         String text = textDTO.text();
-        if (text == null || text.isEmpty()) throw new BadRequestException("Text can't be empty!");
-        String trimmedText = text.trim();
+        if (text == null) throw new BadRequestException("Text can't be null!");
 
         Optional<Chat> possibleChat = chatRepository.findById(id);
         Chat chat = possibleChat.orElseThrow(NotFoundException::new);
@@ -75,8 +114,15 @@ public class ChatController {
         if (!chat.getUserOne().equals(user) && !chat.getUserTwo().equals(user))
             throw new ForbiddenException();
 
+        String trimmedText = text.trim();
+        if (trimmedText.isEmpty()) throw new BadRequestException("Text can't be empty!");
+        else if (trimmedText.length() > 30000)
+            throw new BadRequestException("Text can't be more than 30000 characters!");
+
         Message newMessage =
                 messageRepository.save(new Message(chat, user, trimmedText, LocalDateTime.now()));
+
+        chatService.setChatUnreadForOtherUser(chat, user);
 
         return MessageDTO.from(newMessage);
     }
