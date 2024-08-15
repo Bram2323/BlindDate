@@ -21,7 +21,6 @@ function MessageContainer({
     const [blur, setBlur] = useState<string>("blur(100px)");
     const [imageSrc, setImageSrc] = useState<string>();
 
-    console.log(messages.length);
     useEffect(() => {}, [messages]);
 
     const getImage = () => {
