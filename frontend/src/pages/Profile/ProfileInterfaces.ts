@@ -5,8 +5,9 @@ export interface IProfile {
     id: number;
     imageId: number;
     interests: [];
-    lookingForGender: string;
+    lookingForGender: string[];
     sexualities: [];
+    preferences: number[];
     traits: [];
     userId: string;
     username: string;

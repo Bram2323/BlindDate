@@ -122,38 +122,34 @@ export const CreateProfile = () => {
     };
 
     useEffect(() => {
-        fetchProfileData()
-            .then((profileRes) => {
-                setProfile(profileRes.profile);
-                setImageUrl(profileRes.imageUrl);
+        if (profile != null) {
+            formRef.current = profile;
+            formRef.current.sexualities = formRef.current.sexualities.map(
+                (sex) => sex.id
+            );
+            formRef.current.interests = formRef.current.interests.map(
+                (interest) => interest.id
+            );
+            formRef.current.preferences = formRef.current.preferences.map(
+                (pref) => pref.id
+            );
+        }
+    }, [profileExists]);
 
-                return Promise.all([
-                    ApiService.get("sexualities"),
-                    ApiService.get("interests"),
-                    ApiService.get("traits"),
-                ]);
-            })
-            .then(([sexualitiesRes, interestsRes, traitsRes]) => {
-                setSexualities(sexualitiesRes.data);
-                setInterests(interestsRes.data);
-                setTraits(traitsRes.data);
-
-                if (profile) {
-                    formRef.current = profile;
-                    formRef.current.sexualities =
-                        formRef.current.sexualities.map((sex) => sex.id);
-                    formRef.current.interests = formRef.current.interests.map(
-                        (interest) => interest.id
-                    );
-                    formRef.current.interests = formRef.current.preferences.map(
-                        (pref) => pref.id
-                    );
-                }
-            })
-            .catch((error) => {
-                console.error("Error", error);
-            });
+    useEffect(() => {
+        fetchData("sexualities", setSexualities);
+        fetchData("interests", setInterests);
+        fetchData("traits", setTraits);
+        fetchData("preferences", setPreferences);
     }, []);
+
+    useEffect(() => {
+        fetchProfileData().then((res) => {
+            setProfile(res.profile);
+            setImageUrl(res.imageUrl);
+        });
+    }, [traits, sexualities, interests, preferences]);
+
     const fetchData = (url: string, setState: any) => {
         ApiService.get(url)
             .then((response) => {
