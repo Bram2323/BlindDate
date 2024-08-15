@@ -70,10 +70,10 @@ public class Seeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         updateOrCreateAdmin();
         seedSexuality();
+        seedPreferences();
         seedInterests();
         seedQuestions();
         seedChats();
-        seedPreferences();
         SeedProfilesWithUsersAndImages();
     }
 
