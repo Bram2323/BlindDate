@@ -16,21 +16,42 @@ function Judging() {
             });
     }, []);
 
+    function handleAnswer(answer: boolean) {
+        if (!profiles) return;
+        if (profiles.length === 1) {
+            setProfiles(undefined);
+        } else {
+            setProfiles(profiles.splice(1));
+        }
+    }
+
     return (
         <>
-            <div className="flex h-full justify-evenly">
-                <div className="flex items-center">
-                    <button className="text-8xl bg-red-300 hover:bg-red-500 p-8 rounded-full">
-                        ❌
-                    </button>
+            {!profiles ? (
+                <p className="text-2xl">
+                    There are no profiles for you to judge
+                </p>
+            ) : (
+                <div className="flex h-full justify-evenly">
+                    <div className="flex items-center">
+                        <button
+                            onClick={() => handleAnswer(false)}
+                            className="text-8xl bg-red-300 hover:bg-red-500 p-8 rounded-full"
+                        >
+                            ❌
+                        </button>
+                    </div>
+                    {profiles && <JudgeProfileBox profile={profiles[0]} />}
+                    <div className="flex items-center">
+                        <button
+                            onClick={() => handleAnswer(true)}
+                            className="text-8xl text-green-600 bg-green-300 hover:text-green-800 hover:bg-green-500 p-8 rounded-full"
+                        >
+                            ✔
+                        </button>
+                    </div>
                 </div>
-                {profiles && <JudgeProfileBox profile={profiles[0]} />}
-                <div className="flex items-center">
-                    <button className="text-8xl text-green-600 bg-green-300 hover:text-green-800 hover:bg-green-500 p-8 rounded-full">
-                        ✔
-                    </button>
-                </div>
-            </div>
+            )}
         </>
     );
 }
