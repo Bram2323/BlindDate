@@ -8,7 +8,7 @@ const FieldInput: React.FC<FieldInputProps> = ({
     onSubmit,
 }) => {
     return (
-        <div className={`${layout} border-2 p-2`} data-value={content}>
+        <div className={`${layout} border-2 p-2 `} data-value={content}>
             {label && (
                 <label htmlFor="label" className={`${style}`}>
                     {label}

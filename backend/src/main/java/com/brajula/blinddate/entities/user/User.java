@@ -1,6 +1,5 @@
 package com.brajula.blinddate.entities.user;
 
-import com.brajula.blinddate.entities.profile.Profile;
 import com.brajula.blinddate.security.Role;
 
 import jakarta.persistence.*;
@@ -39,6 +38,8 @@ public class User implements UserDetails {
     @Setter private String lastName;
 
     @Setter private String email;
+
+    @Setter private Long imageId;
 
     public User(
             String username,
