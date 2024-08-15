@@ -28,6 +28,11 @@ public class ProfileController {
         return ResponseEntity.ok(profileService.getAll());
     }
 
+    @GetMapping("/judge-list")
+    public ResponseEntity<List<JudgeProfileDto>> getAllJudge() {
+        return ResponseEntity.ok(profileService.getAllJudge());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Profile> getAllById(@PathVariable Long id) {
         return ResponseEntity.ok(profileService.getById(id));

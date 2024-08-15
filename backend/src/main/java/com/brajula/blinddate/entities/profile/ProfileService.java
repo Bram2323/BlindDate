@@ -46,6 +46,12 @@ public class ProfileService {
                 .collect(Collectors.toList());
     }
 
+    public List<JudgeProfileDto> getAllJudge() {
+        return profileRepository.findAll().stream()
+                .map(JudgeProfileDto::toDto)
+                .collect(Collectors.toList());
+    }
+
     public Profile getById(Long id) {
         return profileRepository.findById(id).orElseThrow(NotFoundException::new);
     }
