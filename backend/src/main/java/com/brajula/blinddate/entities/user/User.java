@@ -39,8 +39,6 @@ public class User implements UserDetails {
 
     @Setter private String email;
 
-    @Setter private Long imageId;
-
     public User(
             String username,
             String password,

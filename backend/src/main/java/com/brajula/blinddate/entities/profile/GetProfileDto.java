@@ -20,7 +20,7 @@ public record GetProfileDto(
         Set<Interest> interests,
         Set<ProfileTrait> traits,
         Long imageId) {
-    public static GetProfileDto toDto(Profile profile) {
+    public static GetProfileDto from(Profile profile) {
         return new GetProfileDto(
                 profile.getId(),
                 profile.getDescription(),

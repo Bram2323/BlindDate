@@ -51,7 +51,7 @@ public class ProfileService {
         }
 
         return profileRepository.findAll().stream()
-                .map(GetProfileDto::toDto)
+                .map(GetProfileDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -80,23 +80,21 @@ public class ProfileService {
                     userRepository
                             .findByUsernameIgnoreCase(user.getUsername())
                             .orElseThrow(UserNotFoundException::new);
-            getUser.setImageId(dto.imageId());
             userRepository.save(getUser);
             return profileRepository.save(profile);
         }
     }
 
     public Profile update(Long id, PatchProfileDto patch) {
-        Profile patchedProfile =
-                profileRepository
-                        .findById(id)
-                        .orElseThrow(() -> new BadRequestException("Cannot find profile"));
-        if (patch.description() != null) patchedProfile.setDescription(patch.description());
+        Profile patchedProfile = profileRepository.findById(id).orElseThrow(NotFoundException::new);
+        if (patch.description() != null && !patch.description().isBlank())
+            patchedProfile.setDescription(patch.description());
         if (patch.imageId() != null)
             patchedProfile.setImage(
                     imageRepository.findById(patch.imageId()).orElseThrow(NotFoundException::new));
-        if (patch.gender() != null) patchedProfile.setGender(convertToGender(patch.gender()));
-        if (patch.lookingForGender() != null)
+        if (patch.gender() != null && !patch.gender().isBlank())
+            patchedProfile.setGender(convertToGender(patch.gender()));
+        if (patch.lookingForGender() != null && !patch.lookingForGender().isBlank())
             patchedProfile.setLookingForGender(convertToGender(patch.lookingForGender()));
         if (patch.sexualities() != null)
             patchedProfile.setSexualities(convertToSexualities(patch.sexualities()));
