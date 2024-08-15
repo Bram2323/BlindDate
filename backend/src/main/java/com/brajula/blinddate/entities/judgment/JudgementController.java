@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ import java.net.URI;
 @RequestMapping(Routes.JUDGEMENTS)
 public class JudgementController {
     private final JudgementRepository judgementRepository;
+    private final JudgementService judgementService;
 
     @PostMapping
     public ResponseEntity<Judgement> postJudgement(
@@ -23,5 +25,10 @@ public class JudgementController {
         Judgement savedJudgement = judgementRepository.save(judgement);
         URI location = ucb.path("{id}").buildAndExpand(savedJudgement.getId()).toUri();
         return ResponseEntity.created(location).body(savedJudgement);
+    }
+
+    @GetMapping("/{id}")
+    public List<Judgement> getByJudgeId(@PathVariable Long id) {
+        return judgementService.getByJudgeId(id);
     }
 }
