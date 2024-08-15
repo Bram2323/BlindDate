@@ -14,6 +14,7 @@ import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestRepository;
 import com.brajula.blinddate.entities.message.Message;
 import com.brajula.blinddate.entities.message.MessageRepository;
+import com.brajula.blinddate.entities.profile.Gender;
 import com.brajula.blinddate.entities.profile.Profile;
 import com.brajula.blinddate.entities.profile.ProfileRepository;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
@@ -38,6 +39,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -70,7 +72,7 @@ public class Seeder implements CommandLineRunner {
         SeedProfilesWithUsersAndImages();
     }
 
-    private void seedChats() {
+    private void seedChats() throws IOException {
         if (chatRepository.count() > 0) return;
 
         Optional<User> possibleUser1 = userRepository.findByUsernameIgnoreCase("test1");
@@ -82,6 +84,15 @@ public class Seeder implements CommandLineRunner {
         User user2 =
                 possibleUser2.orElse(
                         userService.register("test2", "test", "test", "test", "test@test.test"));
+
+        Profile profile1 =
+                new Profile("Not a robot!", Gender.MALE, Gender.FEMALE, LocalDate.of(1969, 4, 20));
+
+        Profile profile2 =
+                new Profile("sus", Gender.MALE, Gender.FEMALE, LocalDate.of(1969, 4, 20));
+
+        seedProfile(profile1, user1);
+        seedProfile(profile2, user2);
 
         Chat chat = new Chat(user1, user2, LocalDateTime.now());
         chatRepository.save(chat);
@@ -139,6 +150,12 @@ public class Seeder implements CommandLineRunner {
             ProfileTrait profileTrait =
                     new ProfileTrait(
                             traitList.get(random.nextInt(0, traitList.size())), randomAnswer);
+            if (profileTraitList.stream()
+                    .anyMatch(
+                            trait ->
+                                    Objects.equals(
+                                            trait.getTrait().getId(),
+                                            profileTrait.getTrait().getId()))) continue;
             profileTraitRepository.save(profileTrait);
             profileTraitList.add(profileTrait);
         }
@@ -151,7 +168,11 @@ public class Seeder implements CommandLineRunner {
         List<Sexuality> randomPreferences = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < 5; i++) {
-            randomPreferences.add(sexualityList.get(random.nextInt(0, max)));
+            Sexuality preference = sexualityList.get(random.nextInt(0, max));
+            if (randomPreferences.stream()
+                    .anyMatch(sexuality -> Objects.equals(sexuality.getId(), preference.getId())))
+                continue;
+            randomPreferences.add(preference);
         }
         return randomPreferences;
     }
@@ -162,7 +183,11 @@ public class Seeder implements CommandLineRunner {
         List<Interest> randomInterests = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < 5; i++) {
-            randomInterests.add(interestList.get(random.nextInt(0, max)));
+            Interest randomInterest = interestList.get(random.nextInt(0, max));
+            if (randomInterests.stream()
+                    .anyMatch(interest -> Objects.equals(interest.getId(), randomInterest.getId())))
+                continue;
+            randomInterests.add(randomInterest);
         }
         return randomInterests;
     }
@@ -175,18 +200,21 @@ public class Seeder implements CommandLineRunner {
         for (com.brajula.blinddate.SeedUserDto user : USERS) {
             User savedUser = seedUser(user);
             Profile profile = MockProfiles.PROFILES.get(random.nextInt(0, count));
-            profile.setUser(savedUser);
-            // dit genereert een gebroken image,is de bedoeling totdat beter alternatief
-            ImageUploadResponse image =
-                    imageService.uploadImage(
-                            MockImage.ONE_PIXEL_IMAGE, user.username() + "img.png", "image/png");
-            profile.setImage(
-                    imageRepository.findById(image.id()).orElseThrow(NotFoundException::new));
-            profile.setSexualities(new HashSet<>(getPreferences()));
-            profile.setInterests(new HashSet<>(getInterests()));
-            profile.setProfileTraits(new HashSet<>(seedProfileTraits()));
-
-            profileRepository.save(profile);
+            seedProfile(profile, savedUser);
         }
+    }
+
+    private void seedProfile(Profile profile, User user) throws IOException {
+        profile.setUser(user);
+        // dit genereert een gebroken image,is de bedoeling totdat beter alternatief
+        ImageUploadResponse image =
+                imageService.uploadImage(
+                        MockImage.ONE_PIXEL_IMAGE, user.getUsername() + "img.png", "image/png");
+        profile.setImage(imageRepository.findById(image.id()).orElseThrow(NotFoundException::new));
+        profile.setSexualities(new HashSet<>(getPreferences()));
+        profile.setInterests(new HashSet<>(getInterests()));
+        profile.setProfileTraits(new HashSet<>(seedProfileTraits()));
+
+        profileRepository.save(profile);
     }
 }

@@ -27,7 +27,7 @@ public class ImageService {
                         .imageData(ImageUtils.compressImage(imageFile.getBytes()))
                         .build();
         imageRepository.save(imageToSave);
-        return new ImageUploadResponse(imageToSave.id);
+        return new ImageUploadResponse(imageToSave.getId());
     }
 
     @Transactional
@@ -59,6 +59,6 @@ public class ImageService {
                         .imageData(ImageUtils.compressImage(imageData))
                         .build();
         imageRepository.save(imageToSave);
-        return new ImageUploadResponse(imageToSave.id);
+        return new ImageUploadResponse(imageToSave.getId());
     }
 }
