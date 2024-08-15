@@ -11,4 +11,5 @@ public class Routes {
     public static final String CHATS = BASE_ROUTE + "chats";
     public static final String TRAITS = BASE_ROUTE + "traits";
     public static final String ANSWERS = BASE_ROUTE + "profile-traits";
+    public static final String JUDGEMENTS = BASE_ROUTE + "judgements";
 }
