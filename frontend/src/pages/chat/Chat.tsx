@@ -3,19 +3,45 @@ import FieldInput from "../../generic/FieldInput";
 import { useParams } from "react-router-dom";
 import ApiService from "../../services/ApiService";
 import MessageContainer from "./MessageContainer";
-import { useUser } from "../../services/UserService";
+import { User, useUser } from "../../services/UserService";
 
 function Chat() {
     const [message, setMessage] = useState("");
     const [chat, setChat] = useState<any>();
-    const [currentUser, loggedIn] = useUser();
+    const [otherUsers, setOtherUsers] = useState<User[]>([]);
+    const [otherProfile, setOtherProfile] = useState<any>();
+    const [containsCurrentUser, setContainsCurrentUser] = useState(false);
+    const [currentUser] = useUser();
     const { id } = useParams();
+
+    console.log(currentUser);
 
     useEffect(() => {
         ApiService.get("chats/" + id).then((response) => {
-            setChat(response.data);
+            const chat = response.data;
+            setChat(chat);
         });
     }, []);
+
+    useEffect(() => {
+        if (chat == undefined || currentUser.id == "") return;
+
+        const users = [chat.userOne, chat.userTwo];
+        const otherUsers = users.filter((user) => user.id != currentUser.id);
+        setOtherUsers(otherUsers);
+        setContainsCurrentUser(otherUsers.length != users.length);
+
+        console.log(otherUsers, users, currentUser);
+    }, [chat, currentUser]);
+
+    useEffect(() => {
+        if (otherUsers.length != 1) return;
+        const otherUser = otherUsers[0];
+
+        ApiService.get("profiles/" + otherUser.id).then((response) => {
+            setOtherProfile(response.data);
+        });
+    }, [otherUsers]);
 
     function postMessage() {
         if (message.trim().length == 0) return;
@@ -28,10 +54,6 @@ function Chat() {
 
     if (chat == undefined) return <></>;
 
-    const users = [chat.userOne, chat.userTwo];
-    const otherUsers = users.filter((user) => user.id != currentUser.id);
-    const containsCurrentUser = otherUsers.length != users.length;
-
     let userText =
         (containsCurrentUser ? "You, " : "") +
         otherUsers.map((user) => user.username).join(", ");
@@ -39,8 +61,8 @@ function Chat() {
     return (
         <>
             <div className="flex flex-col h-full items-center justify-center">
-                <div className=" bg-gray-100 w-[500px] h-[750px] rounded-xl border-y-2 border-gray-500 flex flex-col items-center justify-center">
-                    <div className="p-2 bg-gray-200 w-full text-center font-bold border-2 border-gray-500 rounded-t-xl">
+                <div className=" bg-gray-100 w-[500px] h-[750px] rounded-xl border-2 border-gray-500 flex flex-col items-center justify-center overflow-hidden">
+                    <div className="p-2 bg-gray-200 w-full text-center font-bold border-b-2 border-gray-500 rounded-t-xl">
                         {userText}
                     </div>
                     <MessageContainer
@@ -48,15 +70,17 @@ function Chat() {
                         rightUser={
                             containsCurrentUser ? currentUser : chat.userOne
                         }
-                        imageId={chat.userOne.imageId}
+                        imageId={otherProfile && otherProfile.imageId}
                     />
-                    <FieldInput
-                        content={message}
-                        layout="w-full justify-self-end border-2 bg-gray-100 rounded-b-lg border-gray-500"
-                        style="w-full rounded-xl"
-                        handleChange={(e) => setMessage(e)}
-                        onSubmit={postMessage}
-                    />
+                    <div className="w-full border-gray-400 border-t-2">
+                        <FieldInput
+                            content={message}
+                            layout="w-full justify-self-end border-2 bg-gray-100 rounded-b-lg border-none"
+                            style="w-full rounded-xl"
+                            handleChange={(e) => setMessage(e)}
+                            onSubmit={postMessage}
+                        />
+                    </div>
                 </div>
             </div>
         </>

@@ -16,10 +16,9 @@ import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.exceptions.BadRequestException;
 import com.brajula.blinddate.exceptions.NotFoundException;
+import com.brajula.blinddate.exceptions.UserNotFoundException;
 import com.brajula.blinddate.preferences.Preference;
 import com.brajula.blinddate.preferences.PreferenceService;
-import com.brajula.blinddate.exceptions.UserNotFoundException;
-
 
 import jakarta.transaction.Transactional;
 
@@ -48,9 +47,8 @@ public class ProfileService {
 
     private final UserRepository userRepository;
 
-
     public List<GetProfileDto> getAll(
-            List<String> genders, Integer minAge, Integer maxAge, List<Long> preferences) {
+            List<String> genders, Integer minAge, Integer maxAge) {
         Specification<Profile> specification = Specification.where(null);
         if (genders != null && !genders.isEmpty()) {
             specification =
@@ -64,7 +62,7 @@ public class ProfileService {
                             ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
         }
         return profileRepository.findAll(specification).stream()
-                .map(GetProfileDto::toDto)
+                .map(GetProfileDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -96,7 +94,6 @@ public class ProfileService {
                     userRepository
                             .findByUsernameIgnoreCase(user.getUsername())
                             .orElseThrow(UserNotFoundException::new);
-            getUser.setImageId(dto.imageId());
             userRepository.save(getUser);
 
             return profileRepository.save(profile);
@@ -104,11 +101,9 @@ public class ProfileService {
     }
 
     public Profile update(Long id, PatchProfileDto patch) {
-        Profile patchedProfile =
-                profileRepository
-                        .findById(id)
-                        .orElseThrow(() -> new BadRequestException("Cannot find profile"));
-        if (patch.description() != null) patchedProfile.setDescription(patch.description());
+        Profile patchedProfile = profileRepository.findById(id).orElseThrow(NotFoundException::new);
+        if (patch.description() != null && !patch.description().isBlank())
+            patchedProfile.setDescription(patch.description());
         if (patch.imageId() != null)
             patchedProfile.setImage(
                     imageRepository.findById(patch.imageId()).orElseThrow(NotFoundException::new));
@@ -120,7 +115,6 @@ public class ProfileService {
                 converted.add(convertToGender(gender));
             }
         patchedProfile.setLookingForGender(converted);
-
         if (patch.sexualities() != null)
             patchedProfile.setSexualities(convertToSexualities(patch.sexualities()));
         if (patch.preferences() != null)

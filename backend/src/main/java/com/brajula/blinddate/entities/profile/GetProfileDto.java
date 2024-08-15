@@ -24,7 +24,7 @@ public record GetProfileDto(
         Set<ProfileTrait> traits,
         Set<Preference> preferences,
         Long imageId) {
-    public static GetProfileDto toDto(Profile profile) {
+    public static GetProfileDto from(Profile profile) {
         return new GetProfileDto(
                 profile.getId(),
                 profile.getDescription(),

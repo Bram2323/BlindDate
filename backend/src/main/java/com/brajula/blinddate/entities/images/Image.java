@@ -10,13 +10,15 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Images")
+@Getter
+@Setter
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    private Long id;
 
-    @Setter private String name;
-    @Setter private String type;
+    private String name;
+    private String type;
 
     // @Type(type = "org.hibernate.type.ImageType")
     @Lob private byte[] imageData;

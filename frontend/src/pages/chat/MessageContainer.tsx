@@ -24,6 +24,7 @@ function MessageContainer({
     useEffect(() => {}, [messages]);
 
     const getImage = () => {
+        if (imageId == null) return;
         ApiService.get(`images/${imageId}`, null, "blob").then(
             (imageResponse) => {
                 const imageUrl = URL.createObjectURL(imageResponse.data);
@@ -31,9 +32,11 @@ function MessageContainer({
             }
         );
     };
+
     useEffect(() => {
         getImage();
-    }, []);
+    }, [imageId]);
+
     useEffect(() => {
         if (messages.length > 50) {
             setOpacity(1);
@@ -68,19 +71,17 @@ function MessageContainer({
     };
 
     return (
-        <div className="relative h-full w-full">
-            <div
-                style={{
-                    backgroundImage: `url(${imageSrc})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    filter: blur,
-                    opacity: opacity,
-                }}
-                className="absolute inset-0 z-0 border-x-2 border-gray-500"
-            ></div>
-
-            <div className=" relative h-full w-full flex flex-col gap-1 overflow-y-auto p-2">
+        <div
+            className="h-full w-full overflow-hidden"
+            style={{
+                backgroundImage: `url(${imageSrc})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                filter: blur,
+                opacity: opacity,
+            }}
+        >
+            <div className="h-full w-full flex flex-col gap-1 overflow-y-auto p-2">
                 {messageObjects}
                 <AlwaysScrollToBottom />
             </div>
