@@ -25,10 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,6 +61,8 @@ public class ProfileService {
         }
 
         if (priority != null) {
+            // misschien iets van een profile met matchscore dto aanmaken.
+            // en dan erdoorheen loopen en een score geven als er een overeenkomst is.
             if (priority == Priority.PREFERENCES) {
                 // todo preferences ordenen op meeste overeenkomsten
                 System.out.println("Sort by most similar preferences");
@@ -76,9 +75,8 @@ public class ProfileService {
                 // todo traits ordenen op meeste overeenkomsten
                 System.out.println("Sort by most similar traits");
             }
-            // todo interests ordenen op meeste overeenkomsten
-
-            // todo profiletraits ordenen op meeste overeenkomsten
+        } else {
+            // er is geen priority dus totale match score doorgeven.
         }
         return profileRepository.findAll(specification).stream()
                 .map(GetProfileDto::toDto)
@@ -119,8 +117,15 @@ public class ProfileService {
             patchedProfile.setImage(
                     imageRepository.findById(patch.imageId()).orElseThrow(NotFoundException::new));
         if (patch.gender() != null) patchedProfile.setGender(convertToGender(patch.gender()));
-        if (patch.lookingForGender() != null)
-            patchedProfile.setLookingForGender(convertToGender(patch.lookingForGender()));
+
+        List<Gender> converted = new ArrayList<>();
+        if (patch.lookingForGender() != null && !patch.lookingForGender().isEmpty())
+            for (String gender : patch.lookingForGender()) {
+                converted.add(convertToGender(gender));
+                System.out.println("HEEEEEEEEEEEEEEE");
+            }
+        patchedProfile.setLookingForGender(converted);
+
         if (patch.sexualities() != null)
             patchedProfile.setSexualities(convertToSexualities(patch.sexualities()));
         if (patch.traits() != null)

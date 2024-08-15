@@ -26,10 +26,7 @@ const useValidators = () => {
         if (form.gender === "" || form.gender.includes("Select a ")) {
             return false;
         }
-        if (
-            form.lookingForGender === "" ||
-            form.lookingForGender.includes("Select a ")
-        ) {
+        if (form.lookingForGender.length === 0) {
             return false;
         }
         if (form.sexualities.length === 0) {
@@ -59,7 +56,7 @@ export default useValidators;
 interface ProfileForm {
     description: string;
     gender: string;
-    lookingForGender: string;
+    lookingForGender: string[];
     sexualities: number[];
     dateOfBirth: string;
     imageId: number | null;

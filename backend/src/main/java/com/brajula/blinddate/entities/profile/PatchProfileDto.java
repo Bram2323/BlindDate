@@ -13,7 +13,7 @@ The same goes for the sexualities list, adding that to profile entity is handled
 public record PatchProfileDto(
         String description,
         String gender,
-        String lookingForGender,
+        List<String> lookingForGender,
         LocalDate dateOfBirth,
         List<Long> sexualities,
         List<Long> interests,

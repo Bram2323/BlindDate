@@ -3,6 +3,8 @@ import React from "react";
 export const ScrollContainer: React.FC<ScrollContainerProps> = ({
     children,
     label,
+    height,
+    width,
 }: any) => {
     return (
         <div className="w-full p-4 ">
@@ -11,7 +13,11 @@ export const ScrollContainer: React.FC<ScrollContainerProps> = ({
                     {label}
                 </h3>
             )}
-            <div className="border-2 bg-white border-feminine-secondary-dark overflow-scroll h-36 w-full m-2 rounded-lg">
+            <div
+                className={`${height ? height : "h-36"} ${
+                    width ? width : "w-full"
+                } border-2 bg-white border-feminine-secondary-dark overflow-scroll m-2 rounded-lg`}
+            >
                 {children}
             </div>
         </div>
@@ -21,4 +27,6 @@ export const ScrollContainer: React.FC<ScrollContainerProps> = ({
 interface ScrollContainerProps {
     label?: string;
     children: any;
+    height?: string;
+    width?: string;
 }

@@ -83,9 +83,16 @@ export const ProfileView = () => {
                             <span className="font-bold tracking-wider">
                                 looking for
                             </span>
-                            <span className="border-2 border-feminine-secondary-dark p-2 bg-feminine-secondary-dark rounded-lg text-white tracking-wider">
-                                {profile?.lookingForGender.toLowerCase()}
-                            </span>
+                            <div className="flex flex-col overflow-scroll min-w-fit h-10 border-2 border-feminine-secondary-dark p-2 bg-feminine-secondary-dark rounded-lg text-white tracking-wider">
+                                {profile?.lookingForGender &&
+                                    profile.lookingForGender.map(
+                                        (gender, index) => (
+                                            <span key={gender + index}>
+                                                {gender.toLowerCase()}
+                                            </span>
+                                        )
+                                    )}
+                            </div>
                         </div>
                     </Section>
 
@@ -128,7 +135,7 @@ interface Profile {
     username: string;
     description: string;
     gender: string;
-    lookingForGender: string;
+    lookingForGender: string[];
     sexualities: List[];
     interests: List[];
     traits: { id: number; trait: { question: string }; answer: string }[];

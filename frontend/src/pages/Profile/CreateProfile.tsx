@@ -36,7 +36,7 @@ export const CreateProfile = () => {
     const formRef = useRef<IProfileForm>({
         description: "",
         gender: "",
-        lookingForGender: "",
+        lookingForGender: [],
         sexualities: [],
         dateOfBirth: "",
         imageId: null,
@@ -81,7 +81,6 @@ export const CreateProfile = () => {
             ApiService.post("images", formData)
                 .then((response) => {
                     formRef.current.imageId = response.data.id;
-                    console.log(formRef.current.imageId);
                     resolve(true);
                 })
                 .catch((error) => {
@@ -94,6 +93,10 @@ export const CreateProfile = () => {
     const saveProfile = () => {
         if (!profileExists && !validateForm(formRef.current)) {
             setError("Fill in all fields");
+            return;
+        }
+        if (formRef.current.lookingForGender.length === 0) {
+            setError("Select at least 1 gender you are looking for!");
             return;
         }
         saveImage().then((imageSaved) => {
@@ -161,6 +164,27 @@ export const CreateProfile = () => {
             if (index > -1) list.splice(index, 1);
         }
     };
+
+    const handleGenderChange = (
+        list: String[],
+        id: number,
+        isChecked: boolean
+    ) => {
+        const gender = genders
+            .find((gender) => gender.id === id)
+            ?.value.toUpperCase();
+
+        if (isChecked && gender) {
+            if (!list.includes(gender)) {
+                list.push(gender);
+            }
+        } else if (gender) {
+            const index = list.indexOf(gender);
+            if (index > -1) {
+                list.splice(index, 1);
+            }
+        }
+    };
     return (
         <div className="w-full flex flex-col items-center justify-center">
             <Warning
@@ -194,7 +218,6 @@ export const CreateProfile = () => {
                         label={"BirthDate"}
                         initialDate={profile?.dateOfBirth}
                         getDate={(date) => {
-                            console.log(date);
                             formRef.current.dateOfBirth = date;
                         }}
                     />
@@ -210,24 +233,36 @@ export const CreateProfile = () => {
                         profile?.gender ? profile.gender.toLowerCase() : ""
                     }
                 />
-                <DropDownSelect
+                <ScrollContainer
                     label={"Looking for"}
-                    category={"gender"}
-                    options={genders}
-                    onSelect={(gender) =>
-                        (formRef.current.lookingForGender =
-                            gender.toUpperCase())
-                    }
-                    initialValue={
-                        profile?.lookingForGender
-                            ? profile.lookingForGender.toLowerCase()
-                            : ""
-                    }
-                />
+                    height={"h-12"}
+                    width={"w-36"}
+                >
+                    <ul>
+                        {genders.map((gender) => (
+                            <li key={gender.id}>
+                                <Checkbox
+                                    targetId={gender.id}
+                                    content={gender.value}
+                                    handleChange={(id, isChecked) =>
+                                        handleGenderChange(
+                                            formRef.current.lookingForGender,
+                                            id,
+                                            isChecked
+                                        )
+                                    }
+                                    isChecked={profile?.lookingForGender.includes(
+                                        gender.value.toUpperCase()
+                                    )}
+                                />
+                            </li>
+                        ))}
+                    </ul>
+                </ScrollContainer>
             </Section>
 
             <Section label={"personal-details-container"}>
-                <ScrollContainer label={"Preferences"}>
+                <ScrollContainer label={"Gender identity"} height={"h-24"}>
                     <ul>
                         {sexualities &&
                             sexualities.map((sex) => (
