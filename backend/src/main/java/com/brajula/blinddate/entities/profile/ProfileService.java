@@ -43,7 +43,11 @@ public class ProfileService {
     private final TraitService traitService;
 
     public List<GetProfileDto> getAll(
-            String gender, Integer minAge, Integer maxAge, List<Long> preferences) {
+            String gender,
+            Integer minAge,
+            Integer maxAge,
+            List<Long> preferences,
+            Priority priority) {
         Specification<Profile> specification = Specification.where(null);
         if (gender != null) {
             if (!gender.equalsIgnoreCase(Gender.OTHER.toString())) {
@@ -59,12 +63,23 @@ public class ProfileService {
                             ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
         }
 
-        // todo preferences ordenen op meeste overeenkomsten
+        if (priority != null) {
+            if (priority == Priority.PREFERENCES) {
+                // todo preferences ordenen op meeste overeenkomsten
+                System.out.println("Sort by most similar preferences");
+            }
+            if (priority == Priority.INTERESTS) {
+                // todo interests ordenen op meeste overeenkomsten
+                System.out.println("Sort by most similar interests");
+            }
+            if (priority == Priority.TRAITS) {
+                // todo traits ordenen op meeste overeenkomsten
+                System.out.println("Sort by most similar traits");
+            }
+            // todo interests ordenen op meeste overeenkomsten
 
-        // todo interests ordenen op meeste overeenkomsten
-
-        // todo profiletraits ordenen op meeste overeenkomsten
-
+            // todo profiletraits ordenen op meeste overeenkomsten
+        }
         return profileRepository.findAll(specification).stream()
                 .map(GetProfileDto::toDto)
                 .collect(Collectors.toList());

@@ -28,8 +28,10 @@ public class ProfileController {
             @RequestParam(required = false) String gender,
             @RequestParam(required = false) Integer minAge,
             @RequestParam(required = false) Integer maxAge,
-            @RequestParam(required = false) List<Long> preferences) {
-        return ResponseEntity.ok(profileService.getAll(gender, minAge, maxAge, preferences));
+            @RequestParam(required = false) List<Long> preferences,
+            @RequestParam(required = false) Priority priority) {
+        return ResponseEntity.ok(
+                profileService.getAll(gender, minAge, maxAge, preferences, priority));
     }
 
     @GetMapping("/{id}")
