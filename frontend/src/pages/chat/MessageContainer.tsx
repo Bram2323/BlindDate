@@ -17,8 +17,8 @@ function MessageContainer({
     const messageObjects = messages.map((message: any, index: number) => (
         <Message key={index} message={message} rightUser={rightUser} />
     ));
-    const [opacity, setOpacity] = useState<number>(0);
-    const [blur, setBlur] = useState<string>("blur(100px)");
+    const [opacity, setOpacity] = useState<number>(0.2);
+    const [blur, setBlur] = useState<string>("blur(70px)");
     const [imageSrc, setImageSrc] = useState<string>();
 
     useEffect(() => {}, [messages]);
@@ -38,25 +38,26 @@ function MessageContainer({
     }, [imageId]);
 
     useEffect(() => {
-        if (messages.length > 50) {
-            setOpacity(1);
-            setBlur("blur(0px)");
-        } else if (messages.length > 40) {
-            setOpacity(0.8);
-            setBlur("blur(20px)");
-        } else if (messages.length > 30) {
-            setOpacity(0.6);
-            setBlur("blur(40px)");
-        } else if (messages.length > 20) {
-            setOpacity(0.4);
-            setBlur("blur(60px)");
-        } else if (messages.length > 10) {
-            setOpacity(0.2);
-            setBlur("blur(80px)");
-        } else {
-            setOpacity(0.0);
-            setBlur("blur(100px)");
-        }
+        const maxMsgToShowImg = 50;
+        const showMoreByMsgAmount = 5;
+        const minBlur = 0;
+        const maxBlur = 70;
+        const minOpacity = 0.2;
+        const maxOpacity = 1;
+        const steps = Math.min(
+            Math.floor(messages.length / showMoreByMsgAmount),
+            maxMsgToShowImg / showMoreByMsgAmount
+        );
+        const newBlur =
+            maxBlur -
+            (steps * (maxBlur - minBlur)) /
+                (maxMsgToShowImg / showMoreByMsgAmount);
+        const newOpacity =
+            minOpacity +
+            (steps * (maxOpacity - minOpacity)) /
+                (maxMsgToShowImg / showMoreByMsgAmount);
+        setBlur(`blur(${newBlur}px)`);
+        setOpacity(newOpacity);
     }, [messages]);
 
     const AlwaysScrollToBottom = () => {
@@ -71,17 +72,18 @@ function MessageContainer({
     };
 
     return (
-        <div
-            className="h-full w-full overflow-hidden"
-            style={{
-                backgroundImage: `url(${imageSrc})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                filter: blur,
-                opacity: opacity,
-            }}
-        >
-            <div className="h-full w-full flex flex-col gap-1 overflow-y-auto p-2">
+        <div className="h-full w-full overflow-hidden relative">
+            <div
+                className="h-full w-full overflow-hidden absolute"
+                style={{
+                    backgroundImage: `url(${imageSrc})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    filter: blur,
+                    opacity: opacity,
+                }}
+            ></div>
+            <div className="h-full w-full flex flex-col gap-1 overflow-y-auto p-2 ">
                 {messageObjects}
                 <AlwaysScrollToBottom />
             </div>
