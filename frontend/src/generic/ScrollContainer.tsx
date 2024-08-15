@@ -5,18 +5,19 @@ export const ScrollContainer: React.FC<ScrollContainerProps> = ({
     label,
     height,
     width,
+    headerStyle,
 }: any) => {
     return (
-        <div className="w-full p-4 ">
+        <div className="w-full p-4 flex flex-col items-center justify-center">
             {label && (
-                <h3 className="font-extrabold tracking-wider m-4 text-center">
+                <h3 className={`${headerStyle} tracking-wider text-center`}>
                     {label}
                 </h3>
             )}
             <div
                 className={`${height ? height : "h-36"} ${
                     width ? width : "w-full"
-                } border-2 bg-white border-feminine-secondary-dark overflow-scroll m-2 rounded-lg`}
+                } border-2 bg-white border-feminine-secondary-dark overflow-scroll rounded-lg`}
             >
                 {children}
             </div>
@@ -25,6 +26,7 @@ export const ScrollContainer: React.FC<ScrollContainerProps> = ({
 };
 
 interface ScrollContainerProps {
+    headerStyle?: string;
     label?: string;
     children: any;
     height?: string;

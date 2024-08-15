@@ -193,7 +193,7 @@ export const CreateProfile = () => {
                 warningColor={"bg-red-500"}
             />
             <Section label={"img-container"}>
-                <h1 className="text-5xl font-extrabold tracking-wider capitalize m-2">
+                <h1 className="text-5xl font-extrabold tracking-wider capitalize m-2 sm:text-2xl">
                     {user.username}
                 </h1>
                 <ImageUpload
@@ -262,7 +262,11 @@ export const CreateProfile = () => {
             </Section>
 
             <Section label={"personal-details-container"}>
-                <ScrollContainer label={"Gender identity"} height={"h-24"}>
+                <ScrollContainer
+                    label={"Gender identity"}
+                    height={"h-24"}
+                    headerStyle={"font-extrabold m-4"}
+                >
                     <ul>
                         {sexualities &&
                             sexualities.map((sex) => (

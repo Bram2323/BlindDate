@@ -122,7 +122,6 @@ public class ProfileService {
         if (patch.lookingForGender() != null && !patch.lookingForGender().isEmpty())
             for (String gender : patch.lookingForGender()) {
                 converted.add(convertToGender(gender));
-                System.out.println("HEEEEEEEEEEEEEEE");
             }
         patchedProfile.setLookingForGender(converted);
 
