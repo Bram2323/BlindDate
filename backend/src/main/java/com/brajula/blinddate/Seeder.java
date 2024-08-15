@@ -201,7 +201,7 @@ public class Seeder implements CommandLineRunner {
             User savedUser = seedUser(user);
             Profile profile = MockProfiles.PROFILES.get(random.nextInt(0, count));
             profile.setUser(savedUser);
-            // dit genereert een gebroken image,is de bedoeling totdat beter alternatief
+
             ImageUploadResponse image =
                     imageService.uploadImage(
                             ONE_PIXEL_IMAGE, user.username() + "img.png", "image/png");
