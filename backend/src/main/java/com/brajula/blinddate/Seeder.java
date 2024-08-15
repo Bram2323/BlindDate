@@ -46,7 +46,6 @@ public class Seeder implements CommandLineRunner {
         seedSexuality();
         seedInterests();
         seedQuestions();
-        seedUsers();
         seedChats();
     }
 
@@ -165,54 +164,5 @@ public class Seeder implements CommandLineRunner {
                         new Trait("Do you like going to parties?"),
                         new Trait("Are you a fan of spontaneous plans?"));
         traitRepository.saveAll(traits);
-    }
-
-    private void seedUsers() {
-        if (userRepository.count() != 0) return;
-        List<User> testUsers =
-                List.of(
-                        new User(
-                                "SuperSam",
-                                "Test!234",
-                                Role.USER,
-                                "Sam",
-                                "Calder",
-                                "sam.c@test.com"),
-                        new User(
-                                "LimeGirl",
-                                "Test!234",
-                                Role.USER,
-                                "Lime",
-                                "Welt",
-                                "lime.w@test.com"),
-                        new User(
-                                "GamerGuy95",
-                                "Test!234",
-                                Role.USER,
-                                "Phil",
-                                "Walker",
-                                "phil.w@test.com"),
-                        new User(
-                                "MatrixGuy99",
-                                "Test!234",
-                                Role.USER,
-                                "Thomas",
-                                "Anderson",
-                                "thomas.a@test.com"),
-                        new User(
-                                "RanchLady",
-                                "Test!234",
-                                Role.USER,
-                                "Romani",
-                                "Cremia",
-                                "romani.c@test.com"));
-        for (User testUser : testUsers) {
-            userService.register(
-                    testUser.getUsername(),
-                    testUser.getPassword(),
-                    testUser.getFirstName(),
-                    testUser.getLastName(),
-                    testUser.getEmail());
-        }
     }
 }
