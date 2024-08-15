@@ -47,4 +47,18 @@ public class ImageService {
                         })
                 .orElse(null);
     }
+
+    // voor de seeder
+    @Transactional
+    public ImageUploadResponse uploadImage(byte[] imageData, String name, String type)
+            throws IOException {
+        var imageToSave =
+                Image.builder()
+                        .name(name)
+                        .type(type)
+                        .imageData(ImageUtils.compressImage(imageData))
+                        .build();
+        imageRepository.save(imageToSave);
+        return new ImageUploadResponse(imageToSave.id);
+    }
 }

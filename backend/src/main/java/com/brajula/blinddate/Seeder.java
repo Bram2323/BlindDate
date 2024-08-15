@@ -1,18 +1,34 @@
 package com.brajula.blinddate;
 
+import static com.brajula.blinddate.mockdata.MockInterests.INTERESTS;
+import static com.brajula.blinddate.mockdata.MockSexualities.SEXUALITIES;
+import static com.brajula.blinddate.mockdata.MockTraits.TRAITS;
+import static com.brajula.blinddate.mockdata.MockUsers.USERS;
+
 import com.brajula.blinddate.entities.chat.Chat;
 import com.brajula.blinddate.entities.chat.ChatRepository;
+import com.brajula.blinddate.entities.images.ImageRepository;
+import com.brajula.blinddate.entities.images.ImageService;
+import com.brajula.blinddate.entities.images.ImageUploadResponse;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestRepository;
 import com.brajula.blinddate.entities.message.Message;
 import com.brajula.blinddate.entities.message.MessageRepository;
+import com.brajula.blinddate.entities.profile.Profile;
+import com.brajula.blinddate.entities.profile.ProfileRepository;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityRepository;
 import com.brajula.blinddate.entities.trait.Trait;
 import com.brajula.blinddate.entities.trait.TraitRepository;
+import com.brajula.blinddate.entities.trait.profiletraits.Answer;
+import com.brajula.blinddate.entities.trait.profiletraits.ProfileTrait;
+import com.brajula.blinddate.entities.trait.profiletraits.ProfileTraitRepository;
 import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.entities.user.UserService;
+import com.brajula.blinddate.exceptions.NotFoundException;
+import com.brajula.blinddate.mockdata.MockImage;
+import com.brajula.blinddate.mockdata.MockProfiles;
 import com.brajula.blinddate.security.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -21,9 +37,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -36,6 +52,10 @@ public class Seeder implements CommandLineRunner {
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final TraitRepository traitRepository;
+    private final ProfileRepository profileRepository;
+    private final ProfileTraitRepository profileTraitRepository;
+    private final ImageService imageService;
+    private final ImageRepository imageRepository;
 
     @Value("${blinddate.admin-password}")
     private String adminPassword;
@@ -47,6 +67,7 @@ public class Seeder implements CommandLineRunner {
         seedInterests();
         seedQuestions();
         seedChats();
+        SeedProfilesWithUsersAndImages();
     }
 
     private void seedChats() {
@@ -76,40 +97,7 @@ public class Seeder implements CommandLineRunner {
 
     private void seedInterests() {
         if (interestRepository.count() > 0) return;
-        List<Interest> interests =
-                List.of(
-                        new Interest("Photography"),
-                        new Interest("Hiking"),
-                        new Interest("Cooking"),
-                        new Interest("Gardening"),
-                        new Interest("Reading"),
-                        new Interest("Writing"),
-                        new Interest("Traveling"),
-                        new Interest("Playing a musical instrument"),
-                        new Interest("Drawing or painting"),
-                        new Interest("Dancing"),
-                        new Interest("Yoga"),
-                        new Interest("Meditation"),
-                        new Interest("Cycling"),
-                        new Interest("Bird watching"),
-                        new Interest("Astronomy"),
-                        new Interest("Chess"),
-                        new Interest("Board games"),
-                        new Interest("Knitting"),
-                        new Interest("Crocheting"),
-                        new Interest("Pottery"),
-                        new Interest("DIY projects"),
-                        new Interest("Scrapbooking"),
-                        new Interest("Learning new languages"),
-                        new Interest("Volunteering"),
-                        new Interest("Fitness"),
-                        new Interest("Blogging or vlogging"),
-                        new Interest("Fishing"),
-                        new Interest("Camping"),
-                        new Interest("Rock climbing"),
-                        new Interest("Surfing"),
-                        new Interest("Baking"));
-        interestRepository.saveAll(interests);
+        interestRepository.saveAll(INTERESTS);
     }
 
     private void updateOrCreateAdmin() {
@@ -128,41 +116,77 @@ public class Seeder implements CommandLineRunner {
 
     private void seedSexuality() {
         if (sexualityRepository.count() > 0) return;
-        List<Sexuality> sexualities =
-                List.of(
-                        (new Sexuality("Heterosexual")),
-                        (new Sexuality("Homosexual")),
-                        (new Sexuality("Bisexual")),
-                        (new Sexuality("Pansexual")),
-                        (new Sexuality("Asexual")),
-                        (new Sexuality("Queer")),
-                        (new Sexuality("Demisexual")),
-                        (new Sexuality("Omnisexual")),
-                        (new Sexuality("Sexual Fluidity")),
-                        (new Sexuality("Furry")),
-                        (new Sexuality("Androsexual")),
-                        (new Sexuality("Gynosexual")),
-                        (new Sexuality("Graysexual")),
-                        (new Sexuality("Skoliosexual")),
-                        (new Sexuality("Polysexual")));
-
-        sexualityRepository.saveAll(sexualities);
+        sexualityRepository.saveAll(SEXUALITIES);
     }
 
     private void seedQuestions() {
         if (traitRepository.count() > 0) return;
-        List<Trait> traits =
-                List.of(
-                        new Trait("Do you enjoy outdoor activities?"),
-                        new Trait("Are you a morning person?"),
-                        new Trait("Do you like trying new foods?"),
-                        new Trait("Is traveling a passion of yours?"),
-                        new Trait("Do you prefer reading books over watching movies?"),
-                        new Trait("Are you a dog person?"),
-                        new Trait("Do you enjoy cooking?"),
-                        new Trait("Is fitness a priority for you?"),
-                        new Trait("Do you like going to parties?"),
-                        new Trait("Are you a fan of spontaneous plans?"));
-        traitRepository.saveAll(traits);
+        traitRepository.saveAll(TRAITS);
+    }
+
+    private User seedUser(SeedUserDto user) {
+        return userService.register(
+                user.username(), user.password(), user.firstname(), user.lastname(), user.email());
+    }
+
+    private List<ProfileTrait> seedProfileTraits() {
+        List<Trait> traitList = traitRepository.findAll();
+        Random random = new Random();
+        List<Answer> answers = Arrays.asList(Answer.YES, Answer.NO, Answer.IT_DEPENDS);
+        Answer randomAnswer = answers.get(random.nextInt(0, 3));
+        List<ProfileTrait> profileTraitList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            ProfileTrait profileTrait =
+                    new ProfileTrait(
+                            traitList.get(random.nextInt(0, traitList.size())), randomAnswer);
+            profileTraitRepository.save(profileTrait);
+            profileTraitList.add(profileTrait);
+        }
+        return profileTraitList;
+    }
+
+    private List<Sexuality> getPreferences() {
+        List<Sexuality> sexualityList = sexualityRepository.findAll();
+        int max = sexualityList.size();
+        List<Sexuality> randomPreferences = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < 5; i++) {
+            randomPreferences.add(sexualityList.get(random.nextInt(0, max)));
+        }
+        return randomPreferences;
+    }
+
+    private List<Interest> getInterests() {
+        List<Interest> interestList = interestRepository.findAll();
+        int max = interestList.size();
+        List<Interest> randomInterests = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < 5; i++) {
+            randomInterests.add(interestList.get(random.nextInt(0, max)));
+        }
+        return randomInterests;
+    }
+
+    private void SeedProfilesWithUsersAndImages() throws IOException {
+        if (userRepository.count() > 4) return;
+        int count = MockProfiles.PROFILES.size();
+        Random random = new Random();
+
+        for (com.brajula.blinddate.SeedUserDto user : USERS) {
+            User savedUser = seedUser(user);
+            Profile profile = MockProfiles.PROFILES.get(random.nextInt(0, count));
+            profile.setUser(savedUser);
+            // dit genereert een gebroken image,is de bedoeling totdat beter alternatief
+            ImageUploadResponse image =
+                    imageService.uploadImage(
+                            MockImage.ONE_PIXEL_IMAGE, user.username() + "img.png", "image/png");
+            profile.setImage(
+                    imageRepository.findById(image.id()).orElseThrow(NotFoundException::new));
+            profile.setSexualities(new HashSet<>(getPreferences()));
+            profile.setInterests(new HashSet<>(getInterests()));
+            profile.setProfileTraits(new HashSet<>(seedProfileTraits()));
+
+            profileRepository.save(profile);
+        }
     }
 }

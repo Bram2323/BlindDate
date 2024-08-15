@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -43,7 +44,12 @@ public class ProfileService {
     private final TraitService traitService;
     private final UserRepository userRepository;
 
-    public List<GetProfileDto> getAll() {
+    public List<GetProfileDto> getAll(String searchGender) {
+        Specification<Profile> specification = Specification.where(null);
+        if (searchGender != null) {
+            // add to spec
+        }
+
         return profileRepository.findAll().stream()
                 .map(GetProfileDto::toDto)
                 .collect(Collectors.toList());
