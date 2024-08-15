@@ -6,6 +6,10 @@ import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestRepository;
 import com.brajula.blinddate.entities.message.Message;
 import com.brajula.blinddate.entities.message.MessageRepository;
+import com.brajula.blinddate.entities.profile.Gender;
+import com.brajula.blinddate.entities.profile.Profile;
+import com.brajula.blinddate.entities.profile.ProfileRepository;
+import com.brajula.blinddate.entities.profile.ProfileService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityRepository;
 import com.brajula.blinddate.entities.trait.Trait;
@@ -21,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +41,8 @@ public class Seeder implements CommandLineRunner {
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final TraitRepository traitRepository;
+    private final ProfileRepository profileRepository;
+    private final ProfileService profileService;
 
     @Value("${blinddate.admin-password}")
     private String adminPassword;
@@ -46,6 +53,7 @@ public class Seeder implements CommandLineRunner {
         seedSexuality();
         seedInterests();
         seedQuestions();
+        seedProfiles();
         seedChats();
     }
 
@@ -164,5 +172,47 @@ public class Seeder implements CommandLineRunner {
                         new Trait("Do you like going to parties?"),
                         new Trait("Are you a fan of spontaneous plans?"));
         traitRepository.saveAll(traits);
+    }
+
+    private void seedProfiles() {
+        if (profileRepository.count() != 0) return;
+        List<Profile> testProfiles =
+                List.of(
+                        new Profile(
+                                "Cool person 1",
+                                Gender.OTHER,
+                                Gender.FEMALE,
+                                LocalDate.of(1994, 4, 25),
+                                userService.register(
+                                        "TestUser1", "Test!234", "TE1", "ST1", "test1@test.com")),
+                        new Profile(
+                                "Cool person 2",
+                                Gender.MALE,
+                                Gender.MALE,
+                                LocalDate.of(1994, 4, 25),
+                                userService.register(
+                                        "TestUser2", "Test!234", "TE2", "ST2", "test2@test.com")),
+                        new Profile(
+                                "Cool person 3",
+                                Gender.FEMALE,
+                                Gender.NONBINARY,
+                                LocalDate.of(1994, 4, 25),
+                                userService.register(
+                                        "TestUser3", "Test!234", "TE3", "ST3", "test3@test.com")),
+                        new Profile(
+                                "Cool person 4",
+                                Gender.NONBINARY,
+                                Gender.OTHER,
+                                LocalDate.of(1994, 4, 25),
+                                userService.register(
+                                        "TestUser4", "Test!234", "TE4", "ST4", "test4test.com")),
+                        new Profile(
+                                "Cool person 5",
+                                Gender.MALE,
+                                Gender.FEMALE,
+                                LocalDate.of(1994, 4, 25),
+                                userService.register(
+                                        "TestUser5", "Test!234", "TE5", "ST5", "test5@test.com")));
+        profileRepository.saveAll(testProfiles);
     }
 }
