@@ -76,6 +76,7 @@ export const ProfileView = () => {
                             {profile?.username}
                         </h1>
                         {<img src={imageSrc} className="rounded-lg h-56" />}
+                        <span className="p-2">{profile?.age} years</span>
                         <div className="w-2/3 p-4 flex flex-row items-center justify-between ">
                             <span className="border-2 border-feminine-secondary-dark p-2 bg-feminine-secondary-dark rounded-lg text-white tracking-wider">
                                 {profile?.gender.toLocaleLowerCase()}
@@ -108,6 +109,10 @@ export const ProfileView = () => {
                     <Section label={"personal-details-container"}>
                         <ProfileSection
                             title="Preferences"
+                            items={profile?.preferences}
+                        />
+                        <ProfileSection
+                            title="Gender identities"
                             items={profile?.sexualities}
                         />
                         <ProfileSection
@@ -134,10 +139,12 @@ interface Profile {
     id: number;
     username: string;
     description: string;
+    age: number;
     gender: string;
     lookingForGender: string[];
     sexualities: List[];
     interests: List[];
+    preferences: List[];
     traits: { id: number; trait: { question: string }; answer: string }[];
     imageId: number;
 }

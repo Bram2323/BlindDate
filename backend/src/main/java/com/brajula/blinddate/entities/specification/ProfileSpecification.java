@@ -10,13 +10,14 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class ProfileSpecification {
 
     // Param -> Gender
-    public static Specification<Profile> hasGender(Gender gender) {
+    public static Specification<Profile> hasGender(List<Gender> genders) {
         return (Root<Profile> root, CriteriaQuery<?> query, CriteriaBuilder builder) ->
-                builder.equal(root.get("gender"), gender);
+                root.get("gender").in(genders);
     }
 
     // Param -> Age Range

@@ -26,6 +26,7 @@ export interface IProfileForm {
     gender: string;
     lookingForGender: string[];
     sexualities: number[];
+    preferences: number[];
     dateOfBirth: string;
     imageId: number | null;
     interests: number[];

@@ -5,6 +5,7 @@ import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.trait.profiletraits.ProfileTrait;
 import com.brajula.blinddate.entities.user.User;
+import com.brajula.blinddate.preferences.Preference;
 
 import jakarta.persistence.*;
 
@@ -32,7 +33,9 @@ public class Profile {
 
     @OneToOne @Setter private User user;
 
-    @ManyToMany @Setter private Set<Sexuality> sexualities;
+    @ManyToMany @Setter private Set<Sexuality> sexualities = new HashSet<>();
+
+    @ManyToMany @Setter private Set<Preference> preferences = new HashSet<>();
 
     @ManyToMany @Setter private Set<Interest> interests = new HashSet<>();
 

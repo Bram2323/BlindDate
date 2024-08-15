@@ -20,6 +20,7 @@ public record PostProfileDto(
         LocalDate dateOfBirth,
         List<Long> sexualities,
         List<Long> interests,
+        List<Long> preferences,
         List<PostProfileTraitDto> traits,
         Long imageId) {
     public Profile toProfile(User user) {

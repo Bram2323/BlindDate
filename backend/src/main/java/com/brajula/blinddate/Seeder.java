@@ -2,6 +2,7 @@ package com.brajula.blinddate;
 
 import static com.brajula.blinddate.mockdata.MockImage.ONE_PIXEL_IMAGE;
 import static com.brajula.blinddate.mockdata.MockInterests.INTERESTS;
+import static com.brajula.blinddate.mockdata.MockPreferences.PREFERENCES;
 import static com.brajula.blinddate.mockdata.MockSexualities.SEXUALITIES;
 import static com.brajula.blinddate.mockdata.MockTraits.TRAITS;
 import static com.brajula.blinddate.mockdata.MockUsers.USERS;
@@ -29,6 +30,8 @@ import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.entities.user.UserService;
 import com.brajula.blinddate.exceptions.NotFoundException;
 import com.brajula.blinddate.mockdata.MockProfiles;
+import com.brajula.blinddate.preferences.Preference;
+import com.brajula.blinddate.preferences.PreferenceRepository;
 import com.brajula.blinddate.security.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -56,6 +59,7 @@ public class Seeder implements CommandLineRunner {
     private final ProfileTraitRepository profileTraitRepository;
     private final ImageService imageService;
     private final ImageRepository imageRepository;
+    private final PreferenceRepository preferenceRepository;
 
     @Value("${blinddate.admin-password}")
     private String adminPassword;
@@ -67,6 +71,7 @@ public class Seeder implements CommandLineRunner {
         seedInterests();
         seedQuestions();
         seedChats();
+        seedPreferences();
         SeedProfilesWithUsersAndImages();
     }
 
@@ -95,11 +100,6 @@ public class Seeder implements CommandLineRunner {
         messageRepository.save(message2);
     }
 
-    private void seedInterests() {
-        if (interestRepository.count() > 0) return;
-        interestRepository.saveAll(INTERESTS);
-    }
-
     private void updateOrCreateAdmin() {
         Optional<User> possibleAdmin = userRepository.findByUsernameIgnoreCase("admin");
         if (possibleAdmin.isEmpty()) {
@@ -119,9 +119,19 @@ public class Seeder implements CommandLineRunner {
         sexualityRepository.saveAll(SEXUALITIES);
     }
 
+    private void seedInterests() {
+        if (interestRepository.count() > 0) return;
+        interestRepository.saveAll(INTERESTS);
+    }
+
     private void seedQuestions() {
         if (traitRepository.count() > 0) return;
         traitRepository.saveAll(TRAITS);
+    }
+
+    private void seedPreferences() {
+        if (preferenceRepository.count() > 0) return;
+        preferenceRepository.saveAll(PREFERENCES);
     }
 
     private User seedUser(SeedUserDto user) {
@@ -129,23 +139,27 @@ public class Seeder implements CommandLineRunner {
                 user.username(), user.password(), user.firstname(), user.lastname(), user.email());
     }
 
-    private List<ProfileTrait> seedProfileTraits() {
+    private List<ProfileTrait> getProfileTraits() {
         List<Trait> traitList = traitRepository.findAll();
         Random random = new Random();
         List<Answer> answers = Arrays.asList(Answer.YES, Answer.NO, Answer.IT_DEPENDS);
-        Answer randomAnswer = answers.get(random.nextInt(0, 3));
+
+        Set<Trait> randomTraitList = new HashSet<>();
+        do {
+            Trait trait = traitList.get(random.nextInt(0, traitList.size()));
+            randomTraitList.add(trait);
+        } while (randomTraitList.size() < 5);
+
         List<ProfileTrait> profileTraitList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            ProfileTrait profileTrait =
-                    new ProfileTrait(
-                            traitList.get(random.nextInt(0, traitList.size())), randomAnswer);
-            profileTraitRepository.save(profileTrait);
-            profileTraitList.add(profileTrait);
+        for (Trait trait : randomTraitList) {
+            Answer randomAnswer = answers.get(random.nextInt(0, 3));
+            profileTraitList.add(
+                    profileTraitRepository.save(new ProfileTrait(trait, randomAnswer)));
         }
         return profileTraitList;
     }
 
-    private List<Sexuality> getPreferences() {
+    private List<Sexuality> getSexualities() {
         List<Sexuality> sexualityList = sexualityRepository.findAll();
         int max = sexualityList.size();
         List<Sexuality> randomPreferences = new ArrayList<>();
@@ -167,6 +181,17 @@ public class Seeder implements CommandLineRunner {
         return randomInterests;
     }
 
+    private List<Preference> getPreferences() {
+        List<Preference> preferencesList = preferenceRepository.findAll();
+        int max = preferencesList.size();
+        List<Preference> randomPreferences = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < 5; i++) {
+            randomPreferences.add(preferencesList.get(random.nextInt(0, max)));
+        }
+        return randomPreferences;
+    }
+
     private void SeedProfilesWithUsersAndImages() throws IOException {
         if (userRepository.count() > 4) return;
         int count = MockProfiles.PROFILES.size();
@@ -182,9 +207,10 @@ public class Seeder implements CommandLineRunner {
                             ONE_PIXEL_IMAGE, user.username() + "img.png", "image/png");
             profile.setImage(
                     imageRepository.findById(image.id()).orElseThrow(NotFoundException::new));
-            profile.setSexualities(new HashSet<>(getPreferences()));
+            profile.setSexualities(new HashSet<>(getSexualities()));
             profile.setInterests(new HashSet<>(getInterests()));
-            profile.setProfileTraits(new HashSet<>(seedProfileTraits()));
+            profile.setProfileTraits(new HashSet<>(getProfileTraits()));
+            profile.setPreferences(new HashSet<>(getPreferences()));
 
             profileRepository.save(profile);
         }

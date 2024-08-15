@@ -3,6 +3,7 @@ package com.brajula.blinddate.entities.profile;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.trait.profiletraits.ProfileTrait;
+import com.brajula.blinddate.preferences.Preference;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,6 +22,7 @@ public record GetProfileDto(
         Set<Sexuality> sexualities,
         Set<Interest> interests,
         Set<ProfileTrait> traits,
+        Set<Preference> preferences,
         Long imageId) {
     public static GetProfileDto toDto(Profile profile) {
         return new GetProfileDto(
@@ -35,6 +37,7 @@ public record GetProfileDto(
                 profile.getSexualities(),
                 profile.getInterests(),
                 profile.getProfileTraits(),
+                profile.getPreferences(),
                 profile.getImage().getId());
     }
 }

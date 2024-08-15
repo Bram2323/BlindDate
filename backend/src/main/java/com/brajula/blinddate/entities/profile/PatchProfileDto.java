@@ -16,6 +16,7 @@ public record PatchProfileDto(
         List<String> lookingForGender,
         LocalDate dateOfBirth,
         List<Long> sexualities,
+        List<Long> preferences,
         List<Long> interests,
         List<PostProfileTraitDto> traits,
         Long imageId) {}

@@ -15,6 +15,8 @@ import com.brajula.blinddate.entities.trait.profiletraits.ProfileTraitService;
 import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.exceptions.BadRequestException;
 import com.brajula.blinddate.exceptions.NotFoundException;
+import com.brajula.blinddate.preferences.Preference;
+import com.brajula.blinddate.preferences.PreferenceService;
 
 import jakarta.transaction.Transactional;
 
@@ -38,21 +40,20 @@ public class ProfileService {
     private final InterestService interestService;
     private final ProfileTraitService profileTraitService;
     private final TraitService traitService;
+    private final PreferenceService preferenceService;
 
     public List<GetProfileDto> getAll(
-            String gender,
+            List<String> genders,
             Integer minAge,
             Integer maxAge,
             List<Long> preferences,
             Priority priority) {
         Specification<Profile> specification = Specification.where(null);
-        if (gender != null) {
-            if (!gender.equalsIgnoreCase(Gender.OTHER.toString())) {
-                specification =
-                        specification.and(
-                                ProfileSpecification.hasGender(
-                                        Gender.valueOf(gender.toUpperCase())));
-            }
+        if (genders != null && !genders.isEmpty()) {
+            specification =
+                    specification.and(
+                            ProfileSpecification.hasGender(
+                                    genders.stream().map(this::convertToGender).toList()));
         }
         if (minAge != null && maxAge != null) {
             specification =
@@ -103,6 +104,7 @@ public class ProfileService {
             profile.setSexualities(convertToSexualities(dto.sexualities()));
             profile.setInterests(convertToInterests(dto.interests()));
             profile.setProfileTraits(convertToProfileTraits(dto.traits()));
+            profile.setPreferences(convertToPreferences(dto.preferences()));
             return profileRepository.save(profile);
         }
     }
@@ -127,6 +129,8 @@ public class ProfileService {
 
         if (patch.sexualities() != null)
             patchedProfile.setSexualities(convertToSexualities(patch.sexualities()));
+        if (patch.preferences() != null)
+            patchedProfile.setPreferences(convertToPreferences(patch.preferences()));
         if (patch.traits() != null)
             patchedProfile.setProfileTraits(convertToProfileTraits(patch.traits()));
         if (patch.interests() != null)
@@ -136,6 +140,12 @@ public class ProfileService {
         return patchedProfile;
     }
 
+    public void delete(Long id) {
+        profileRepository.findById(id).orElseThrow(NotFoundException::new);
+        profileRepository.deleteById(id);
+    }
+
+    // helper methods
     public Gender convertToGender(String value) {
         try {
             return Gender.valueOf(value.toUpperCase());
@@ -150,6 +160,14 @@ public class ProfileService {
             sexualities.add(sexualityService.getById(id));
         }
         return sexualities;
+    }
+
+    public Set<Preference> convertToPreferences(List<Long> preferenceIdList) {
+        Set<Preference> preferences = new HashSet<>();
+        for (Long id : preferenceIdList) {
+            preferences.add(preferenceService.getById(id));
+        }
+        return preferences;
     }
 
     public Set<Interest> convertToInterests(List<Long> interestIdList) {
@@ -175,10 +193,5 @@ public class ProfileService {
             traits.add(profileTrait);
         }
         return traits;
-    }
-
-    public void delete(Long id) {
-        profileRepository.findById(id).orElseThrow(NotFoundException::new);
-        profileRepository.deleteById(id);
     }
 }

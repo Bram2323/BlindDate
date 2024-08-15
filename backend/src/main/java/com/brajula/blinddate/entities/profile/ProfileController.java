@@ -25,7 +25,7 @@ public class ProfileController {
 
     @GetMapping
     public ResponseEntity<List<GetProfileDto>> getAll(
-            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) List<String> gender,
             @RequestParam(required = false) Integer minAge,
             @RequestParam(required = false) Integer maxAge,
             @RequestParam(required = false) List<Long> preferences,

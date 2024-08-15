@@ -30,6 +30,7 @@ export const CreateProfile = () => {
     const [imageSrc, setImageUrl] = useState<string>();
     const [error, setError] = useState<string>("");
     const [sexualities, setSexualities] = useState<IFetchOption[]>();
+    const [preferences, setPreferences] = useState<IFetchOption[]>();
     const [interests, setInterests] = useState<IFetchOption[]>();
     const [traits, setTraits] = useState<IFetchTrait[]>();
     const imageRef = useRef<File | null>(null);
@@ -38,6 +39,7 @@ export const CreateProfile = () => {
         gender: "",
         lookingForGender: [],
         sexualities: [],
+        preferences: [],
         dateOfBirth: "",
         imageId: null,
         interests: [],
@@ -123,6 +125,7 @@ export const CreateProfile = () => {
         fetchData("sexualities", setSexualities);
         fetchData("interests", setInterests);
         fetchData("traits", setTraits);
+        fetchData("preferences", setPreferences);
     }, []);
 
     useEffect(() => {
@@ -130,7 +133,7 @@ export const CreateProfile = () => {
             setProfile(res.profile);
             setImageUrl(res.imageUrl);
         });
-    }, [traits, sexualities, interests]);
+    }, [traits, sexualities, interests, preferences]);
 
     useEffect(() => {
         if (profile != null) {
@@ -140,6 +143,9 @@ export const CreateProfile = () => {
             );
             formRef.current.interests = formRef.current.interests.map(
                 (interest) => interest.id
+            );
+            formRef.current.preferences = formRef.current.preferences.map(
+                (pref) => pref.id
             );
         }
     }, [profileExists]);
@@ -262,6 +268,34 @@ export const CreateProfile = () => {
             </Section>
 
             <Section label={"personal-details-container"}>
+                <ScrollContainer
+                    label={"Preferences"}
+                    height={"h-24"}
+                    headerStyle={"font-extrabold m-4"}
+                >
+                    <ul>
+                        {preferences &&
+                            preferences.map((pref) => (
+                                <li key={pref.id}>
+                                    <Checkbox
+                                        targetId={pref.id}
+                                        content={pref.name}
+                                        handleChange={(id, isChecked) =>
+                                            handleCheckboxChange(
+                                                formRef.current.preferences,
+                                                id,
+                                                isChecked
+                                            )
+                                        }
+                                        isChecked={profile?.preferences.some(
+                                            (p: IFetchOption) =>
+                                                p.id === pref.id
+                                        )}
+                                    />
+                                </li>
+                            ))}
+                    </ul>
+                </ScrollContainer>
                 <ScrollContainer
                     label={"Gender identity"}
                     height={"h-24"}
