@@ -28,7 +28,7 @@ public class JudgementController {
     }
 
     @GetMapping("/{id}")
-    public List<Judgement> getByJudgeId(@PathVariable Long id) {
-        return judgementService.getByJudgeId(id);
+    public List<Long> getJudgedIdsByJudgeId(@PathVariable Long id) {
+        return judgementService.getJudgedIdsByJudgeId(id);
     }
 }

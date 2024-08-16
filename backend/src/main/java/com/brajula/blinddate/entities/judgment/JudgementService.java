@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -11,7 +12,12 @@ import java.util.List;
 public class JudgementService {
     private final JudgementRepository judgementRepository;
 
-    public List<Judgement> getByJudgeId(Long judgeId) {
-        return judgementRepository.findByJudgeIdEquals(judgeId);
+    public List<Long> getJudgedIdsByJudgeId(Long judgeId) {
+        List<Long> judgedIds = new LinkedList<>();
+        List<Judgement> judgementsByJudgeId = judgementRepository.findByJudgeIdEquals(judgeId);
+        for (Judgement judgement : judgementsByJudgeId) {
+            judgedIds.add(judgement.getJudgedId());
+        }
+        return judgedIds;
     }
 }
