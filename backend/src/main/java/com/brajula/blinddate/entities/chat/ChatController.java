@@ -115,6 +115,9 @@ public class ChatController {
         if (!chat.getUserOne().equals(user) && !chat.getUserTwo().equals(user))
             throw new ForbiddenException();
 
+        if (chat.getClosedByUserOne() || chat.getClosedByUserTwo())
+            throw new BadRequestException("This chat is closed!");
+
         String trimmedText = text.trim();
         if (trimmedText.isEmpty()) throw new BadRequestException("Text can't be empty!");
         else if (trimmedText.length() > 30000)

@@ -48,9 +48,19 @@ function Chat() {
         if (message.trim().length == 0) return;
         setMessage("");
 
-        ApiService.post("chats/" + id, { text: message }).then((response) => {
-            setChat({ ...chat, messages: [...chat.messages, response.data] });
-        });
+        ApiService.post("chats/" + id, { text: message })
+            .then((response) => {
+                setChat({
+                    ...chat,
+                    messages: [...chat.messages, response.data],
+                });
+            })
+            .catch((error) => {
+                if (error.response.data.detail == "This chat is closed!") {
+                    console.log("test", error);
+                    window.location.reload();
+                }
+            });
     }
 
     function closeChat() {
@@ -69,23 +79,33 @@ function Chat() {
 
     if (chat == undefined) return <></>;
 
-    let userText =
+    const userText =
         (containsCurrentUser ? "You, " : "") +
         otherUsers.map((user) => user.username).join(", ");
+
+    const closed = chat.closedByUserOne || chat.closedByUserTwo;
+    const borderColor = !closed ? "border-gray-500" : "border-red-600";
 
     return (
         <>
             {confirmElement}
             <div className="flex flex-col h-full items-center justify-center">
-                <div className=" bg-gray-100 w-[500px] h-[750px] rounded-xl border-2 border-gray-500 flex flex-col items-center justify-center overflow-hidden">
-                    <div className=" relative p-2 bg-gray-200 w-full text-center font-bold border-b-2 border-gray-500 rounded-t-xl">
+                <div
+                    className={`${borderColor} bg-gray-100 w-[500px] h-[750px] rounded-xl border-2  flex flex-col items-center justify-center overflow-hidden`}
+                >
+                    <div
+                        className={`${borderColor} relative p-2 bg-gray-200 w-full text-center font-bold border-b-2 rounded-t-xl`}
+                    >
                         <p>{userText}</p>
-                        <div className="absolute w-full h-full top-0 left-0 flex items-middle justify-end p-1">
+                        <div className="absolute w-full h-full top-0 left-0 flex flex-row-reverse items-center justify-between p-1">
                             <Button
                                 content="Close"
-                                style="text-sm p-0 px-2 rounded-md"
+                                style="text-sm p-0 px-2 rounded-md h-full"
                                 handleClick={closeChat}
                             />
+                            {closed && (
+                                <p className="text-red-600 pl-1">Closed</p>
+                            )}
                         </div>
                     </div>
                     <MessageContainer
@@ -95,15 +115,17 @@ function Chat() {
                         }
                         imageId={otherProfile && otherProfile.imageId}
                     />
-                    <div className="w-full border-gray-400 border-t-2">
-                        <FieldInput
-                            content={message}
-                            layout="w-full justify-self-end border-2 bg-gray-100 rounded-b-lg border-none"
-                            style="w-full rounded-xl"
-                            handleChange={(e) => setMessage(e)}
-                            onSubmit={postMessage}
-                        />
-                    </div>
+                    {!closed && (
+                        <div className="w-full border-gray-400 border-t-2">
+                            <FieldInput
+                                content={message}
+                                layout="w-full justify-self-end border-2 bg-gray-100 rounded-b-lg border-none"
+                                style="w-full rounded-xl"
+                                handleChange={(e) => setMessage(e)}
+                                onSubmit={postMessage}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         </>
