@@ -9,6 +9,7 @@ import java.util.Set;
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
-    @Query("SELECT c FROM Chats c WHERE c.userOne = ?1 OR c.userTwo = ?1")
+    @Query(
+            "SELECT c FROM Chats c WHERE (c.userOne = ?1 AND NOT c.closedByUserOne) OR (c.userTwo = ?1  AND NOT c.closedByUserTwo)")
     Set<Chat> findByUser(User user);
 }
