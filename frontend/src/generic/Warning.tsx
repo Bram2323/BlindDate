@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-export const Warning = ({ message, duration, warningColor }) => {
+export const Warning: React.FC<WarningProps> = ({
+    message,
+    duration,
+    warningColor,
+}) => {
     const [error, setError] = useState<string>("");
     const [hidden, setHidden] = useState<boolean>(true);
 

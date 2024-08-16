@@ -5,6 +5,7 @@ import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
+import com.brajula.blinddate.entities.specification.ProfileSpecification;
 import com.brajula.blinddate.entities.trait.Trait;
 import com.brajula.blinddate.entities.trait.TraitService;
 import com.brajula.blinddate.entities.trait.profiletraits.Answer;
@@ -16,6 +17,8 @@ import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.exceptions.BadRequestException;
 import com.brajula.blinddate.exceptions.NotFoundException;
 import com.brajula.blinddate.exceptions.UserNotFoundException;
+import com.brajula.blinddate.preferences.Preference;
+import com.brajula.blinddate.preferences.PreferenceService;
 
 import jakarta.transaction.Transactional;
 
@@ -26,10 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,15 +42,26 @@ public class ProfileService {
     private final InterestService interestService;
     private final ProfileTraitService profileTraitService;
     private final TraitService traitService;
+
+    private final PreferenceService preferenceService;
+
     private final UserRepository userRepository;
 
-    public List<GetProfileDto> getAll(String searchGender) {
+    public List<GetProfileDto> getAll(
+            List<String> genders, Integer minAge, Integer maxAge) {
         Specification<Profile> specification = Specification.where(null);
-        if (searchGender != null) {
-            // add to spec
+        if (genders != null && !genders.isEmpty()) {
+            specification =
+                    specification.and(
+                            ProfileSpecification.hasGender(
+                                    genders.stream().map(this::convertToGender).toList()));
         }
-
-        return profileRepository.findAll().stream()
+        if (minAge != null && maxAge != null) {
+            specification =
+                    specification.and(
+                            ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
+        }
+        return profileRepository.findAll(specification).stream()
                 .map(GetProfileDto::from)
                 .collect(Collectors.toList());
     }
@@ -75,12 +86,16 @@ public class ProfileService {
             profile.setSexualities(convertToSexualities(dto.sexualities()));
             profile.setInterests(convertToInterests(dto.interests()));
             profile.setProfileTraits(convertToProfileTraits(dto.traits()));
+
+            profile.setPreferences(convertToPreferences(dto.preferences()));
+
             // set imageId to user object
             User getUser =
                     userRepository
                             .findByUsernameIgnoreCase(user.getUsername())
                             .orElseThrow(UserNotFoundException::new);
             userRepository.save(getUser);
+
             return profileRepository.save(profile);
         }
     }
@@ -92,12 +107,18 @@ public class ProfileService {
         if (patch.imageId() != null)
             patchedProfile.setImage(
                     imageRepository.findById(patch.imageId()).orElseThrow(NotFoundException::new));
-        if (patch.gender() != null && !patch.gender().isBlank())
-            patchedProfile.setGender(convertToGender(patch.gender()));
-        if (patch.lookingForGender() != null && !patch.lookingForGender().isBlank())
-            patchedProfile.setLookingForGender(convertToGender(patch.lookingForGender()));
+        if (patch.gender() != null) patchedProfile.setGender(convertToGender(patch.gender()));
+
+        List<Gender> converted = new ArrayList<>();
+        if (patch.lookingForGender() != null && !patch.lookingForGender().isEmpty())
+            for (String gender : patch.lookingForGender()) {
+                converted.add(convertToGender(gender));
+            }
+        patchedProfile.setLookingForGender(converted);
         if (patch.sexualities() != null)
             patchedProfile.setSexualities(convertToSexualities(patch.sexualities()));
+        if (patch.preferences() != null)
+            patchedProfile.setPreferences(convertToPreferences(patch.preferences()));
         if (patch.traits() != null)
             patchedProfile.setProfileTraits(convertToProfileTraits(patch.traits()));
         if (patch.interests() != null)
@@ -107,6 +128,12 @@ public class ProfileService {
         return patchedProfile;
     }
 
+    public void delete(Long id) {
+        profileRepository.findById(id).orElseThrow(NotFoundException::new);
+        profileRepository.deleteById(id);
+    }
+
+    // helper methods
     public Gender convertToGender(String value) {
         try {
             return Gender.valueOf(value.toUpperCase());
@@ -121,6 +148,14 @@ public class ProfileService {
             sexualities.add(sexualityService.getById(id));
         }
         return sexualities;
+    }
+
+    public Set<Preference> convertToPreferences(List<Long> preferenceIdList) {
+        Set<Preference> preferences = new HashSet<>();
+        for (Long id : preferenceIdList) {
+            preferences.add(preferenceService.getById(id));
+        }
+        return preferences;
     }
 
     public Set<Interest> convertToInterests(List<Long> interestIdList) {
@@ -146,10 +181,5 @@ public class ProfileService {
             traits.add(profileTrait);
         }
         return traits;
-    }
-
-    public void delete(Long id) {
-        profileRepository.findById(id).orElseThrow(NotFoundException::new);
-        profileRepository.deleteById(id);
     }
 }
