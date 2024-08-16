@@ -3,6 +3,7 @@ package com.brajula.blinddate.entities.profile;
 import com.brajula.blinddate.entities.images.ImageRepository;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
+import com.brajula.blinddate.entities.judgment.JudgementService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
 import com.brajula.blinddate.entities.trait.Trait;
@@ -23,10 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +37,7 @@ public class ProfileService {
     private final InterestService interestService;
     private final ProfileTraitService profileTraitService;
     private final TraitService traitService;
+    private final JudgementService judgementService;
 
     public List<GetProfileDto> getAll() {
         return profileRepository.findAll().stream()
@@ -46,8 +45,19 @@ public class ProfileService {
                 .collect(Collectors.toList());
     }
 
-    public List<JudgeProfileDto> getAllJudge() {
-        return profileRepository.findAll().stream()
+    public List<JudgeProfileDto> getAllProfilesToJudge(Long currentProfileId) {
+        List<Long> judgedProfileIds = judgementService.getJudgedIdsByJudgeId(currentProfileId);
+        if (judgedProfileIds.isEmpty()) {
+            return new LinkedList<>();
+        }
+        List<Profile> excludeCurrentAndJudgedProfiles = new LinkedList<>();
+        for (Profile profile : profileRepository.findAll()) {
+            if (!currentProfileId.equals(profile.id)) {
+                if (!judgedProfileIds.contains(profile.id))
+                    excludeCurrentAndJudgedProfiles.add(profile);
+            }
+        }
+        return excludeCurrentAndJudgedProfiles.stream()
                 .map(JudgeProfileDto::toDto)
                 .collect(Collectors.toList());
     }
