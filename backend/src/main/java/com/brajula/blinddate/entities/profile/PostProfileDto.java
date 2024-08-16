@@ -22,7 +22,9 @@ public record PostProfileDto(
         List<Long> interests,
         List<Long> preferences,
         List<PostProfileTraitDto> traits,
-        Long imageId) {
+        Long imageId,
+        Integer minAge,
+        Integer maxAge) {
     public Profile toProfile(User user) {
         if (this.description == null
                 || this.gender == null
@@ -30,7 +32,9 @@ public record PostProfileDto(
                 || this.dateOfBirth == null
                 || this.sexualities.isEmpty()
                 || this.interests.isEmpty()
-                || this.imageId == null) {
+                || this.imageId == null
+                || this.minAge == null
+                || this.maxAge == null) {
             throw new BadRequestException("incomplete profile");
         }
         List<Gender> getSearchGenderList = new ArrayList<>();
@@ -52,7 +56,9 @@ public record PostProfileDto(
                 Gender.valueOf(this.gender.toUpperCase()),
                 getSearchGenderList,
                 this.dateOfBirth,
-                user);
+                user,
+                this.minAge,
+                this.maxAge);
     }
 
     public Profile toProfile() {

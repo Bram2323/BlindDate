@@ -12,6 +12,7 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useValidators from "../../hooks/useValidators";
 import "react-datepicker/dist/react-datepicker.css";
+import MultiRangeSlider, { ChangeResult } from "multi-range-slider-react";
 import {
     IProfile,
     IFetchOption,
@@ -44,6 +45,8 @@ export const CreateProfile = () => {
         imageId: null,
         interests: [],
         traits: [],
+        minAge: 0,
+        maxAge: 99,
     });
     const genders = [
         { id: 1, value: "male" },
@@ -228,6 +231,30 @@ export const CreateProfile = () => {
                         }}
                     />
                 </div>
+                {/* slider */}
+                <div className="multi-range-slider-container">
+                    <h1 className="min-w-48">Select age range</h1>
+                    <MultiRangeSlider
+                        ruler={false}
+                        min={18}
+                        max={99}
+                        step={5}
+                        minValue={18} // set naar min age als doorgegeven
+                        maxValue={99} // set naar max age als doorgegeven
+                        barInnerColor="#f688c1"
+                        barLeftColor="#D8B4FE"
+                        barRightColor="#D8B4FE"
+                        thumbLeftColor="#FFFFFF"
+                        thumbRightColor="#FFFFFF"
+                        onInput={(e: ChangeResult) => {
+                            formRef.current.minAge = e.minValue;
+                            formRef.current.maxAge = e.maxValue;
+                            console.log("min age: ", e.minValue);
+                            console.log("max age: ", e.maxValue);
+                        }}
+                    ></MultiRangeSlider>
+                </div>
+                {/*slider */}
                 <DropDownSelect
                     label={"I am a"}
                     category={"gender"}

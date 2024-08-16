@@ -32,6 +32,8 @@ export interface IProfileForm {
     imageId: number | null;
     interests: number[];
     traits: ITrait[];
+    minAge: number;
+    maxAge: number;
 }
 
 export interface ITrait {
