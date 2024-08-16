@@ -56,9 +56,15 @@ function Chat() {
     function closeChat() {
         if (!containsCurrentUser) return;
 
-        confirm("Do you want to close this chat?", () => {
-            ApiService.delete("chats/" + id).then(() => navigate("/"));
-        });
+        confirm(
+            [
+                "Do you want to close this chat?",
+                "This action can not be undone!",
+            ],
+            () => {
+                ApiService.delete("chats/" + id).then(() => navigate("/"));
+            }
+        );
     }
 
     if (chat == undefined) return <></>;
@@ -72,9 +78,15 @@ function Chat() {
             {confirmElement}
             <div className="flex flex-col h-full items-center justify-center">
                 <div className=" bg-gray-100 w-[500px] h-[750px] rounded-xl border-2 border-gray-500 flex flex-col items-center justify-center overflow-hidden">
-                    <div className="p-2 bg-gray-200 w-full text-center font-bold border-b-2 border-gray-500 rounded-t-xl">
+                    <div className=" relative p-2 bg-gray-200 w-full text-center font-bold border-b-2 border-gray-500 rounded-t-xl">
                         <p>{userText}</p>
-                        <Button content="Close" handleClick={closeChat} />
+                        <div className="absolute w-full h-full top-0 left-0 flex items-middle justify-end p-1">
+                            <Button
+                                content="Close"
+                                style="text-sm p-0 px-2 rounded-md"
+                                handleClick={closeChat}
+                            />
+                        </div>
                     </div>
                     <MessageContainer
                         messages={chat.messages}

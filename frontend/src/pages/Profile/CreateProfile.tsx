@@ -81,7 +81,6 @@ export const CreateProfile = () => {
             ApiService.post("images", formData)
                 .then((response) => {
                     formRef.current.imageId = response.data.id;
-                    console.log(formRef.current.imageId);
                     resolve(true);
                 })
                 .catch((error) => {
@@ -96,7 +95,6 @@ export const CreateProfile = () => {
             setError("Fill in all fields");
             return;
         }
-        console.log("form ref: ", formRef);
         saveImage().then((imageSaved) => {
             if (imageSaved) {
                 const apiCall = profileExists
@@ -201,7 +199,6 @@ export const CreateProfile = () => {
                         label={"BirthDate"}
                         initialDate={profile?.dateOfBirth}
                         getDate={(date) => {
-                            console.log(date);
                             formRef.current.dateOfBirth = date;
                         }}
                     />

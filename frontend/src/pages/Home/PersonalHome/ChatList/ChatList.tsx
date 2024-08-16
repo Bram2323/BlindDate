@@ -14,12 +14,7 @@ function ChatList({ chats }: ChatListProps) {
                     <p className="text-center">No Chats...</p>
                 )}
                 {sortedChats.map((chat, index) => (
-                    <ChatItem
-                        key={index}
-                        id={chat.id}
-                        users={[chat.userOne, chat.userTwo]}
-                        lastMessage={chat.lastMessage}
-                    />
+                    <ChatItem key={index} chat={chat} />
                 ))}
             </div>
         </>

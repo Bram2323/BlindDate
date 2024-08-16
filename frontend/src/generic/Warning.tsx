@@ -5,14 +5,12 @@ export const Warning = ({ message, duration, warningColor }) => {
     const [hidden, setHidden] = useState<boolean>(true);
 
     useEffect(() => {
-        console.log(message);
         if (message != "") {
             showError(message);
         }
     }, [message]);
 
     const showError = (message: string) => {
-        console.log("running");
         setError(message);
         setHidden(false);
         setTimeout(() => {

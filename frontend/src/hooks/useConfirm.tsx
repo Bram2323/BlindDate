@@ -3,19 +3,16 @@ import { Button } from "../generic/Button";
 
 export function useConfirm(): [
     JSX.Element,
-    (text: string, callback: () => void) => void
+    (text: string[], callback: () => void) => void
 ] {
     const [active, setActive] = useState(false);
-    const [text, setText] = useState("");
+    const [text, setText] = useState<string[]>([]);
     const [callback, setCallback] = useState(() => () => {});
 
-    function confirm(text: string, callback: () => void) {
-        console.log("2");
+    function confirm(text: string[], callback: () => void) {
         setActive(true);
         setText(text);
-        console.log("3");
         setCallback(() => callback);
-        console.log("4");
     }
 
     function cancel() {
@@ -23,20 +20,24 @@ export function useConfirm(): [
     }
 
     function accept() {
-        console.log("7", callback);
         setActive(false);
         callback();
-        console.log("8");
     }
 
     const element = (
         <>
             {active && (
-                <div className="z-50 fixed w-full h-full bg-black bg-opacity-10">
-                    {text}
-                    <div className="flex">
-                        <Button content="Yes" handleClick={accept} />
-                        <Button content="No" handleClick={cancel} />
+                <div className="z-50 fixed w-full h-full bg-black bg-opacity-10 flex flex-col justify-center items-center">
+                    <div className="flex flex-col items-center justify-center gap-2 bg-gray-100 p-4 rounded-xl border-4 border-gray-600 shadow-xl">
+                        <div className="flex flex-col items-center justify-center">
+                            {text.map((row, index) => (
+                                <p key={index}>{row}</p>
+                            ))}
+                        </div>
+                        <div className="flex gap-3">
+                            <Button content="Yes" handleClick={accept} />
+                            <Button content="No" handleClick={cancel} />
+                        </div>
                     </div>
                 </div>
             )}
