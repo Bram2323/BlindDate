@@ -29,8 +29,15 @@ public class ProfileController {
     }
 
     @GetMapping("/judge-list")
-    public ResponseEntity<List<JudgeProfileDto>> getAllJudge() {
-        return ResponseEntity.ok(profileService.getAllJudge());
+    public ResponseEntity<List<JudgeProfileDto>> getAllProfilesToJudge(
+            Authentication authentication) {
+        User user = authentication == null ? null : (User) authentication.getPrincipal();
+        if (user == null) {
+            throw new NotFoundException();
+        } else {
+            Long currentProfileId = profileService.getByUser(user).id;
+            return ResponseEntity.ok(profileService.getAllProfilesToJudge(currentProfileId));
+        }
     }
 
     @GetMapping("/{id}")
