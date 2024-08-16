@@ -26,8 +26,11 @@ public class ProfileController {
     private final UserRepository userRepository;
 
     @GetMapping
-    public List<GetProfileDto> getAll(@RequestParam(required = false) String searchGender) {
-        return profileService.getAll(searchGender);
+    public List<GetProfileDto> getAll(
+            @RequestParam(required = false) List<String> gender,
+            @RequestParam(required = false) Integer minAge,
+            @RequestParam(required = false) Integer maxAge) {
+        return profileService.getAll(gender, minAge, maxAge);
     }
 
     @GetMapping("/{id}")

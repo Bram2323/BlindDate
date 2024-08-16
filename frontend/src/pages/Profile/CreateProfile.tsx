@@ -30,14 +30,16 @@ export const CreateProfile = () => {
     const [imageSrc, setImageUrl] = useState<string>();
     const [error, setError] = useState<string>("");
     const [sexualities, setSexualities] = useState<IFetchOption[]>();
+    const [preferences, setPreferences] = useState<IFetchOption[]>();
     const [interests, setInterests] = useState<IFetchOption[]>();
     const [traits, setTraits] = useState<IFetchTrait[]>();
     const imageRef = useRef<File | null>(null);
     const formRef = useRef<IProfileForm>({
         description: "",
         gender: "",
-        lookingForGender: "",
+        lookingForGender: [],
         sexualities: [],
+        preferences: [],
         dateOfBirth: "",
         imageId: null,
         interests: [],
@@ -81,7 +83,6 @@ export const CreateProfile = () => {
             ApiService.post("images", formData)
                 .then((response) => {
                     formRef.current.imageId = response.data.id;
-                    console.log(formRef.current.imageId);
                     resolve(true);
                 })
                 .catch((error) => {
@@ -96,7 +97,10 @@ export const CreateProfile = () => {
             setError("Fill in all fields");
             return;
         }
-        console.log("form ref: ", formRef);
+        if (formRef.current.lookingForGender.length === 0) {
+            setError("Select at least 1 gender you are looking for!");
+            return;
+        }
         saveImage().then((imageSaved) => {
             if (imageSaved) {
                 const apiCall = profileExists
@@ -118,35 +122,33 @@ export const CreateProfile = () => {
     };
 
     useEffect(() => {
-        fetchProfileData()
-            .then((profileRes) => {
-                setProfile(profileRes.profile);
-                setImageUrl(profileRes.imageUrl);
+        if (profile != null) {
+            formRef.current = profile;
+            formRef.current.sexualities = formRef.current.sexualities.map(
+                (sex) => sex.id
+            );
+            formRef.current.interests = formRef.current.interests.map(
+                (interest) => interest.id
+            );
+            formRef.current.preferences = formRef.current.preferences.map(
+                (pref) => pref.id
+            );
+        }
+    }, [profileExists]);
 
-                return Promise.all([
-                    ApiService.get("sexualities"),
-                    ApiService.get("interests"),
-                    ApiService.get("traits"),
-                ]);
-            })
-            .then(([sexualitiesRes, interestsRes, traitsRes]) => {
-                setSexualities(sexualitiesRes.data);
-                setInterests(interestsRes.data);
-                setTraits(traitsRes.data);
-
-                if (profile) {
-                    formRef.current = profile;
-                    formRef.current.sexualities =
-                        formRef.current.sexualities.map((sex) => sex.id);
-                    formRef.current.interests = formRef.current.interests.map(
-                        (interest) => interest.id
-                    );
-                }
-            })
-            .catch((error) => {
-                console.error("Error", error);
-            });
+    useEffect(() => {
+        fetchData("sexualities", setSexualities);
+        fetchData("interests", setInterests);
+        fetchData("traits", setTraits);
+        fetchData("preferences", setPreferences);
     }, []);
+
+    useEffect(() => {
+        fetchProfileData().then((res) => {
+            setProfile(res.profile);
+            setImageUrl(res.imageUrl);
+        });
+    }, [traits, sexualities, interests, preferences]);
 
     const fetchData = (url: string, setState: any) => {
         ApiService.get(url)
@@ -168,6 +170,27 @@ export const CreateProfile = () => {
             if (index > -1) list.splice(index, 1);
         }
     };
+
+    const handleGenderChange = (
+        list: String[],
+        id: number,
+        isChecked: boolean
+    ) => {
+        const gender = genders
+            .find((gender) => gender.id === id)
+            ?.value.toUpperCase();
+
+        if (isChecked && gender) {
+            if (!list.includes(gender)) {
+                list.push(gender);
+            }
+        } else if (gender) {
+            const index = list.indexOf(gender);
+            if (index > -1) {
+                list.splice(index, 1);
+            }
+        }
+    };
     return (
         <div className="w-full flex flex-col items-center justify-center">
             <Warning
@@ -176,7 +199,7 @@ export const CreateProfile = () => {
                 warningColor={"bg-red-500"}
             />
             <Section label={"img-container"}>
-                <h1 className="text-5xl font-extrabold tracking-wider capitalize m-2">
+                <h1 className="text-5xl font-extrabold tracking-wider capitalize m-2 sm:text-2xl">
                     {user.username}
                 </h1>
                 <ImageUpload
@@ -201,7 +224,6 @@ export const CreateProfile = () => {
                         label={"BirthDate"}
                         initialDate={profile?.dateOfBirth}
                         getDate={(date) => {
-                            console.log(date);
                             formRef.current.dateOfBirth = date;
                         }}
                     />
@@ -217,24 +239,68 @@ export const CreateProfile = () => {
                         profile?.gender ? profile.gender.toLowerCase() : ""
                     }
                 />
-                <DropDownSelect
+                <ScrollContainer
                     label={"Looking for"}
-                    category={"gender"}
-                    options={genders}
-                    onSelect={(gender) =>
-                        (formRef.current.lookingForGender =
-                            gender.toUpperCase())
-                    }
-                    initialValue={
-                        profile?.lookingForGender
-                            ? profile.lookingForGender.toLowerCase()
-                            : ""
-                    }
-                />
+                    height={"h-12"}
+                    width={"w-36"}
+                >
+                    <ul>
+                        {genders.map((gender) => (
+                            <li key={gender.id}>
+                                <Checkbox
+                                    targetId={gender.id}
+                                    content={gender.value}
+                                    handleChange={(id, isChecked) =>
+                                        handleGenderChange(
+                                            formRef.current.lookingForGender,
+                                            id,
+                                            isChecked
+                                        )
+                                    }
+                                    isChecked={profile?.lookingForGender.includes(
+                                        gender.value.toUpperCase()
+                                    )}
+                                />
+                            </li>
+                        ))}
+                    </ul>
+                </ScrollContainer>
             </Section>
 
             <Section label={"personal-details-container"}>
-                <ScrollContainer label={"Preferences"}>
+                <ScrollContainer
+                    label={"Preferences"}
+                    height={"h-24"}
+                    headerStyle={"font-extrabold m-4"}
+                >
+                    <ul>
+                        {preferences &&
+                            preferences.map((pref) => (
+                                <li key={pref.id}>
+                                    <Checkbox
+                                        targetId={pref.id}
+                                        content={pref.name}
+                                        handleChange={(id, isChecked) =>
+                                            handleCheckboxChange(
+                                                formRef.current.preferences,
+                                                id,
+                                                isChecked
+                                            )
+                                        }
+                                        isChecked={profile?.preferences.some(
+                                            (p: IFetchOption) =>
+                                                p.id === pref.id
+                                        )}
+                                    />
+                                </li>
+                            ))}
+                    </ul>
+                </ScrollContainer>
+                <ScrollContainer
+                    label={"Gender identity"}
+                    height={"h-24"}
+                    headerStyle={"font-extrabold m-4"}
+                >
                     <ul>
                         {sexualities &&
                             sexualities.map((sex) => (

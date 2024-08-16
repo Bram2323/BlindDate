@@ -1,5 +1,6 @@
-package com.brajula.blinddate.entities.spefication;
+package com.brajula.blinddate.entities.specification;
 
+import com.brajula.blinddate.entities.profile.Gender;
 import com.brajula.blinddate.entities.profile.Profile;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -9,14 +10,14 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class ProfileSpecification {
 
     // Param -> Gender
-    public static Specification<Profile> hasGender(String gender) {
-        return (Root<Profile> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-            return builder.equal(root.get("gender"), gender);
-        };
+    public static Specification<Profile> hasGender(List<Gender> genders) {
+        return (Root<Profile> root, CriteriaQuery<?> query, CriteriaBuilder builder) ->
+                root.get("gender").in(genders);
     }
 
     // Param -> Age Range
@@ -28,9 +29,4 @@ public class ProfileSpecification {
             return criteriaBuilder.between(root.get("dateOfBirth"), minBirthDate, maxBirthDate);
         };
     }
-    // Param -> preferences
-
-    // Param -> interest
-
-    // Param -> profile traits
 }

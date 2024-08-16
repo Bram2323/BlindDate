@@ -21,7 +21,7 @@ export const TextArea: React.FC<TextArea> = ({
         <div className="flex flex-col m-2 w-full">
             <label htmlFor={label}>{label}</label>
             <textarea
-                className="resize-none border-2 m-4 min-h-20 p-4 rounded-lg border-feminine-secondary-dark"
+                className="resize-none border-2 m-4 min-h-36 p-4 rounded-lg border-feminine-secondary-dark"
                 onChange={(e) => {
                     handleValueChange(e.target.value);
                 }}

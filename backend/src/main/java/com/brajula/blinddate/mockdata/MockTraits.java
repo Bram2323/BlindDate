@@ -5,8 +5,6 @@ import com.brajula.blinddate.entities.trait.Trait;
 import java.util.List;
 
 public class MockTraits {
-
-    // traits
     public static final List<Trait> TRAITS =
             List.of(
                     new Trait("Do you enjoy outdoor activities?"),

@@ -5,27 +5,22 @@ import com.brajula.blinddate.entities.sexuality.Sexuality;
 import java.util.List;
 
 public class MockSexualities {
-    // sexualities //TODO BESPREKEN MET BRAM EN JULIAN OF ZE DIT EEN LEUK ALTERNATIEF VINDEN?
     public static final List<Sexuality> SEXUALITIES =
             List.of(
-                    new Sexuality("Integrity"),
-                    new Sexuality("Respect"),
-                    new Sexuality("Courage"),
-                    new Sexuality("Humility"),
-                    new Sexuality("Compassion"),
-                    new Sexuality("Accountability"),
-                    new Sexuality("Generosity"),
-                    new Sexuality("Perseverance"),
-                    new Sexuality("Gratitude"),
-                    new Sexuality("Wisdom"),
-                    new Sexuality("Fairness"),
-                    new Sexuality("Kindness"),
-                    new Sexuality("Optimism"),
-                    new Sexuality("Independence"),
-                    new Sexuality("Authenticity"),
-                    new Sexuality("Balance"),
-                    new Sexuality("Creativity"),
-                    new Sexuality("Ambition"),
-                    new Sexuality("Innovation"),
-                    new Sexuality("Trustworthiness"));
+                    (new Sexuality("Heterosexual")), // tegenovergestelde geslacht
+                    (new Sexuality("Homosexual")), // hetzelfde geslacht
+                    (new Sexuality("Bisexual")), // beide geslachten
+                    (new Sexuality("Pansexual")), // ongeacht geslacht
+                    (new Sexuality("Asexual")), // staat los van geslacht, dus geen filter?
+                    (new Sexuality("Demisexual")), // alle genders
+                    (new Sexuality("Omnisexual")), // alle genders
+                    (new Sexuality("Sexual Fluidity")), // varierend, dus geen filter?
+                    (new Sexuality(
+                            "Androsexual")), // mannelijkheid of mannelijke kenmerken. dus any?
+                    (new Sexuality(
+                            "Gynosexual")), //  vrouwelijkheid of vrouwelijke kenmerken, ook any?
+                    (new Sexuality("Graysexual")), // variant van aseksueel dus geen filter?
+                    (new Sexuality("Skoliosexual")), // nonbinary mensen
+                    (new Sexuality(
+                            "Polysexual"))); // meerdere maar niet alle genders, welke filter?
 }
