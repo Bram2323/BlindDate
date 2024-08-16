@@ -4,6 +4,7 @@ import { ProfileSection } from "./components/ProfileSection";
 import { Button } from "../../generic/Button";
 import { useNavigate } from "react-router-dom";
 import { Section } from "./components/Section";
+import { LabelBox } from "./components/LabelBox";
 
 const fetchProfileData = () => {
     return ApiService.get("profiles/my")
@@ -25,16 +26,16 @@ const fetchProfileData = () => {
 };
 
 const TraitsList = ({ traits }: Traits) => (
-    <div className="w-full rounded-lg bg-white p-4">
+    <div className="w-full rounded-lg p-4">
         <h1 className="font-extrabold tracking-wider text-center">Q&A</h1>
         <ul className="w-full flex flex-col items-center justify-center">
             {traits.map((trait) => (
                 <li
-                    className="w-full flex flex-row items-center justify-between p-4 border-b-2 border-feminine-primary-dark rounded-lg shadow-lg"
+                    className="w-full flex flex-row items-center justify-between p-4 rounded-lg shadow-lg bg-white my-4"
                     key={trait.id}
                 >
-                    <p>{trait.trait.question}</p>
-                    <p className="capitalize">
+                    <p className="text-left text-sm">{trait.trait.question}</p>
+                    <p className="text-right capitalize font-bold">
                         {trait.answer.toLowerCase().replace("_", " ")}
                     </p>
                 </li>
@@ -71,55 +72,83 @@ export const ProfileView = () => {
                             }}
                         />
                     </div>
-                    <Section label={"img-container"}>
+                    <Section
+                        label={"img-container"}
+                        style={"bg-green-300 border-2 border-green-800"}
+                    >
                         <h1 className="font-extrabold tracking-wider text-2xl p-4">
                             {profile?.username}
                         </h1>
                         {<img src={imageSrc} className="rounded-lg h-56" />}
-                        <span className="p-2">{profile?.age} years</span>
-                        <div className="w-2/3 p-4 flex flex-row items-center justify-between ">
-                            <span className="border-2 border-feminine-secondary-dark p-2 bg-feminine-secondary-dark rounded-lg text-white tracking-wider">
-                                {profile?.gender.toLocaleLowerCase()}
-                            </span>
-                            <span className="font-bold tracking-wider">
+                        <LabelBox
+                            content={`${profile?.age} years`}
+                            style={"my-2"}
+                        />
+                        <div className="gap-2 flex flex-row items-center justify-between">
+                            <LabelBox content={profile?.gender.toLowerCase()} />
+                            <span className="font-bold tracking-wider ">
                                 looking for
                             </span>
-                            <div className="flex flex-col overflow-scroll min-w-fit h-10 border-2 border-feminine-secondary-dark p-2 bg-feminine-secondary-dark rounded-lg text-white tracking-wider">
+                            <ul className="flex gap-2">
                                 {profile?.lookingForGender &&
                                     profile.lookingForGender.map(
                                         (gender, index) => (
-                                            <span key={gender + index}>
-                                                {gender.toLowerCase()}
-                                            </span>
+                                            <LabelBox
+                                                content={gender.toLowerCase()}
+                                            />
                                         )
                                     )}
-                            </div>
+                            </ul>
                         </div>
                     </Section>
 
-                    <Section label={"about-container"}>
+                    <Section
+                        label={"about-container"}
+                        style="bg-purple-300 border-2 border-purple-800 py-4"
+                    >
                         <p className="text-2xl font-extrabold tracking-wider">
                             About me
                         </p>
-                        <div className="w-full my-4 bg-white p-4 min-h-36 rounded-lg shadow-lg">
+                        <div className="w-full my-4 bg-white p-4 min-h-48 rounded-lg shadow-lg">
                             {profile?.description}
                         </div>
                     </Section>
 
-                    <Section label={"personal-details-container"}>
+                    <Section
+                        label={"preference-container"}
+                        style={"bg-blue-300 border-2 border-blue-800"}
+                    >
                         <ProfileSection
                             title="Preferences"
                             items={profile?.preferences}
                         />
+                    </Section>
+
+                    <Section
+                        label={"gender-identity-container"}
+                        style={"bg-pink-300 border-2 border-pink-800"}
+                    >
                         <ProfileSection
                             title="Gender identities"
                             items={profile?.sexualities}
                         />
+                    </Section>
+
+                    <Section
+                        label={"interest-container"}
+                        style={"bg-green-300 border-2 border-green-800"}
+                    >
                         <ProfileSection
                             title="Thinks i like"
                             items={profile?.interests}
                             style={""}
                         />
+                    </Section>
+
+                    <Section
+                        label={"traits-container"}
+                        style={"bg-purple-300 border-2 border-purple-800"}
+                    >
                         <TraitsList traits={profile?.traits} />
                     </Section>
                 </div>

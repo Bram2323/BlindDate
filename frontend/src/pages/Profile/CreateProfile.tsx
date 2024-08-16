@@ -70,6 +70,9 @@ export const CreateProfile = () => {
                 });
             })
             .catch((error) => {
+                if (error.response && error.response.status != 404) {
+                    console.error(error);
+                }
                 return { profile: null, imageUrl: "" };
             });
     };
@@ -144,14 +147,11 @@ export const CreateProfile = () => {
         fetchData("interests", setInterests);
         fetchData("traits", setTraits);
         fetchData("preferences", setPreferences);
-    }, []);
-
-    useEffect(() => {
         fetchProfileData().then((res) => {
             setProfile(res.profile);
             setImageUrl(res.imageUrl);
         });
-    }, [traits, sexualities, interests, preferences]);
+    }, []);
 
     const fetchData = (url: string, setState: any) => {
         ApiService.get(url)
@@ -201,7 +201,7 @@ export const CreateProfile = () => {
                 duration={3000}
                 warningColor={"bg-red-500"}
             />
-            <Section label={"img-container"}>
+            <Section label={"img-container"} style={"bg-blue-300"}>
                 <h1 className="text-5xl font-extrabold tracking-wider capitalize m-2 sm:text-2xl">
                     {user.username}
                 </h1>
@@ -212,7 +212,7 @@ export const CreateProfile = () => {
                 />
             </Section>
 
-            <Section label={"about-container"}>
+            <Section label={"about-container"} style={"bg-feminine-primary"}>
                 <h1>What you should know about me</h1>
                 <TextArea
                     initialValue={
@@ -294,7 +294,7 @@ export const CreateProfile = () => {
                 </ScrollContainer>
             </Section>
 
-            <Section label={"personal-details-container"}>
+            <Section label={"personal-details-container"} style={"bg-blue-300"}>
                 <ScrollContainer
                     label={"Preferences"}
                     height={"h-24"}

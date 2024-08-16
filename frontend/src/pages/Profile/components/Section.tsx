@@ -1,8 +1,14 @@
 import React from "react";
 
-export const Section: React.FC<SectionProps> = ({ children, label }) => {
+export const Section: React.FC<SectionProps> = ({
+    children,
+    label,
+    style: style,
+}) => {
     return (
-        <div className="my-4 p-4 rounded-lg flex flex-col items-center justify-center w-1/2 bg-feminine-primary shadow-lg">
+        <div
+            className={`${style} my-4 p-4 rounded-lg flex flex-col items-center justify-center w-1/2 shadow-lg`}
+        >
             {children}
         </div>
     );
@@ -11,4 +17,5 @@ export const Section: React.FC<SectionProps> = ({ children, label }) => {
 interface SectionProps {
     children: React.ReactNode;
     label: string;
+    style?: string;
 }
