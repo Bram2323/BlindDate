@@ -23,7 +23,7 @@ public class JudgementController {
     public ResponseEntity<Judgement> postJudgement(
             @RequestBody Judgement judgement, UriComponentsBuilder ucb) {
         Judgement savedJudgement = judgementRepository.save(judgement);
-        URI location = ucb.path("{id}").buildAndExpand(savedJudgement.getId()).toUri();
+        URI location = ucb.path("judgement/{id}").buildAndExpand(savedJudgement.getId()).toUri();
         return ResponseEntity.created(location).body(savedJudgement);
     }
 
