@@ -216,7 +216,16 @@ public class ProfileService {
                     }
                 }
                 for (ProfileTrait profileTrait : profile.getProfileTraits()) {
-                    // idk yet
+                    List<ProfileTrait> similarProfileTraits =
+                            userProfile.getProfileTraits().stream()
+                                    .filter(
+                                            userProfileTrait ->
+                                                    userProfileTrait.getTrait()
+                                                                    == profileTrait.getTrait()
+                                                            && userProfileTrait.getAnswer()
+                                                                    == profileTrait.getAnswer())
+                                    .toList();
+                    matchScore += similarProfileTraits.size();
                 }
                 GetProfileDto dto = GetProfileDto.from(profile, matchScore);
                 getProfileDtoList.add(dto);
