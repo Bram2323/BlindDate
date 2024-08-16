@@ -5,6 +5,7 @@ import JudgeProfileBox from "../../components/Profile/JudgeProfileBox";
 
 function Judging() {
     const [profiles, setProfiles] = useState<JudgeProfile[]>();
+    const [currentProfile, setCurrentProfile] = useState<JudgeProfile>();
 
     useEffect(() => {
         ApiService.get("profiles/judge-list")
@@ -14,10 +15,25 @@ function Judging() {
             .catch((error) => {
                 console.error(error);
             });
+
+        ApiService.get("profiles/my")
+            .then((response) => {
+                setCurrentProfile(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }, []);
 
     function handleAnswer(answer: boolean) {
-        if (!profiles) return;
+        if (!profiles || !currentProfile) return;
+
+        ApiService.post("judgments", {
+            accepted: answer,
+            judgeId: currentProfile.id,
+            judgedId: profiles[0].id,
+        });
+
         if (profiles.length === 1) {
             setProfiles(undefined);
         } else {
