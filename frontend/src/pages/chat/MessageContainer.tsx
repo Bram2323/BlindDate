@@ -21,8 +21,6 @@ function MessageContainer({
     const [blur, setBlur] = useState<string>("blur(70px)");
     const [imageSrc, setImageSrc] = useState<string>();
 
-    useEffect(() => {}, [messages]);
-
     const getImage = () => {
         if (imageId == null) return;
         ApiService.get(`images/${imageId}`, null, "blob").then(
@@ -81,9 +79,13 @@ function MessageContainer({
                     backgroundPosition: "center",
                     filter: blur,
                     opacity: opacity,
+                    zIndex: 1,
                 }}
             ></div>
-            <div className="h-full w-full flex flex-col gap-1 overflow-y-auto p-2 ">
+            <div
+                className="absolute h-full w-full flex flex-col gap-1 overflow-y-auto p-2 "
+                style={{ zIndex: 2 }}
+            >
                 {messageObjects}
                 <AlwaysScrollToBottom />
             </div>
