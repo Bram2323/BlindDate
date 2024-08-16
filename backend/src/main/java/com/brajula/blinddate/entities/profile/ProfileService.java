@@ -74,31 +74,7 @@ public class ProfileService {
         Profile userProfile =
                 profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
 
-        List<GetProfileDto> getProfileDtoList = new ArrayList<>();
-        for (Profile profile : filteredProfiles) {
-            if (!profile.equals(userProfile)) {
-                int matchScore = 0;
-                for (Preference preference : profile.getPreferences()) {
-                    if (userProfile.getPreferences().contains(preference)) {
-                        matchScore++;
-                    }
-                }
-                for (Sexuality sexuality : profile.getSexualities()) {
-                    if (userProfile.getSexualities().contains(sexuality)) {
-                        matchScore++;
-                    }
-                }
-                for (Interest interest : profile.getInterests()) {
-                    if (userProfile.getInterests().contains(interest)) {
-                        matchScore++;
-                    }
-                }
-                GetProfileDto dto = GetProfileDto.from(profile, matchScore);
-                getProfileDtoList.add(dto);
-            }
-        }
-
-        return getProfileDtoList;
+        return calculateMatchScore(userProfile, filteredProfiles);
     }
 
     public Profile getById(Long id) {
@@ -216,5 +192,38 @@ public class ProfileService {
             traits.add(profileTrait);
         }
         return traits;
+    }
+
+    public List<GetProfileDto> calculateMatchScore(
+            Profile userProfile, List<Profile> filteredProfiles) {
+        List<GetProfileDto> getProfileDtoList = new ArrayList<>();
+        for (Profile profile : filteredProfiles) {
+            if (!profile.equals(userProfile)) {
+                int matchScore = 0;
+                for (Preference preference : profile.getPreferences()) {
+                    if (userProfile.getPreferences().contains(preference)) {
+                        matchScore++;
+                    }
+                }
+                for (Sexuality sexuality : profile.getSexualities()) {
+                    if (userProfile.getSexualities().contains(sexuality)) {
+                        matchScore++;
+                    }
+                }
+                for (Interest interest : profile.getInterests()) {
+                    if (userProfile.getInterests().contains(interest)) {
+                        matchScore++;
+                    }
+                }
+                for (ProfileTrait profileTrait : profile.getProfileTraits()) {
+                    // idk yet
+                }
+                GetProfileDto dto = GetProfileDto.from(profile, matchScore);
+                getProfileDtoList.add(dto);
+            }
+        }
+
+        getProfileDtoList.sort(Comparator.comparingInt(GetProfileDto::matchScore).reversed());
+        return getProfileDtoList;
     }
 }
