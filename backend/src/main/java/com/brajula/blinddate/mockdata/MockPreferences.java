@@ -1,6 +1,6 @@
 package com.brajula.blinddate.mockdata;
 
-import com.brajula.blinddate.preferences.Preference;
+import com.brajula.blinddate.entities.preferences.Preference;
 
 import java.util.List;
 

@@ -3,6 +3,8 @@ package com.brajula.blinddate.entities.profile;
 import com.brajula.blinddate.entities.images.ImageRepository;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
+import com.brajula.blinddate.entities.preferences.Preference;
+import com.brajula.blinddate.entities.preferences.PreferenceService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
 import com.brajula.blinddate.entities.specification.ProfileSpecification;
@@ -17,8 +19,6 @@ import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.exceptions.BadRequestException;
 import com.brajula.blinddate.exceptions.NotFoundException;
 import com.brajula.blinddate.exceptions.UserNotFoundException;
-import com.brajula.blinddate.preferences.Preference;
-import com.brajula.blinddate.preferences.PreferenceService;
 
 import jakarta.transaction.Transactional;
 

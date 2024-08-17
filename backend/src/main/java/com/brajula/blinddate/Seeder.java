@@ -15,6 +15,8 @@ import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestRepository;
 import com.brajula.blinddate.entities.message.Message;
 import com.brajula.blinddate.entities.message.MessageRepository;
+import com.brajula.blinddate.entities.preferences.Preference;
+import com.brajula.blinddate.entities.preferences.PreferenceRepository;
 import com.brajula.blinddate.entities.profile.Gender;
 import com.brajula.blinddate.entities.profile.Profile;
 import com.brajula.blinddate.entities.profile.ProfileRepository;
@@ -31,17 +33,20 @@ import com.brajula.blinddate.entities.user.UserService;
 import com.brajula.blinddate.exceptions.NotFoundException;
 import com.brajula.blinddate.mockdata.MockImage;
 import com.brajula.blinddate.mockdata.MockProfiles;
-import com.brajula.blinddate.preferences.Preference;
-import com.brajula.blinddate.preferences.PreferenceRepository;
 import com.brajula.blinddate.security.Role;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -75,7 +80,11 @@ public class Seeder implements CommandLineRunner {
         seedQuestions();
         seedChats();
         SeedProfilesWithUsersAndImages();
+        seedProfileImage();
     }
+
+    @Value("${image.folder.path:src/main/resources/images}")
+    private String imageFolderPath;
 
     private void seedChats() throws IOException {
         if (chatRepository.count() > 0) return;
@@ -249,5 +258,29 @@ public class Seeder implements CommandLineRunner {
         profile.setPreferences(new HashSet<>(getPreferences()));
 
         profileRepository.save(profile);
+    }
+
+    public void seedProfileImage() {
+        Path imageFolder = Paths.get(imageFolderPath);
+        try {
+            Files.list(imageFolder)
+                    .forEach(
+                            filePath -> {
+                                try {
+                                    Resource resource =
+                                            new ClassPathResource(
+                                                    "images/" + filePath.getFileName().toString());
+                                    byte[] imageData = Files.readAllBytes(filePath);
+                                    ImageUploadResponse savedImage =
+                                            imageService.uploadImage(
+                                                    imageData, resource.getFilename(), "image/png");
+                                    System.out.println(savedImage.id());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
