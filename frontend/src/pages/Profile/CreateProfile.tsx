@@ -13,11 +13,7 @@ import { useNavigate } from "react-router-dom";
 import useValidators from "../../hooks/useValidators";
 import "react-datepicker/dist/react-datepicker.css";
 import MultiRangeSlider, { ChangeResult } from "multi-range-slider-react";
-import {
-    IProfile,
-    IFetchOption,
-    IFetchTrait,
-} from "./components/ProfileInterfaces";
+import { IProfile, IFetchOption, ITrait } from "./components/ProfileInterfaces";
 import { DateInput } from "./components/DateInput";
 import { Warning } from "../../generic/Warning";
 import { Section } from "./components/Section";
@@ -33,20 +29,20 @@ export const CreateProfile = () => {
     const [sexualities, setSexualities] = useState<IFetchOption[]>();
     const [preferences, setPreferences] = useState<IFetchOption[]>();
     const [interests, setInterests] = useState<IFetchOption[]>();
-    const [traits, setTraits] = useState<IFetchTrait[]>();
+    const [traits, setTraits] = useState<ITrait[]>();
     const imageRef = useRef<File | null>(null);
     const formRef = useRef<IProfile>({
-        description: "",
-        gender: "",
-        lookingForGender: [],
-        sexualities: [],
-        preferences: [],
-        dateOfBirth: "",
         imageId: null,
-        interests: [],
-        traits: [],
+        dateOfBirth: "",
         minAge: 0,
         maxAge: 99,
+        gender: "",
+        lookingForGender: [],
+        description: "",
+        sexualities: [],
+        preferences: [],
+        interests: [],
+        traits: [],
     });
     const genders = [
         { id: 1, value: "male" },
@@ -139,13 +135,13 @@ export const CreateProfile = () => {
         if (profile != null) {
             formRef.current = profile;
             formRef.current.sexualities = formRef.current.sexualities.map(
-                (sex) => sex.id
+                (sex: any) => sex.id
             );
             formRef.current.interests = formRef.current.interests.map(
-                (interest) => interest.id
+                (interest: any) => interest.id
             );
             formRef.current.preferences = formRef.current.preferences.map(
-                (pref) => pref.id
+                (pref: any) => pref.id
             );
         }
     }, [profileExists]);
@@ -170,7 +166,7 @@ export const CreateProfile = () => {
     };
 
     const handleCheckboxChange = (
-        list: number[],
+        list: any,
         id: number,
         isChecked: boolean
     ) => {
@@ -328,7 +324,7 @@ export const CreateProfile = () => {
                                             )
                                         }
                                         isChecked={profile?.preferences.some(
-                                            (p: number) => p.id === pref.id
+                                            (p: any) => p.id === pref.id
                                         )}
                                     />
                                 </li>
@@ -361,7 +357,7 @@ export const CreateProfile = () => {
                                             )
                                         }
                                         isChecked={profile?.sexualities.some(
-                                            (s: number) => s.id === sex.id
+                                            (s: any) => s.id === sex.id
                                         )}
                                     />
                                 </li>
@@ -376,12 +372,12 @@ export const CreateProfile = () => {
                     <DropDownSelectWithList
                         label={"Traits"}
                         category={"Trait"}
-                        options={traits.map((trait) => ({
+                        options={traits.map((trait: any) => ({
                             id: trait.id,
                             value: trait.question,
                         }))}
                         extraOptions={["yes", "no", "it depends"]}
-                        initialValues={profile?.traits.map((trait) => ({
+                        initialValues={profile?.traits.map((trait: any) => ({
                             id: trait.trait.id,
                             value: trait.trait.question,
                             extra: trait.answer,
@@ -409,10 +405,12 @@ export const CreateProfile = () => {
                             id: interest.id,
                             value: interest.name,
                         }))}
-                        initialValues={profile?.interests.map((interest) => ({
-                            id: interest.id,
-                            value: interest.name,
-                        }))}
+                        initialValues={profile?.interests.map(
+                            (interest: any) => ({
+                                id: interest.id,
+                                value: interest.name,
+                            })
+                        )}
                         getSelected={(selectedInterests) => {
                             formRef.current.interests = selectedInterests.map(
                                 (interest) => interest.id

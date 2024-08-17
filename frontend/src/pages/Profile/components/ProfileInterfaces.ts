@@ -1,25 +1,23 @@
 export interface IProfile {
     id?: number;
-    description: string;
-    gender: string;
-    lookingForGender: string[];
-    sexualities: number[];
-    preferences: number[];
-    dateOfBirth: string;
+    username?: string;
     imageId: number | null;
-    interests: number[];
-    traits: ITrait[];
+    dateOfBirth: string;
+    age?: number;
     minAge: number;
     maxAge: number;
+    gender: string;
+    lookingForGender: string[];
+    description: string;
+    sexualities: IFetchOption[] | number[];
+    preferences: IFetchOption[] | number[];
+    interests: IFetchOption[] | number[];
+    traits: ITrait[];
 }
 
 export interface IFetchOption {
     id: number;
     name: string;
-}
-export interface IFetchTrait {
-    id: number;
-    question: string;
 }
 
 export interface ITrait {

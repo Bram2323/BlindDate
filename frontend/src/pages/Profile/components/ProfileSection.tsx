@@ -11,7 +11,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
                 {title}
             </h2>
             <ul className="w-full flex flex-col items-center justify-center">
-                {items.map((item: Item) => (
+                {items.map((item: any) => (
                     <li
                         key={item.id}
                         className={`${style} w-full text-center bg-white rounded-lg shadow-lg p-4 m-4 hover:font-bold`}
@@ -26,11 +26,6 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
 
 interface ProfileSectionProps {
     title: string;
-    items: Item[];
+    items: any;
     style?: string;
-}
-
-interface Item {
-    id: number;
-    name: string;
 }

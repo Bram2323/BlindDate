@@ -5,6 +5,8 @@ import { Button } from "../../generic/Button";
 import { useNavigate } from "react-router-dom";
 import { Section } from "./components/Section";
 import { LabelBox } from "./components/LabelBox";
+import { TraitsList } from "./components/TraitsList";
+import { IProfile } from "./components/ProfileInterfaces";
 
 const fetchProfileData = () => {
     return ApiService.get("profiles/my")
@@ -25,29 +27,8 @@ const fetchProfileData = () => {
         });
 };
 
-const TraitsList = ({ traits }: Traits) => (
-    <div className="w-full rounded-lg p-4">
-        <h1 className="font-extrabold tracking-wider text-center">Q&A</h1>
-        <ul className="w-full flex flex-col items-center justify-center">
-            {traits.map((trait) => (
-                <li
-                    className="w-full flex flex-row items-center justify-between p-4 rounded-lg shadow-lg bg-white my-4"
-                    key={trait.id}
-                >
-                    <p className="text-left text-sm hover:font-bold">
-                        {trait.trait.question}
-                    </p>
-                    <p className="text-right capitalize font-bold">
-                        {trait.answer.toLowerCase().replace("_", " ")}
-                    </p>
-                </li>
-            ))}
-        </ul>
-    </div>
-);
-
 export const ProfileView = () => {
-    const [profile, setProfile] = useState<Profile | null>(null);
+    const [profile, setProfile] = useState<IProfile | null>(null);
     const [imageSrc, setImageSrc] = useState<string>("");
     const navigate = useNavigate();
     const sectionsBgColors = [
@@ -61,7 +42,6 @@ export const ProfileView = () => {
     useEffect(() => {
         fetchProfileData()
             .then(({ profile, imageUrl }) => {
-                console.log(profile);
                 setProfile(profile);
                 setImageSrc(imageUrl);
             })
@@ -69,6 +49,12 @@ export const ProfileView = () => {
                 if (error.response.status == 404) navigate("/create-profile");
             });
     }, []);
+
+    // useEffect(() => {
+    //     ApiService.get("profiles").then((response) => {
+    //         console.log(response.data);
+    //     });
+    // }, []);
 
     return (
         <>
@@ -87,7 +73,11 @@ export const ProfileView = () => {
                         style={sectionsBgColors[0]}
                     >
                         <LabelBox
-                            content={profile?.username}
+                            content={
+                                profile?.username
+                                    ? profile.username
+                                    : "not found"
+                            }
                             style={"m-4 text-2xl"}
                         />
                         {<img src={imageSrc} className="rounded-lg h-56" />}
@@ -173,26 +163,3 @@ export const ProfileView = () => {
         </>
     );
 };
-
-interface List {
-    id: number;
-    name: string;
-}
-
-interface Profile {
-    id: number;
-    username: string;
-    description: string;
-    age: number;
-    gender: string;
-    lookingForGender: string[];
-    sexualities: List[];
-    interests: List[];
-    preferences: List[];
-    traits: { id: number; trait: { question: string }; answer: string }[];
-    imageId: number;
-}
-
-interface Traits {
-    traits: { id: number; trait: { question: string }; answer: string }[];
-}
