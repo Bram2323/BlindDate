@@ -31,7 +31,6 @@ import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.entities.user.UserService;
 import com.brajula.blinddate.exceptions.NotFoundException;
-import com.brajula.blinddate.mockdata.MockImage;
 import com.brajula.blinddate.mockdata.MockProfiles;
 import com.brajula.blinddate.security.Role;
 
@@ -80,11 +79,12 @@ public class Seeder implements CommandLineRunner {
         seedQuestions();
         seedChats();
         SeedProfilesWithUsersAndImages();
-        seedProfileImage();
     }
 
     @Value("${image.folder.path:src/main/resources/images}")
     private String imageFolderPath;
+
+    public Random random = new Random();
 
     private void seedChats() throws IOException {
         if (chatRepository.count() > 0) return;
@@ -165,7 +165,6 @@ public class Seeder implements CommandLineRunner {
 
     private List<ProfileTrait> getProfileTraits() {
         List<Trait> traitList = traitRepository.findAll();
-        Random random = new Random();
         List<Answer> answers = Arrays.asList(Answer.YES, Answer.NO, Answer.IT_DEPENDS);
 
         Set<Trait> randomTraitList = new HashSet<>();
@@ -195,7 +194,6 @@ public class Seeder implements CommandLineRunner {
         List<Sexuality> sexualityList = sexualityRepository.findAll();
         int max = sexualityList.size();
         List<Sexuality> randomPreferences = new ArrayList<>();
-        Random random = new Random();
         for (int i = 0; i < 5; i++) {
             Sexuality preference = sexualityList.get(random.nextInt(0, max));
             if (randomPreferences.stream()
@@ -210,7 +208,6 @@ public class Seeder implements CommandLineRunner {
         List<Interest> interestList = interestRepository.findAll();
         int max = interestList.size();
         List<Interest> randomInterests = new ArrayList<>();
-        Random random = new Random();
         for (int i = 0; i < 5; i++) {
             Interest randomInterest = interestList.get(random.nextInt(0, max));
             if (randomInterests.stream()
@@ -225,7 +222,6 @@ public class Seeder implements CommandLineRunner {
         List<Preference> preferencesList = preferenceRepository.findAll();
         int max = preferencesList.size();
         List<Preference> randomPreferences = new ArrayList<>();
-        Random random = new Random();
         for (int i = 0; i < 5; i++) {
             randomPreferences.add(preferencesList.get(random.nextInt(0, max)));
         }
@@ -235,23 +231,17 @@ public class Seeder implements CommandLineRunner {
     private void SeedProfilesWithUsersAndImages() throws IOException {
         if (userRepository.count() > 4) return;
         int count = MockProfiles.PROFILES.size();
-        Random random = new Random();
-
         for (SeedUserDto user : USERS) {
             User savedUser = seedUser(user);
             Profile profile = MockProfiles.PROFILES.get(random.nextInt(0, count));
-
             seedProfile(profile, savedUser);
         }
     }
 
     private void seedProfile(Profile profile, User user) throws IOException {
         profile.setUser(user);
-        // dit genereert een gebroken image,is de bedoeling totdat beter alternatief
-        ImageUploadResponse image =
-                imageService.uploadImage(
-                        MockImage.ONE_PIXEL_IMAGE, user.getUsername() + "img.png", "image/png");
-        profile.setImage(imageRepository.findById(image.id()).orElseThrow(NotFoundException::new));
+        profile.setImage(
+                imageRepository.findById(seedProfileImage()).orElseThrow(NotFoundException::new));
         profile.setSexualities(new HashSet<>(getSexualities()));
         profile.setInterests(new HashSet<>(getInterests()));
         profile.setProfileTraits(new HashSet<>(getProfileTraits()));
@@ -260,27 +250,15 @@ public class Seeder implements CommandLineRunner {
         profileRepository.save(profile);
     }
 
-    public void seedProfileImage() {
+    public Long seedProfileImage() throws IOException {
         Path imageFolder = Paths.get(imageFolderPath);
-        try {
-            Files.list(imageFolder)
-                    .forEach(
-                            filePath -> {
-                                try {
-                                    Resource resource =
-                                            new ClassPathResource(
-                                                    "images/" + filePath.getFileName().toString());
-                                    byte[] imageData = Files.readAllBytes(filePath);
-                                    ImageUploadResponse savedImage =
-                                            imageService.uploadImage(
-                                                    imageData, resource.getFilename(), "image/png");
-                                    System.out.println(savedImage.id());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println(imageFolder);
+        List<Path> paths = Files.list(imageFolder).toList();
+        Path path = paths.get(random.nextInt(0, 14));
+        Resource resource = new ClassPathResource("images/" + path.getFileName().toString());
+        byte[] imageData = Files.readAllBytes(path);
+        ImageUploadResponse savedImage =
+                imageService.uploadImage(imageData, resource.getFilename(), "image/png");
+        return savedImage.id();
     }
 }
