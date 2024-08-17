@@ -71,7 +71,6 @@ export const CreateProfile = () => {
                 ).then((imageResponse) => {
                     const imageUrl = URL.createObjectURL(imageResponse.data);
                     setProfileExists(true);
-                    console.log(profileData.traits);
                     return { profile: profileData, imageUrl };
                 });
             })
@@ -333,7 +332,7 @@ export const CreateProfile = () => {
 
             <Section label={"traits-box"} style={sectionsBgColors[1]}>
                 <LabelBox content={"Q&A"} style={"w-full text-center"} />
-                {profile?.traits && (
+                {traits && (
                     <DropDownSelectWithList
                         label={"Traits"}
                         category={"Trait"}
@@ -342,7 +341,7 @@ export const CreateProfile = () => {
                             value: trait.question,
                         }))}
                         extraOptions={["yes", "no", "it depends"]}
-                        initialValues={profile?.traits?.map((trait) => ({
+                        initialValues={profile?.traits.map((trait: any) => ({
                             id: trait.trait.id,
                             value: trait.trait.question,
                             extra: trait.answer,
@@ -360,7 +359,7 @@ export const CreateProfile = () => {
                     />
                 )}
             </Section>
-            <p>test</p>
+
             <Section label={"interest-box"} style={sectionsBgColors[2]}>
                 <LabelBox content={"Interests"} style={"w-full"} />
                 {interests && (
