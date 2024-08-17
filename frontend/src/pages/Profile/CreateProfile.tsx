@@ -22,6 +22,7 @@ import {
 import { DateInput } from "../../generic/DateInput";
 import { Warning } from "../../generic/Warning";
 import { Section } from "./components/Section";
+import { LabelBox } from "./components/LabelBox";
 export const CreateProfile = () => {
     const [profileExists, setProfileExists] = useState<boolean>(false);
     const [user, loggedIn] = useUser();
@@ -201,10 +202,8 @@ export const CreateProfile = () => {
                 duration={3000}
                 warningColor={"bg-red-500"}
             />
-            <Section label={"img-container"} style={"bg-blue-300"}>
-                <h1 className="text-5xl font-extrabold tracking-wider capitalize m-2 sm:text-2xl">
-                    {user.username}
-                </h1>
+            <Section label={"img-container"} style={"bg-green-300"}>
+                <LabelBox content={user.username} style={"text-xl"} />
                 <ImageUpload
                     style={"h-72"}
                     initialValue={imageSrc ? imageSrc : ""}
@@ -212,8 +211,47 @@ export const CreateProfile = () => {
                 />
             </Section>
 
-            <Section label={"about-container"} style={"bg-feminine-primary"}>
-                <h1>What you should know about me</h1>
+            <Section label={"gender-info"} style={"bg-blue-300"}>
+                <LabelBox content={"Gender Preferences"} style={""} />
+                <DropDownSelect
+                    label={"I am a"}
+                    category={"gender"}
+                    options={genders}
+                    onSelect={(gender) =>
+                        (formRef.current.gender = gender.toUpperCase())
+                    }
+                    initialValue={
+                        profile?.gender ? profile.gender.toLowerCase() : ""
+                    }
+                />
+                <ul className="flex flex-col gap-2">
+                    {genders.map((gender) => (
+                        <li
+                            label={"looking for"}
+                            key={gender.id}
+                            className="bg-white border-2 border-gray-800 rounded-lg shadow-lg"
+                        >
+                            <Checkbox
+                                targetId={gender.id}
+                                content={gender.value}
+                                handleChange={(id, isChecked) =>
+                                    handleGenderChange(
+                                        formRef.current.lookingForGender,
+                                        id,
+                                        isChecked
+                                    )
+                                }
+                                isChecked={profile?.lookingForGender.includes(
+                                    gender.value.toUpperCase()
+                                )}
+                            />
+                        </li>
+                    ))}
+                </ul>
+            </Section>
+
+            <Section label={"about-container"} style={"bg-purple-300"}>
+                <LabelBox content={"About me"} />
                 <TextArea
                     initialValue={
                         profile?.description ? profile.description : ""
@@ -222,6 +260,10 @@ export const CreateProfile = () => {
                         (formRef.current.description = description)
                     }
                 />
+            </Section>
+
+            <Section label={"age-data-box"} style={"bg-pink-300"}>
+                <LabelBox content={"Age & preference"} />
                 <div>
                     <DateInput
                         label={"BirthDate"}
@@ -255,49 +297,12 @@ export const CreateProfile = () => {
                     ></MultiRangeSlider>
                 </div>
                 {/*slider */}
-                <DropDownSelect
-                    label={"I am a"}
-                    category={"gender"}
-                    options={genders}
-                    onSelect={(gender) =>
-                        (formRef.current.gender = gender.toUpperCase())
-                    }
-                    initialValue={
-                        profile?.gender ? profile.gender.toLowerCase() : ""
-                    }
-                />
-                <ScrollContainer
-                    label={"Looking for"}
-                    height={"h-12"}
-                    width={"w-36"}
-                >
-                    <ul>
-                        {genders.map((gender) => (
-                            <li key={gender.id}>
-                                <Checkbox
-                                    targetId={gender.id}
-                                    content={gender.value}
-                                    handleChange={(id, isChecked) =>
-                                        handleGenderChange(
-                                            formRef.current.lookingForGender,
-                                            id,
-                                            isChecked
-                                        )
-                                    }
-                                    isChecked={profile?.lookingForGender.includes(
-                                        gender.value.toUpperCase()
-                                    )}
-                                />
-                            </li>
-                        ))}
-                    </ul>
-                </ScrollContainer>
             </Section>
 
-            <Section label={"personal-details-container"} style={"bg-blue-300"}>
+            <Section label={"preferences-box"} style={"bg-green-300"}>
+                <LabelBox content={"Morals & Values"} />
                 <ScrollContainer
-                    label={"Preferences"}
-                    height={"h-24"}
+                    height={"h-48"}
                     headerStyle={"font-extrabold m-4"}
                 >
                     <ul>
@@ -323,9 +328,12 @@ export const CreateProfile = () => {
                             ))}
                     </ul>
                 </ScrollContainer>
+            </Section>
+
+            <Section label={"gender-identities-box"} style={"bg-blue-300"}>
+                <LabelBox content={"Gender identity"} />
                 <ScrollContainer
-                    label={"Gender identity"}
-                    height={"h-24"}
+                    height={"h-48"}
                     headerStyle={"font-extrabold m-4"}
                 >
                     <ul>
@@ -350,6 +358,10 @@ export const CreateProfile = () => {
                             ))}
                     </ul>
                 </ScrollContainer>
+            </Section>
+
+            <Section label={"traits-box"} style={"bg-purple-300"}>
+                <LabelBox content={"Q&A"} style={"w-full text-center"} />
                 {traits && (
                     <DropDownSelectWithList
                         label={"Traits"}
@@ -376,9 +388,12 @@ export const CreateProfile = () => {
                         }}
                     />
                 )}
+            </Section>
+
+            <Section label={"interest-box"} style={"bg-pink-300"}>
+                <LabelBox content={"Interests"} />
                 {interests && (
                     <DropDownSelectWithList
-                        label={"Things I like "}
                         category="interest"
                         options={interests.map((interest) => ({
                             id: interest.id,
@@ -396,6 +411,7 @@ export const CreateProfile = () => {
                     />
                 )}
             </Section>
+
             <Button content={"Submit"} handleClick={saveProfile} />
         </div>
     );

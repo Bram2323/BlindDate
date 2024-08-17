@@ -26,7 +26,7 @@ export const DropDownSelect: React.FC<DropDownSelectProps> = ({
         <div className="m-2 w-full p-4 flex flex-col items-center justify-center">
             <label htmlFor={label}>{label}</label>
             <select
-                className="bg-white border-2 border-feminine-secondary-dark rounded-lg px-2 py-1 mx-2"
+                className="bg-white border-2 border-gray-800 rounded-lg px-2 py-1 mx-2 w-fit"
                 name={category}
                 id={id ? String(id) : category}
                 onChange={(e) => {

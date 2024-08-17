@@ -74,10 +74,10 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
 
     return (
         <div className="m-2 w-full p-4 flex flex-col items-center justify-center">
-            <div className="w-full">
+            <div className="w-full ">
                 {label && <label htmlFor={label}>{label}</label>}
                 <select
-                    className="bg-white px-2 py-1 rounded-lg border-feminine-secondary-dark border-2 m-2"
+                    className="bg-white px-2 py-1 rounded-lg border-gray-800 border-2 m-2 w-full"
                     name={label}
                     id={label}
                     onChange={(e) => {
@@ -97,16 +97,18 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
                     ))}
                 </select>
             </div>
-            <ScrollContainer>
+            <ScrollContainer width={"w-full"}>
                 <ul className="bg-white w-full rounded-lg flex flex-col items-center justify-center">
                     {selected &&
                         selected.map((selection) => (
                             <li
-                                className="flex flex-row items-center justify-between px-2 w-full"
+                                className="w-full grid grid-cols-6 items-center"
                                 key={selection.id + selection.value}
                             >
-                                <div>{selection.value}</div>
-                                <div>
+                                <div className="text-sm col-span-3">
+                                    {selection.value}
+                                </div>
+                                <div className="col-span-2">
                                     {extraOptions && (
                                         <DropDownSelect
                                             category={"choice"}
@@ -130,7 +132,7 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
                                         />
                                     )}
                                 </div>
-                                <div>
+                                <div className="col-span-1">
                                     <TbHttpDelete
                                         onClick={() => handleDelete(selection)}
                                         className="text-red-900 cursor-pointer text-3xl"
