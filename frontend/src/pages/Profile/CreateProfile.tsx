@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../../services/UserService";
 import ApiService from "../../services/ApiService";
-import { TextArea } from "../../generic/TextArea";
-import { ImageUpload } from "../../generic/ImageUpload";
-import { DropDownSelect } from "../../generic/DropDownSelect";
-import { ScrollContainer } from "../../generic/ScrollContainer";
-import Checkbox from "../../generic/Checkbox";
-import { DropDownSelectWithList } from "../../generic/DropdownSelectWithList";
+import { TextArea } from "./components/TextArea";
+import { ImageUpload } from "./components/ImageUpload";
+import { DropDownSelect } from "./components/DropDownSelect";
+import { ScrollContainer } from "./components/ScrollContainer";
+import Checkbox from "./components/Checkbox";
+import { DropDownSelectWithList } from "./components/DropdownSelectWithList";
 import { Button } from "../../generic/Button";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,9 +17,8 @@ import {
     IProfile,
     IFetchOption,
     IFetchTrait,
-    IProfileForm,
-} from "./ProfileInterfaces";
-import { DateInput } from "../../generic/DateInput";
+} from "./components/ProfileInterfaces";
+import { DateInput } from "./components/DateInput";
 import { Warning } from "../../generic/Warning";
 import { Section } from "./components/Section";
 import { LabelBox } from "./components/LabelBox";
@@ -36,7 +35,7 @@ export const CreateProfile = () => {
     const [interests, setInterests] = useState<IFetchOption[]>();
     const [traits, setTraits] = useState<IFetchTrait[]>();
     const imageRef = useRef<File | null>(null);
-    const formRef = useRef<IProfileForm>({
+    const formRef = useRef<IProfile>({
         description: "",
         gender: "",
         lookingForGender: [],
@@ -54,6 +53,14 @@ export const CreateProfile = () => {
         { id: 2, value: "female" },
         { id: 3, value: "nonbinary" },
         { id: 4, value: "other" },
+    ];
+
+    const sectionsBgColors = [
+        "bg-yellow-300",
+        "bg-purple-300",
+        "bg-blue-300",
+        "bg-pink-300",
+        "bg-green-300",
     ];
 
     const fetchProfileData = () => {
@@ -202,7 +209,7 @@ export const CreateProfile = () => {
                 duration={3000}
                 warningColor={"bg-red-500"}
             />
-            <Section label={"img-container"} style={"bg-green-300"}>
+            <Section label={"img-container"} style={sectionsBgColors[0]}>
                 <LabelBox content={user.username} style={"text-xl"} />
                 <ImageUpload
                     style={"h-72"}
@@ -211,7 +218,7 @@ export const CreateProfile = () => {
                 />
             </Section>
 
-            <Section label={"gender-info"} style={"bg-blue-300"}>
+            <Section label={"gender-info"} style={sectionsBgColors[1]}>
                 <LabelBox content={"Gender Preferences"} style={""} />
                 <DropDownSelect
                     label={"I am a"}
@@ -225,9 +232,9 @@ export const CreateProfile = () => {
                     }
                 />
                 <ul className="flex flex-col gap-2">
+                    <li className="text-center">Looking for</li>
                     {genders.map((gender) => (
                         <li
-                            label={"looking for"}
                             key={gender.id}
                             className="bg-white border-2 border-gray-800 rounded-lg shadow-lg"
                         >
@@ -250,7 +257,7 @@ export const CreateProfile = () => {
                 </ul>
             </Section>
 
-            <Section label={"about-container"} style={"bg-purple-300"}>
+            <Section label={"about-container"} style={sectionsBgColors[2]}>
                 <LabelBox content={"About me"} />
                 <TextArea
                     initialValue={
@@ -262,7 +269,7 @@ export const CreateProfile = () => {
                 />
             </Section>
 
-            <Section label={"age-data-box"} style={"bg-pink-300"}>
+            <Section label={"age-data-box"} style={sectionsBgColors[3]}>
                 <LabelBox content={"Age & preference"} />
                 <div>
                     <DateInput
@@ -273,16 +280,14 @@ export const CreateProfile = () => {
                         }}
                     />
                 </div>
-                {/* slider */}
-                <div className="multi-range-slider-container">
-                    <h1 className="min-w-48">Select age range</h1>
+                {/* slider: https://www.npmjs.com/package/multi-range-slider-react */}
+                <h1 className="min-w-48">Select age range</h1>
+                <div className="multi-range-slider-container bg-white rounded-lg p-4 shadow-2xl border-2 border-gray-800 w-full">
                     <MultiRangeSlider
-                        ruler={false}
                         min={18}
                         max={99}
-                        step={5}
-                        minValue={18} // set naar min age als doorgegeven
-                        maxValue={99} // set naar max age als doorgegeven
+                        minValue={profile?.minAge ? profile.minAge : 18} // set naar min age als doorgegeven
+                        maxValue={profile?.maxAge ? profile.maxAge : 99} // set naar max age als doorgegeven
                         barInnerColor="#f688c1"
                         barLeftColor="#D8B4FE"
                         barRightColor="#D8B4FE"
@@ -291,15 +296,18 @@ export const CreateProfile = () => {
                         onInput={(e: ChangeResult) => {
                             formRef.current.minAge = e.minValue;
                             formRef.current.maxAge = e.maxValue;
-                            console.log("min age: ", e.minValue);
-                            console.log("max age: ", e.maxValue);
+                        }}
+                        style={{
+                            border: "none",
+                            background: "none",
+                            padding: "10px",
+                            boxShadow: "none",
                         }}
                     ></MultiRangeSlider>
                 </div>
-                {/*slider */}
             </Section>
 
-            <Section label={"preferences-box"} style={"bg-green-300"}>
+            <Section label={"preferences-box"} style={sectionsBgColors[4]}>
                 <LabelBox content={"Morals & Values"} />
                 <ScrollContainer
                     height={"h-48"}
@@ -320,8 +328,7 @@ export const CreateProfile = () => {
                                             )
                                         }
                                         isChecked={profile?.preferences.some(
-                                            (p: IFetchOption) =>
-                                                p.id === pref.id
+                                            (p: number) => p.id === pref.id
                                         )}
                                     />
                                 </li>
@@ -330,7 +337,10 @@ export const CreateProfile = () => {
                 </ScrollContainer>
             </Section>
 
-            <Section label={"gender-identities-box"} style={"bg-blue-300"}>
+            <Section
+                label={"gender-identities-box"}
+                style={sectionsBgColors[0]}
+            >
                 <LabelBox content={"Gender identity"} />
                 <ScrollContainer
                     height={"h-48"}
@@ -351,7 +361,7 @@ export const CreateProfile = () => {
                                             )
                                         }
                                         isChecked={profile?.sexualities.some(
-                                            (s: IFetchOption) => s.id === sex.id
+                                            (s: number) => s.id === sex.id
                                         )}
                                     />
                                 </li>
@@ -360,7 +370,7 @@ export const CreateProfile = () => {
                 </ScrollContainer>
             </Section>
 
-            <Section label={"traits-box"} style={"bg-purple-300"}>
+            <Section label={"traits-box"} style={sectionsBgColors[1]}>
                 <LabelBox content={"Q&A"} style={"w-full text-center"} />
                 {traits && (
                     <DropDownSelectWithList
@@ -390,7 +400,7 @@ export const CreateProfile = () => {
                 )}
             </Section>
 
-            <Section label={"interest-box"} style={"bg-pink-300"}>
+            <Section label={"interest-box"} style={sectionsBgColors[2]}>
                 <LabelBox content={"Interests"} />
                 {interests && (
                     <DropDownSelectWithList

@@ -34,7 +34,9 @@ const TraitsList = ({ traits }: Traits) => (
                     className="w-full flex flex-row items-center justify-between p-4 rounded-lg shadow-lg bg-white my-4"
                     key={trait.id}
                 >
-                    <p className="text-left text-sm">{trait.trait.question}</p>
+                    <p className="text-left text-sm hover:font-bold">
+                        {trait.trait.question}
+                    </p>
                     <p className="text-right capitalize font-bold">
                         {trait.answer.toLowerCase().replace("_", " ")}
                     </p>
@@ -48,10 +50,18 @@ export const ProfileView = () => {
     const [profile, setProfile] = useState<Profile | null>(null);
     const [imageSrc, setImageSrc] = useState<string>("");
     const navigate = useNavigate();
+    const sectionsBgColors = [
+        "bg-yellow-300",
+        "bg-purple-300",
+        "bg-blue-300",
+        "bg-pink-300",
+        "bg-green-300",
+    ];
 
     useEffect(() => {
         fetchProfileData()
             .then(({ profile, imageUrl }) => {
+                console.log(profile);
                 setProfile(profile);
                 setImageSrc(imageUrl);
             })
@@ -74,26 +84,31 @@ export const ProfileView = () => {
                     </div>
                     <Section
                         label={"img-container"}
-                        style={"bg-green-300 border-2 border-green-800"}
+                        style={sectionsBgColors[0]}
                     >
-                        <h1 className="font-extrabold tracking-wider text-2xl p-4">
-                            {profile?.username}
-                        </h1>
+                        <LabelBox
+                            content={profile?.username}
+                            style={"m-4 text-2xl"}
+                        />
                         {<img src={imageSrc} className="rounded-lg h-56" />}
                         <LabelBox
                             content={`${profile?.age} years`}
-                            style={"my-2"}
+                            style={"mt-4 mb-2"}
                         />
-                        <div className="gap-2 flex flex-row items-center justify-between">
+                    </Section>
+
+                    <Section label={"gender-box"} style={sectionsBgColors[1]}>
+                        <div className="gap-2 flex flex-col items-center justify-between">
                             <LabelBox content={profile?.gender.toLowerCase()} />
                             <span className="font-bold tracking-wider ">
                                 looking for
                             </span>
-                            <ul className="flex gap-2">
+                            <ul className="flex flex-col gap-2">
                                 {profile?.lookingForGender &&
                                     profile.lookingForGender.map(
                                         (gender, index) => (
                                             <LabelBox
+                                                key={index}
                                                 content={gender.toLowerCase()}
                                             />
                                         )
@@ -104,7 +119,7 @@ export const ProfileView = () => {
 
                     <Section
                         label={"about-container"}
-                        style="bg-purple-300 border-2 border-purple-800 py-4"
+                        style={sectionsBgColors[2]}
                     >
                         <p className="text-2xl font-extrabold tracking-wider">
                             About me
@@ -116,7 +131,7 @@ export const ProfileView = () => {
 
                     <Section
                         label={"preference-container"}
-                        style={"bg-blue-300 border-2 border-blue-800"}
+                        style={sectionsBgColors[3]}
                     >
                         <ProfileSection
                             title="Preferences"
@@ -126,7 +141,7 @@ export const ProfileView = () => {
 
                     <Section
                         label={"gender-identity-container"}
-                        style={"bg-pink-300 border-2 border-pink-800"}
+                        style={sectionsBgColors[4]}
                     >
                         <ProfileSection
                             title="Gender identities"
@@ -136,7 +151,7 @@ export const ProfileView = () => {
 
                     <Section
                         label={"interest-container"}
-                        style={"bg-green-300 border-2 border-green-800"}
+                        style={sectionsBgColors[0]}
                     >
                         <ProfileSection
                             title="Thinks i like"
@@ -147,7 +162,7 @@ export const ProfileView = () => {
 
                     <Section
                         label={"traits-container"}
-                        style={"bg-purple-300 border-2 border-purple-800"}
+                        style={sectionsBgColors[1]}
                     >
                         <TraitsList traits={profile?.traits} />
                     </Section>

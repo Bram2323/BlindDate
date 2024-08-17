@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TbHttpDelete } from "react-icons/tb";
 import { DropDownSelect } from "./DropDownSelect";
-import { ScrollContainer } from "./ScrollContainer";
+import { ScrollContainer } from "../components/ScrollContainer";
 
 export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     label,
@@ -50,7 +50,10 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
         }
     };
 
-    const handleExtraChange = (newValue: string, id: number | undefined) => {
+    const handleExtraChange = (
+        newValue: string,
+        id: number | undefined | string
+    ) => {
         const updatedSelected = selected.map((item) => {
             if (item.id === id) {
                 return {
@@ -152,7 +155,7 @@ interface DropDownSelectProps {
     options: Option[];
     extraOptions?: string[];
     initialValues?: Option[] | SelectedOption[];
-    getSelected: (selected: SelectedOption[]) => void;
+    getSelected: (value: SelectedOption[], id?: string | number) => void;
 }
 
 interface Option {

@@ -14,7 +14,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
                 {items.map((item: Item) => (
                     <li
                         key={item.id}
-                        className={`${style} w-full text-center bg-white border-feminine-secondary-dark rounded-lg shadow-lg p-4 m-4`}
+                        className={`${style} w-full text-center bg-white rounded-lg shadow-lg p-4 m-4 hover:font-bold`}
                     >
                         {item.name}
                     </li>

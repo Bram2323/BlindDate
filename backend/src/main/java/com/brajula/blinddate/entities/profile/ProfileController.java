@@ -26,16 +26,12 @@ public class ProfileController {
     private final UserRepository userRepository;
 
     @GetMapping
-    public List<GetProfileDto> getAll(
-            Authentication authentication,
-            @RequestParam(required = false) List<String> gender,
-            @RequestParam(required = false) Integer minAge,
-            @RequestParam(required = false) Integer maxAge) {
+    public List<GetProfileDto> getAll(Authentication authentication) {
         User user = authentication == null ? null : (User) authentication.getPrincipal();
         if (user == null) {
             return profileService.getAll();
         } else {
-            return profileService.getAll(user, gender, minAge, maxAge);
+            return profileService.getAll(user);
         }
     }
 
