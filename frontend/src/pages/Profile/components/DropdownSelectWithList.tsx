@@ -13,6 +13,9 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
 }) => {
     const [showOptions, setShowOptions] = useState<Option[]>([]);
     const [selected, setSelected] = useState<SelectedOption[]>([]);
+    const layoutIfExtra = extraOptions
+        ? "flex-col border-b-2 border-gray-200"
+        : "";
 
     useEffect(() => {
         setShowOptions(options);
@@ -76,8 +79,8 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     }, [handleDelete, handleExtraChange]);
 
     return (
-        <div className="m-2 w-full p-4 flex flex-col items-center justify-center">
-            <div className="w-full ">
+        <div className="w-full flex flex-col items-center justify-center">
+            <div className="w-full">
                 {label && <label htmlFor={label}>{label}</label>}
                 <select
                     className="bg-white px-2 py-1 rounded-lg border-gray-800 border-2 m-2 w-full"
@@ -105,13 +108,13 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
                     {selected &&
                         selected.map((selection) => (
                             <li
-                                className="w-full grid grid-cols-6 items-center"
+                                className={`${layoutIfExtra} w-full flex items-center justify-between sm:flex-row sm:border-none`}
                                 key={selection.id + selection.value}
                             >
-                                <div className="text-sm col-span-3">
+                                <div className="text-sm w-4/8">
                                     {selection.value}
                                 </div>
-                                <div className="col-span-2">
+                                <div className="w-3/4">
                                     {extraOptions && (
                                         <DropDownSelect
                                             category={"choice"}
@@ -135,7 +138,7 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
                                         />
                                     )}
                                 </div>
-                                <div className="col-span-1">
+                                <div className="w-1/8">
                                     <TbHttpDelete
                                         onClick={() => handleDelete(selection)}
                                         className="text-red-900 cursor-pointer text-3xl"
