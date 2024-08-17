@@ -18,6 +18,7 @@ import { DateInput } from "./components/DateInput";
 import { Warning } from "../../generic/Warning";
 import { Section } from "./components/Section";
 import { LabelBox } from "./components/LabelBox";
+import { CheckBoxList } from "./components/CheckBoxList";
 export const CreateProfile = () => {
     const [profileExists, setProfileExists] = useState<boolean>(false);
     const [user, loggedIn] = useUser();
@@ -70,6 +71,7 @@ export const CreateProfile = () => {
                 ).then((imageResponse) => {
                     const imageUrl = URL.createObjectURL(imageResponse.data);
                     setProfileExists(true);
+                    console.log(profileData.traits);
                     return { profile: profileData, imageUrl };
                 });
             })
@@ -165,19 +167,6 @@ export const CreateProfile = () => {
             .catch((error) => console.error(error));
     };
 
-    const handleCheckboxChange = (
-        list: any,
-        id: number,
-        isChecked: boolean
-    ) => {
-        if (isChecked) {
-            list.push(id);
-        } else {
-            const index = list.indexOf(id);
-            if (index > -1) list.splice(index, 1);
-        }
-    };
-
     const handleGenderChange = (
         list: String[],
         id: number,
@@ -206,7 +195,7 @@ export const CreateProfile = () => {
                 warningColor={"bg-red-500"}
             />
             <Section label={"img-container"} style={sectionsBgColors[0]}>
-                <LabelBox content={user.username} style={"text-xl"} />
+                <LabelBox content={user.username} style={"text-xl w-full"} />
                 <ImageUpload
                     style={"h-72"}
                     initialValue={imageSrc ? imageSrc : ""}
@@ -215,7 +204,7 @@ export const CreateProfile = () => {
             </Section>
 
             <Section label={"gender-info"} style={sectionsBgColors[1]}>
-                <LabelBox content={"Gender Preferences"} style={""} />
+                <LabelBox content={"Gender Preferences"} style={"w-full"} />
                 <DropDownSelect
                     label={"I am a"}
                     category={"gender"}
@@ -254,7 +243,7 @@ export const CreateProfile = () => {
             </Section>
 
             <Section label={"about-container"} style={sectionsBgColors[2]}>
-                <LabelBox content={"About me"} />
+                <LabelBox content={"About me"} style={"w-full"} />
                 <TextArea
                     initialValue={
                         profile?.description ? profile.description : ""
@@ -266,7 +255,7 @@ export const CreateProfile = () => {
             </Section>
 
             <Section label={"age-data-box"} style={sectionsBgColors[3]}>
-                <LabelBox content={"Age & preference"} />
+                <LabelBox content={"Age & preference"} style={"w-full"} />
                 <div>
                     <DateInput
                         label={"BirthDate"}
@@ -304,32 +293,20 @@ export const CreateProfile = () => {
             </Section>
 
             <Section label={"preferences-box"} style={sectionsBgColors[4]}>
-                <LabelBox content={"Morals & Values"} />
+                <LabelBox content={"Morals & Values"} style={"w-full"} />
                 <ScrollContainer
                     height={"h-48"}
                     headerStyle={"font-extrabold m-4"}
                 >
-                    <ul>
-                        {preferences &&
-                            preferences.map((pref) => (
-                                <li key={pref.id}>
-                                    <Checkbox
-                                        targetId={pref.id}
-                                        content={pref.name}
-                                        handleChange={(id, isChecked) =>
-                                            handleCheckboxChange(
-                                                formRef.current.preferences,
-                                                id,
-                                                isChecked
-                                            )
-                                        }
-                                        isChecked={profile?.preferences.some(
-                                            (p: any) => p.id === pref.id
-                                        )}
-                                    />
-                                </li>
-                            ))}
-                    </ul>
+                    {profile && (
+                        <CheckBoxList
+                            options={preferences}
+                            initialValues={profile.preferences}
+                            getIdList={(list: any) => {
+                                formRef.current.preferences = list;
+                            }}
+                        />
+                    )}
                 </ScrollContainer>
             </Section>
 
@@ -337,47 +314,35 @@ export const CreateProfile = () => {
                 label={"gender-identities-box"}
                 style={sectionsBgColors[0]}
             >
-                <LabelBox content={"Gender identity"} />
+                <LabelBox content={"Gender identity"} style={"w-full"} />
                 <ScrollContainer
                     height={"h-48"}
                     headerStyle={"font-extrabold m-4"}
                 >
-                    <ul>
-                        {sexualities &&
-                            sexualities.map((sex) => (
-                                <li key={sex.id}>
-                                    <Checkbox
-                                        targetId={sex.id}
-                                        content={sex.name}
-                                        handleChange={(id, isChecked) =>
-                                            handleCheckboxChange(
-                                                formRef.current.sexualities,
-                                                id,
-                                                isChecked
-                                            )
-                                        }
-                                        isChecked={profile?.sexualities.some(
-                                            (s: any) => s.id === sex.id
-                                        )}
-                                    />
-                                </li>
-                            ))}
-                    </ul>
+                    {profile && (
+                        <CheckBoxList
+                            options={sexualities}
+                            initialValues={profile.sexualities}
+                            getIdList={(list: any) => {
+                                formRef.current.sexualities = list;
+                            }}
+                        />
+                    )}
                 </ScrollContainer>
             </Section>
 
             <Section label={"traits-box"} style={sectionsBgColors[1]}>
                 <LabelBox content={"Q&A"} style={"w-full text-center"} />
-                {traits && (
+                {profile?.traits && (
                     <DropDownSelectWithList
                         label={"Traits"}
                         category={"Trait"}
-                        options={traits.map((trait: any) => ({
+                        options={traits?.map((trait: any) => ({
                             id: trait.id,
                             value: trait.question,
                         }))}
                         extraOptions={["yes", "no", "it depends"]}
-                        initialValues={profile?.traits.map((trait: any) => ({
+                        initialValues={profile?.traits?.map((trait) => ({
                             id: trait.trait.id,
                             value: trait.trait.question,
                             extra: trait.answer,
@@ -395,9 +360,9 @@ export const CreateProfile = () => {
                     />
                 )}
             </Section>
-
+            <p>test</p>
             <Section label={"interest-box"} style={sectionsBgColors[2]}>
-                <LabelBox content={"Interests"} />
+                <LabelBox content={"Interests"} style={"w-full"} />
                 {interests && (
                     <DropDownSelectWithList
                         category="interest"
