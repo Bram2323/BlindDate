@@ -162,7 +162,6 @@ export const CreateProfile = () => {
         ApiService.get(url)
             .then((response) => {
                 setState(response.data);
-                console.log(response.data);
             })
             .catch((error) => console.error(error));
     };
