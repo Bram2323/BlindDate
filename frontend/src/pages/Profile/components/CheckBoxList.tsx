@@ -51,6 +51,6 @@ export const CheckBoxList: React.FC<CheckBoxListProps> = ({
 
 interface CheckBoxListProps {
     options: IFetchOption[] | undefined;
-    initialValues?: IFetchOption[];
+    initialValues?: IFetchOption[] | any;
     getIdList: (list: number[]) => void;
 }

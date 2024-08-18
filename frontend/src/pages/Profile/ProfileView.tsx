@@ -88,6 +88,9 @@ export const ProfileView = () => {
                     </Section>
 
                     <Section label={"gender-box"} style={sectionsBgColors[1]}>
+                        <p className="text-2xl font-extrabold tracking-wider m-4">
+                            Gender &amp; Preferences
+                        </p>
                         <div className="gap-2 flex flex-col items-center justify-between">
                             <LabelBox content={profile?.gender.toLowerCase()} />
                             <span className="font-bold tracking-wider ">

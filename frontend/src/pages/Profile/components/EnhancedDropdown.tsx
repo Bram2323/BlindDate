@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { TbHttpDelete } from "react-icons/tb";
 import { DropDownSelect } from "./DropDownSelect";
-import { ScrollContainer } from "../components/ScrollContainer";
+import { ScrollContainer } from "./ScrollContainer";
 
-export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
+export const EnhancedDropdown: React.FC<DropDownSelectProps> = ({
     label,
     category,
     options,
@@ -18,7 +18,7 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
         : "";
 
     useEffect(() => {
-        setShowOptions(options);
+        setShowOptions(sortOptions(options));
         if (initialValues) {
             const initialSelected = initialValues as SelectedOption[];
             setSelected(initialSelected);
@@ -27,14 +27,23 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     }, [options, initialValues]);
 
     const deleteInitFromShow = (initialSelected: SelectedOption[]) => {
-        const selectedValues = new Set(
-            initialSelected.map((option) => option.value)
-        );
-
+        const selectedValues = initialSelected.map((option) => option.value);
         const filteredShowOptions = showOptions.filter(
-            (option) => !selectedValues.has(option.value)
+            (option) => !selectedValues.includes(option.value)
         );
-        setShowOptions(filteredShowOptions);
+        setShowOptions(sortOptions(filteredShowOptions));
+    };
+
+    const sortOptions = (list: Option[]) => {
+        return list.sort((a, b) => {
+            if (a.value < b.value) {
+                return -1;
+            }
+            if (a.value > b.value) {
+                return 1;
+            }
+            return 0;
+        });
     };
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -71,7 +80,7 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
 
     const handleDelete = (option: Option) => {
         setSelected((prev) => prev.filter((item) => item.id !== option.id));
-        setShowOptions((prev) => [...prev, option]);
+        setShowOptions((prev) => sortOptions([...prev, option]));
     };
 
     useEffect(() => {

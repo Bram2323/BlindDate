@@ -6,7 +6,7 @@ import { ImageUpload } from "./components/ImageUpload";
 import { DropDownSelect } from "./components/DropDownSelect";
 import { ScrollContainer } from "./components/ScrollContainer";
 import Checkbox from "./components/Checkbox";
-import { DropDownSelectWithList } from "./components/DropdownSelectWithList";
+import { EnhancedDropdown } from "./components/EnhancedDropdown";
 import { Button } from "../../generic/Button";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -162,6 +162,7 @@ export const CreateProfile = () => {
         ApiService.get(url)
             .then((response) => {
                 setState(response.data);
+                console.log(response.data);
             })
             .catch((error) => console.error(error));
     };
@@ -333,7 +334,7 @@ export const CreateProfile = () => {
             <Section label={"traits-box"} style={sectionsBgColors[1]}>
                 <LabelBox content={"Q&A"} style={"w-full text-center"} />
                 {traits && (
-                    <DropDownSelectWithList
+                    <EnhancedDropdown
                         label={"Traits"}
                         category={"Trait"}
                         options={traits?.map((trait: any) => ({
@@ -363,7 +364,7 @@ export const CreateProfile = () => {
             <Section label={"interest-box"} style={sectionsBgColors[2]}>
                 <LabelBox content={"Interests"} style={"w-full"} />
                 {interests && (
-                    <DropDownSelectWithList
+                    <EnhancedDropdown
                         category="interest"
                         options={interests.map((interest) => ({
                             id: interest.id,
