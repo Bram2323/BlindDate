@@ -28,10 +28,12 @@ function Judging() {
     function handleAnswer(answer: boolean) {
         if (!profiles || !currentProfile) return;
 
-        ApiService.post("judgments", {
+        ApiService.post("judgements", {
             accepted: answer,
             judgeId: currentProfile.id,
             judgedId: profiles[0].id,
+        }).catch((error) => {
+            console.error(error);
         });
 
         if (profiles.length === 1) {
