@@ -15,7 +15,6 @@ export const Warning: React.FC<WarningProps> = ({
     }, [message]);
 
     const showError = (message: string) => {
-        ("running");
         setError(message);
         setHidden(false);
         setTimeout(() => {

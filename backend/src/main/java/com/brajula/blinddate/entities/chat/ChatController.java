@@ -14,6 +14,7 @@ import com.brajula.blinddate.security.Role;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -114,6 +115,9 @@ public class ChatController {
         if (!chat.getUserOne().equals(user) && !chat.getUserTwo().equals(user))
             throw new ForbiddenException();
 
+        if (chat.getClosedByUserOne() || chat.getClosedByUserTwo())
+            throw new BadRequestException("This chat is closed!");
+
         String trimmedText = text.trim();
         if (trimmedText.isEmpty()) throw new BadRequestException("Text can't be empty!");
         else if (trimmedText.length() > 30000)
@@ -125,5 +129,22 @@ public class ChatController {
         chatService.setChatUnreadForOtherUser(chat, user);
 
         return MessageDTO.from(newMessage);
+    }
+
+    @DeleteMapping("{id}")
+    private ResponseEntity<Void> closeChat(@PathVariable Long id, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        Chat chat = chatRepository.findById(id).orElseThrow(NotFoundException::new);
+
+        User userOne = chat.getUserOne();
+        User userTwo = chat.getUserTwo();
+
+        if (userOne.equals(user)) chat.setClosedByUserOne(true);
+        else if (userTwo.equals(user)) chat.setClosedByUserTwo(true);
+        else throw new ForbiddenException();
+
+        chatRepository.save(chat);
+
+        return ResponseEntity.noContent().build();
     }
 }
