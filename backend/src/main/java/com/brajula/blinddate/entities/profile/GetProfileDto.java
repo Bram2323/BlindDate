@@ -16,7 +16,7 @@ public record GetProfileDto(
         Gender gender,
         List<Gender> lookingForGender,
         LocalDate dateOfBirth,
-        int age,
+        Integer age,
         UUID userId,
         String username,
         Set<Sexuality> sexualities,

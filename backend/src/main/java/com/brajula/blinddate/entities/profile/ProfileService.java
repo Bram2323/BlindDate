@@ -31,7 +31,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,57 +53,29 @@ public class ProfileService {
     }
 
     // overloaded get all
-    public List<GetProfileDto> getAll(
-            User user, List<String> genders, Integer minAge, Integer maxAge) {
+    public List<GetProfileDto> getAll(User user) {
+        Profile userProfile =
+                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
         Specification<Profile> specification = Specification.where(null);
-        if (genders != null && !genders.isEmpty()) {
+        if (userProfile.getLookingForGender() != null
+                && !userProfile.getLookingForGender().isEmpty()) {
             specification =
                     specification.and(
-                            ProfileSpecification.hasGender(
-                                    genders.stream()
-                                            .map(this::convertToGender)
-                                            .collect(Collectors.toList())));
-        }
-        if (minAge != null && maxAge != null) {
-            specification =
-                    specification.and(
-                            ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
+                            ProfileSpecification.hasGender(userProfile.getLookingForGender()));
         }
 
         List<Profile> filteredProfiles = profileRepository.findAll(specification);
 
-        Profile userProfile =
-                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
-
         return calculateMatchScore(userProfile, filteredProfiles);
     }
 
-    public List<JudgeProfileDto> getAllProfilesToJudge(Long currentProfileId) {
-        List<Long> judgedProfileIds = judgementService.getJudgedIdsByJudgeId(currentProfileId);
-        List<Profile> excludingCurrentProfile = findAllExcludingCurrentProfile(currentProfileId);
-        List<Profile> profilesToJudge = new LinkedList<>();
-
-        if (judgedProfileIds.isEmpty()) {
-            profilesToJudge = excludingCurrentProfile;
-        } else {
-            for (Profile profile : excludingCurrentProfile) {
-                if (!judgedProfileIds.contains(profile.id)) {
-                    profilesToJudge.add(profile);
-                }
-            }
-        }
-
-        return profilesToJudge.stream().map(JudgeProfileDto::toDto).collect(Collectors.toList());
-    }
-
-    private List<Profile> findAllExcludingCurrentProfile(Long currentProfileId) {
-        List<Profile> excludingCurrentProfile = new LinkedList<>();
-        for (Profile profile : profileRepository.findAll()) {
-            if (!currentProfileId.equals(profile.id)) {
-                excludingCurrentProfile.add(profile);
-            }
-        }
-        return excludingCurrentProfile;
+    public List<GetProfileDto> getAllProfilesToJudge(User user) {
+        Profile userProfile =
+                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
+        List<Long> judgedProfileIds = judgementService.getJudgedIdsByJudgeId(userProfile.getId());
+        return getAll(user).stream()
+                .filter((profile) -> !judgedProfileIds.contains(profile.id()))
+                .toList();
     }
 
     public Profile getById(Long id) {
