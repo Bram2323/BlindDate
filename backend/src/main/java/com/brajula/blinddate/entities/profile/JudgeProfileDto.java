@@ -4,7 +4,6 @@ import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.trait.profiletraits.ProfileTrait;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -14,7 +13,7 @@ public record JudgeProfileDto(
         String description,
         Gender gender,
         List<Gender> lookingForGender,
-        LocalDate dateOfBirth,
+        int age,
         UUID userId,
         String username,
         Set<Sexuality> sexualities,
@@ -26,7 +25,7 @@ public record JudgeProfileDto(
                 profile.getDescription(),
                 profile.getGender(),
                 profile.getLookingForGender(),
-                profile.getDateOfBirth(),
+                profile.getAge(),
                 profile.getUser().getId(),
                 profile.getUser().getUsername(),
                 profile.getSexualities(),

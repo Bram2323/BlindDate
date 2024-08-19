@@ -7,7 +7,7 @@ interface JudgeProfile {
     description: string;
     gender: string;
     lookingForGender: string[];
-    dateOfBirth: Date;
+    age: number;
     userId: string;
     username: string;
     sexualities: Sexuality[];
