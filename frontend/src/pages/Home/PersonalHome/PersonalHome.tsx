@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ApiService from "../../../services/ApiService";
 import ChatList from "./ChatList/ChatList";
+import Judging from "../../Judging/Judging";
 
 interface PersonalHomeProps {
     userId: string;
@@ -36,6 +37,10 @@ function PersonalHome({ userId }: PersonalHomeProps) {
                     <ChatList chats={allChats} />
                 </div>
             </div>
+            <h1 className="font-extrabold text-3xl text-center">
+                Judge profiles here:
+            </h1>
+            <Judging />
         </>
     );
 }

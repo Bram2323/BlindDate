@@ -9,7 +9,6 @@ import Login from "./pages/Login/Login";
 import Chat from "./pages/chat/Chat";
 import { CreateProfile } from "./pages/Profile/CreateProfile";
 import { ProfileView } from "./pages/Profile/ProfileView";
-import Judging from "./pages/Judging/Judging";
 
 function App() {
     history.navigate = useNavigate();
@@ -20,11 +19,7 @@ function App() {
             <NavBar />
             <div className="w-full h-full overflow-y-auto">
                 <Routes>
-                    {sessionStorage.getItem("JWT") ? (
-                        <Route path="/" element={<Judging />} />
-                    ) : (
-                        <Route path="/" element={<Home />} />
-                    )}
+                    <Route path="/" element={<Home />} />
                     <Route path="/create-profile" element={<CreateProfile />} />
                     <Route path="/profile" element={<ProfileView />} />
                     <Route path="/chats/:id" element={<Chat />} />
