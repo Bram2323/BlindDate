@@ -35,7 +35,7 @@ public class ProfileController {
         if (user == null) {
             throw new NotFoundException();
         } else {
-            Long currentProfileId = profileService.getByUser(user).id;
+            Long currentProfileId = profileService.getByUser(user).getId();
             return ResponseEntity.ok(profileService.getAllProfilesToJudge(currentProfileId));
         }
     }

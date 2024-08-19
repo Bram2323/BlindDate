@@ -47,19 +47,30 @@ public class ProfileService {
 
     public List<JudgeProfileDto> getAllProfilesToJudge(Long currentProfileId) {
         List<Long> judgedProfileIds = judgementService.getJudgedIdsByJudgeId(currentProfileId);
+        List<Profile> excludingCurrentProfile = findAllExcludingCurrentProfile(currentProfileId);
+        List<Profile> profilesToJudge = new LinkedList<>();
+
         if (judgedProfileIds.isEmpty()) {
-            return new LinkedList<>();
-        }
-        List<Profile> excludeCurrentAndJudgedProfiles = new LinkedList<>();
-        for (Profile profile : profileRepository.findAll()) {
-            if (!currentProfileId.equals(profile.id)) {
-                if (!judgedProfileIds.contains(profile.id))
-                    excludeCurrentAndJudgedProfiles.add(profile);
+            profilesToJudge = excludingCurrentProfile;
+        } else {
+            for (Profile profile : excludingCurrentProfile) {
+                if (!judgedProfileIds.contains(profile.id)) {
+                    profilesToJudge.add(profile);
+                }
             }
         }
-        return excludeCurrentAndJudgedProfiles.stream()
-                .map(JudgeProfileDto::toDto)
-                .collect(Collectors.toList());
+
+        return profilesToJudge.stream().map(JudgeProfileDto::toDto).collect(Collectors.toList());
+    }
+
+    private List<Profile> findAllExcludingCurrentProfile(Long currentProfileId) {
+        List<Profile> excludingCurrentProfile = new LinkedList<>();
+        for (Profile profile : profileRepository.findAll()) {
+            if (!currentProfileId.equals(profile.id)) {
+                excludingCurrentProfile.add(profile);
+            }
+        }
+        return excludingCurrentProfile;
     }
 
     public Profile getById(Long id) {
