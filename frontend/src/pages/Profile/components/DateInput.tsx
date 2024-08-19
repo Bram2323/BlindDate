@@ -28,9 +28,7 @@ export const DateInput: React.FC<DateInputProps> = ({
         >
             <label>{label}</label>
             <input
-                className={
-                    "border-2 border-feminine-secondary-dark rounded-lg m-2 px-2 py-1"
-                }
+                className={"border-2 border-gray-800 rounded-lg m-2 px-2 py-1"}
                 type="date"
                 value={date || ""}
                 onChange={handleChange}

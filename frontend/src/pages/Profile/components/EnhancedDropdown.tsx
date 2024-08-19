@@ -3,7 +3,7 @@ import { TbHttpDelete } from "react-icons/tb";
 import { DropDownSelect } from "./DropDownSelect";
 import { ScrollContainer } from "./ScrollContainer";
 
-export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
+export const EnhancedDropdown: React.FC<DropDownSelectProps> = ({
     label,
     category,
     options,
@@ -13,9 +13,12 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
 }) => {
     const [showOptions, setShowOptions] = useState<Option[]>([]);
     const [selected, setSelected] = useState<SelectedOption[]>([]);
+    const layoutIfExtra = extraOptions
+        ? "flex-col border-b-2 border-gray-200"
+        : "";
 
     useEffect(() => {
-        setShowOptions(options);
+        setShowOptions(sortOptions(options));
         if (initialValues) {
             const initialSelected = initialValues as SelectedOption[];
             setSelected(initialSelected);
@@ -24,14 +27,23 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     }, [options, initialValues]);
 
     const deleteInitFromShow = (initialSelected: SelectedOption[]) => {
-        const selectedValues = new Set(
-            initialSelected.map((option) => option.value)
-        );
-
+        const selectedValues = initialSelected.map((option) => option.value);
         const filteredShowOptions = showOptions.filter(
-            (option) => !selectedValues.has(option.value)
+            (option) => !selectedValues.includes(option.value)
         );
-        setShowOptions(filteredShowOptions);
+        setShowOptions(sortOptions(filteredShowOptions));
+    };
+
+    const sortOptions = (list: Option[]) => {
+        return list.sort((a, b) => {
+            if (a.value < b.value) {
+                return -1;
+            }
+            if (a.value > b.value) {
+                return 1;
+            }
+            return 0;
+        });
     };
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -50,7 +62,10 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
         }
     };
 
-    const handleExtraChange = (newValue: string, id: number | undefined) => {
+    const handleExtraChange = (
+        newValue: string,
+        id: number | undefined | string
+    ) => {
         const updatedSelected = selected.map((item) => {
             if (item.id === id) {
                 return {
@@ -65,7 +80,7 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
 
     const handleDelete = (option: Option) => {
         setSelected((prev) => prev.filter((item) => item.id !== option.id));
-        setShowOptions((prev) => [...prev, option]);
+        setShowOptions((prev) => sortOptions([...prev, option]));
     };
 
     useEffect(() => {
@@ -73,11 +88,11 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
     }, [handleDelete, handleExtraChange]);
 
     return (
-        <div className="m-2 w-full p-4 flex flex-col items-center justify-center">
+        <div className="w-full flex flex-col items-center justify-center">
             <div className="w-full">
                 {label && <label htmlFor={label}>{label}</label>}
                 <select
-                    className="bg-white px-2 py-1 rounded-lg border-feminine-secondary-dark border-2 m-2"
+                    className="bg-white px-2 py-1 rounded-lg border-gray-800 border-2 m-2 w-full"
                     name={label}
                     id={label}
                     onChange={(e) => {
@@ -97,16 +112,18 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
                     ))}
                 </select>
             </div>
-            <ScrollContainer>
+            <ScrollContainer width={"w-full"}>
                 <ul className="bg-white w-full rounded-lg flex flex-col items-center justify-center">
                     {selected &&
                         selected.map((selection) => (
                             <li
-                                className="flex flex-row items-center justify-between px-2 w-full"
+                                className={`${layoutIfExtra} w-full flex items-center justify-between sm:flex-row sm:border-none`}
                                 key={selection.id + selection.value}
                             >
-                                <div>{selection.value}</div>
-                                <div>
+                                <div className="text-sm w-4/8">
+                                    {selection.value}
+                                </div>
+                                <div className="w-3/4">
                                     {extraOptions && (
                                         <DropDownSelect
                                             category={"choice"}
@@ -130,7 +147,7 @@ export const DropDownSelectWithList: React.FC<DropDownSelectProps> = ({
                                         />
                                     )}
                                 </div>
-                                <div>
+                                <div className="w-1/8">
                                     <TbHttpDelete
                                         onClick={() => handleDelete(selection)}
                                         className="text-red-900 cursor-pointer text-3xl"
@@ -150,7 +167,7 @@ interface DropDownSelectProps {
     options: Option[];
     extraOptions?: string[];
     initialValues?: Option[] | SelectedOption[];
-    getSelected: (selected: SelectedOption[]) => void;
+    getSelected: (value: SelectedOption[], id?: string | number) => void;
 }
 
 interface Option {

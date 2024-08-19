@@ -30,7 +30,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,27 +51,24 @@ public class ProfileService {
     }
 
     // overloaded get all
-    public List<GetProfileDto> getAll(
-            User user, List<String> genders, Integer minAge, Integer maxAge) {
+    public List<GetProfileDto> getAll(User user) {
+        Profile userProfile =
+                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
         Specification<Profile> specification = Specification.where(null);
-        if (genders != null && !genders.isEmpty()) {
+        if (userProfile.getLookingForGender() != null
+                && !userProfile.getLookingForGender().isEmpty()) {
             specification =
                     specification.and(
-                            ProfileSpecification.hasGender(
-                                    genders.stream()
-                                            .map(this::convertToGender)
-                                            .collect(Collectors.toList())));
+                            ProfileSpecification.hasGender(userProfile.getLookingForGender()));
         }
-        if (minAge != null && maxAge != null) {
+        if (userProfile.getMinAge() != null && userProfile.getMaxAge() != null) {
             specification =
                     specification.and(
-                            ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
+                            ProfileSpecification.hasAgeBetween(
+                                    (userProfile.getMinAge() - 1), (userProfile.getMaxAge() + 1)));
         }
 
         List<Profile> filteredProfiles = profileRepository.findAll(specification);
-
-        Profile userProfile =
-                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
 
         return calculateMatchScore(userProfile, filteredProfiles);
     }
@@ -119,7 +115,6 @@ public class ProfileService {
             patchedProfile.setImage(
                     imageRepository.findById(patch.imageId()).orElseThrow(NotFoundException::new));
         if (patch.gender() != null) patchedProfile.setGender(convertToGender(patch.gender()));
-
         List<Gender> converted = new ArrayList<>();
         if (patch.lookingForGender() != null && !patch.lookingForGender().isEmpty())
             for (String gender : patch.lookingForGender()) {
@@ -135,6 +130,8 @@ public class ProfileService {
         if (patch.interests() != null)
             patchedProfile.setInterests(convertToInterests(patch.interests()));
         if (patch.dateOfBirth() != null) patchedProfile.setDateOfBirth(patch.dateOfBirth());
+        if (patch.minAge() != null) patchedProfile.setMinAge(patch.minAge());
+        if (patch.maxAge() != null) patchedProfile.setMaxAge(patch.maxAge());
         profileRepository.save(patchedProfile);
         return patchedProfile;
     }

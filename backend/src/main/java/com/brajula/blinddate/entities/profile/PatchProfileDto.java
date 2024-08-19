@@ -15,6 +15,8 @@ public record PatchProfileDto(
         String gender,
         List<String> lookingForGender,
         LocalDate dateOfBirth,
+        Integer minAge,
+        Integer maxAge,
         List<Long> sexualities,
         List<Long> preferences,
         List<Long> interests,
