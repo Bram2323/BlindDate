@@ -1,6 +1,5 @@
 package com.brajula.blinddate.entities.user;
 
-import com.brajula.blinddate.entities.profile.Profile;
 import com.brajula.blinddate.security.Role;
 
 import jakarta.persistence.*;

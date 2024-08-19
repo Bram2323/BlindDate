@@ -1,17 +1,31 @@
+import { useEffect, useState } from "react";
 export const TextArea: React.FC<TextArea> = ({
     handleChange,
     label,
-    content,
+    initialValue,
 }) => {
+    const [value, setValue] = useState<string>();
+
+    useEffect(() => {
+        if (initialValue) {
+            setValue(initialValue);
+        }
+    }, [initialValue]);
+
+    const handleValueChange = (newValue: string) => {
+        setValue(newValue);
+        handleChange(newValue);
+    };
+
     return (
-        <div className="flex flex-col m-2">
+        <div className="flex flex-col m-2 w-full">
             <label htmlFor={label}>{label}</label>
             <textarea
-                className="resize-none border-2"
+                className="resize-none border-2 m-4 min-h-36 p-4 rounded-lg border-feminine-secondary-dark"
                 onChange={(e) => {
-                    handleChange(e.target.value);
+                    handleValueChange(e.target.value);
                 }}
-                placeholder={content}
+                value={value}
             />
         </div>
     );
@@ -20,5 +34,6 @@ export const TextArea: React.FC<TextArea> = ({
 interface TextArea {
     label?: string;
     content?: string;
+    initialValue?: string;
     handleChange: (text: string) => void;
 }

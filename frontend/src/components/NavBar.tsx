@@ -4,7 +4,7 @@ import { useUser, logout } from "../services/UserService";
 function NavBar() {
     const navigate = useNavigate();
 
-    const [, isLoggedIn] = useUser();
+    const [user, isLoggedIn] = useUser();
 
     return (
         <>

@@ -6,6 +6,7 @@ import com.brajula.blinddate.entities.interest.InterestService;
 import com.brajula.blinddate.entities.judgment.JudgementService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
+import com.brajula.blinddate.entities.specification.ProfileSpecification;
 import com.brajula.blinddate.entities.trait.Trait;
 import com.brajula.blinddate.entities.trait.TraitService;
 import com.brajula.blinddate.entities.trait.profiletraits.Answer;
@@ -13,8 +14,12 @@ import com.brajula.blinddate.entities.trait.profiletraits.PostProfileTraitDto;
 import com.brajula.blinddate.entities.trait.profiletraits.ProfileTrait;
 import com.brajula.blinddate.entities.trait.profiletraits.ProfileTraitService;
 import com.brajula.blinddate.entities.user.User;
+import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.exceptions.BadRequestException;
 import com.brajula.blinddate.exceptions.NotFoundException;
+import com.brajula.blinddate.exceptions.UserNotFoundException;
+import com.brajula.blinddate.preferences.Preference;
+import com.brajula.blinddate.preferences.PreferenceService;
 
 import jakarta.transaction.Transactional;
 
@@ -22,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -39,9 +45,26 @@ public class ProfileService {
     private final TraitService traitService;
     private final JudgementService judgementService;
 
-    public List<GetProfileDto> getAll() {
-        return profileRepository.findAll().stream()
-                .map(GetProfileDto::toDto)
+    private final PreferenceService preferenceService;
+
+    private final UserRepository userRepository;
+
+    public List<GetProfileDto> getAll(
+            List<String> genders, Integer minAge, Integer maxAge) {
+        Specification<Profile> specification = Specification.where(null);
+        if (genders != null && !genders.isEmpty()) {
+            specification =
+                    specification.and(
+                            ProfileSpecification.hasGender(
+                                    genders.stream().map(this::convertToGender).toList()));
+        }
+        if (minAge != null && maxAge != null) {
+            specification =
+                    specification.and(
+                            ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
+        }
+        return profileRepository.findAll(specification).stream()
+                .map(GetProfileDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -93,20 +116,60 @@ public class ProfileService {
             profile.setSexualities(convertToSexualities(dto.sexualities()));
             profile.setInterests(convertToInterests(dto.interests()));
             profile.setProfileTraits(convertToProfileTraits(dto.traits()));
+
+            profile.setPreferences(convertToPreferences(dto.preferences()));
+
+            // set imageId to user object
+            User getUser =
+                    userRepository
+                            .findByUsernameIgnoreCase(user.getUsername())
+                            .orElseThrow(UserNotFoundException::new);
+            userRepository.save(getUser);
+
             return profileRepository.save(profile);
         }
     }
 
-    public Profile update(Long id, PostProfileDto patch) {
+    public Profile update(Long id, PatchProfileDto patch) {
         Profile patchedProfile = profileRepository.findById(id).orElseThrow(NotFoundException::new);
-        if (patch.description() != null) patchedProfile.setDescription(patch.description());
-        if (patch.gender() != null)
-            patchedProfile.setGender(Gender.valueOf(patch.gender().toUpperCase()));
-        if (patch.dateOfBirth() != null) patchedProfile.setDateOfBirth(patch.dateOfBirth());
+        if (patch.description() != null && !patch.description().isBlank())
+            patchedProfile.setDescription(patch.description());
+        if (patch.imageId() != null)
+            patchedProfile.setImage(
+                    imageRepository.findById(patch.imageId()).orElseThrow(NotFoundException::new));
+        if (patch.gender() != null) patchedProfile.setGender(convertToGender(patch.gender()));
+
+        List<Gender> converted = new ArrayList<>();
+        if (patch.lookingForGender() != null && !patch.lookingForGender().isEmpty())
+            for (String gender : patch.lookingForGender()) {
+                converted.add(convertToGender(gender));
+            }
+        patchedProfile.setLookingForGender(converted);
         if (patch.sexualities() != null)
             patchedProfile.setSexualities(convertToSexualities(patch.sexualities()));
+        if (patch.preferences() != null)
+            patchedProfile.setPreferences(convertToPreferences(patch.preferences()));
+        if (patch.traits() != null)
+            patchedProfile.setProfileTraits(convertToProfileTraits(patch.traits()));
+        if (patch.interests() != null)
+            patchedProfile.setInterests(convertToInterests(patch.interests()));
+        if (patch.dateOfBirth() != null) patchedProfile.setDateOfBirth(patch.dateOfBirth());
         profileRepository.save(patchedProfile);
         return patchedProfile;
+    }
+
+    public void delete(Long id) {
+        profileRepository.findById(id).orElseThrow(NotFoundException::new);
+        profileRepository.deleteById(id);
+    }
+
+    // helper methods
+    public Gender convertToGender(String value) {
+        try {
+            return Gender.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("gender not valid");
+        }
     }
 
     public Set<Sexuality> convertToSexualities(List<Long> sexualityIdList) {
@@ -115,6 +178,14 @@ public class ProfileService {
             sexualities.add(sexualityService.getById(id));
         }
         return sexualities;
+    }
+
+    public Set<Preference> convertToPreferences(List<Long> preferenceIdList) {
+        Set<Preference> preferences = new HashSet<>();
+        for (Long id : preferenceIdList) {
+            preferences.add(preferenceService.getById(id));
+        }
+        return preferences;
     }
 
     public Set<Interest> convertToInterests(List<Long> interestIdList) {
@@ -140,10 +211,5 @@ public class ProfileService {
             traits.add(profileTrait);
         }
         return traits;
-    }
-
-    public void delete(Long id) {
-        profileRepository.findById(id).orElseThrow(NotFoundException::new);
-        profileRepository.deleteById(id);
     }
 }

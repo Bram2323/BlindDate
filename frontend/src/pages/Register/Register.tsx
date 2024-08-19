@@ -42,7 +42,7 @@ function Register() {
     return (
         <>
             <div className="flex min-h-full items-center justify-center">
-                <div className=" bg-gray-100 h-fit p-1 rounded-xl border border-gray-500 flex flex-col items-center justify-center">
+                <div className=" bg-gray-100 h-fit px-1 pb-2 rounded-xl border border-gray-500 flex flex-col items-center justify-center">
                     <FieldInput
                         label="Username"
                         content={username}

@@ -5,13 +5,17 @@ import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.trait.profiletraits.ProfileTrait;
 import com.brajula.blinddate.entities.user.User;
+import com.brajula.blinddate.preferences.Preference;
 
 import jakarta.persistence.*;
 
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,12 +28,14 @@ public class Profile {
 
     @Setter private String description;
     @Setter private Gender gender;
-    @Setter private Gender lookingForGender;
+    @Setter private List<Gender> lookingForGender = new ArrayList<>();
     @Setter private LocalDate dateOfBirth;
 
     @OneToOne @Setter private User user;
 
-    @ManyToMany @Setter private Set<Sexuality> sexualities;
+    @ManyToMany @Setter private Set<Sexuality> sexualities = new HashSet<>();
+
+    @ManyToMany @Setter private Set<Preference> preferences = new HashSet<>();
 
     @ManyToMany @Setter private Set<Interest> interests = new HashSet<>();
 
@@ -40,7 +46,7 @@ public class Profile {
     public Profile(
             String description,
             Gender gender,
-            Gender lookingForGender,
+            List<Gender> lookingForGender,
             LocalDate dateOfBirth,
             User user) {
         this.description = description;
@@ -51,10 +57,18 @@ public class Profile {
     }
 
     public Profile(
-            String description, Gender gender, Gender lookingForGender, LocalDate dateOfBirth) {
+            String description,
+            Gender gender,
+            List<Gender> lookingForGender,
+            LocalDate dateOfBirth) {
         this.description = description;
         this.gender = gender;
         this.lookingForGender = lookingForGender;
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public int getAge() {
+        LocalDate today = LocalDate.now();
+        return Period.between(dateOfBirth, today).getYears();
     }
 }

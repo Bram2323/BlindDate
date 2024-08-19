@@ -3,19 +3,32 @@ import React from "react";
 export const ScrollContainer: React.FC<ScrollContainerProps> = ({
     children,
     label,
+    height,
+    width,
+    headerStyle,
 }: any) => {
     return (
-        <>
-            {label && <h3>{label}</h3>}
-            <div className="border-2 overflow-scroll h-20 w-72 m-2">
-                {" "}
+        <div className="w-full p-4 flex flex-col items-center justify-center">
+            {label && (
+                <h3 className={`${headerStyle} tracking-wider text-center`}>
+                    {label}
+                </h3>
+            )}
+            <div
+                className={`${height ? height : "h-36"} ${
+                    width ? width : "w-full"
+                } border-2 bg-white border-feminine-secondary-dark overflow-scroll rounded-lg`}
+            >
                 {children}
             </div>
-        </>
+        </div>
     );
 };
 
 interface ScrollContainerProps {
-    label: string;
+    headerStyle?: string;
+    label?: string;
     children: any;
+    height?: string;
+    width?: string;
 }

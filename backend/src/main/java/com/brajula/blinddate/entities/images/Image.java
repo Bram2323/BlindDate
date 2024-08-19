@@ -1,12 +1,8 @@
 package com.brajula.blinddate.entities.images;
 
-
 import jakarta.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Entity
@@ -14,14 +10,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Images")
+@Getter
+@Setter
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    private Long id;
 
     private String name;
     private String type;
 
     // @Type(type = "org.hibernate.type.ImageType")
     @Lob private byte[] imageData;
+
+    public Image(byte[] imageData) {
+        this.imageData = imageData;
+    }
 }
