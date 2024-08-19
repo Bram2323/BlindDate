@@ -9,6 +9,7 @@ import Login from "./pages/Login/Login";
 import Chat from "./pages/chat/Chat";
 import { CreateProfile } from "./pages/Profile/CreateProfile";
 import { ProfileView } from "./pages/Profile/ProfileView";
+import Admin from "./pages/Admin/Admin";
 
 function App() {
     history.navigate = useNavigate();
@@ -25,6 +26,7 @@ function App() {
                     <Route path="/chats/:id" element={<Chat />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/admin/*" element={<Admin />} />
                 </Routes>
             </div>
         </>

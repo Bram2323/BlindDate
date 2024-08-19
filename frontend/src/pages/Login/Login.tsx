@@ -48,6 +48,7 @@ const Login = () => {
                 handleChange={(value) => {
                     setPassword(value);
                 }}
+                onSubmit={handleLogin}
             />
             <Button content="submit" handleClick={handleLogin} />
         </div>
