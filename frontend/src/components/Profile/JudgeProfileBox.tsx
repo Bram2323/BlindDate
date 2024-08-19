@@ -14,7 +14,12 @@ function JudgeProfileBox({ profile }: { profile: JudgeProfile }) {
                 <p>Age: {profileAge}</p>
                 <p>{profile.description}</p>
                 <p>I am a: {profile.gender.toLowerCase()}</p>
-                <p>Looking for a: {profile.lookingForGender.toLowerCase()}</p>
+                <p>Looking for a:</p>
+                {profile.lookingForGender.map((item) => (
+                    <p key={profile.lookingForGender.indexOf(item)}>
+                        -{item.toLowerCase()}
+                    </p>
+                ))}
                 <p>My preferences are:</p>
                 {profile.sexualities.map((item) => (
                     <p key={item.id}>-{item.name}</p>
