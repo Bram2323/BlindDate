@@ -46,9 +46,11 @@ function Judging() {
     return (
         <>
             {!profiles ? (
-                <p className="text-2xl">
-                    There are no profiles for you to judge
-                </p>
+                <div className="flex justify-center m-20">
+                    <p className="text-3xl">
+                        There are no profiles for you to judge
+                    </p>
+                </div>
             ) : (
                 <div className="flex h-full justify-evenly">
                     <div className="flex items-center">
