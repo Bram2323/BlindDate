@@ -45,7 +45,7 @@ function Judging() {
 
     return (
         <>
-            {!profiles ? (
+            {!profiles || profiles.length === 0 ? (
                 <div className="flex justify-center m-20">
                     <p className="text-3xl">
                         There are no profiles for you to judge
