@@ -47,23 +47,34 @@ public class ProfileService {
 
     private final UserRepository userRepository;
 
+    public List<GetProfileDto> getAll() {
+        return profileRepository.findAll().stream().map(GetProfileDto::from).toList();
+    }
+
+    // overloaded get all
     public List<GetProfileDto> getAll(
-            List<String> genders, Integer minAge, Integer maxAge) {
+            User user, List<String> genders, Integer minAge, Integer maxAge) {
         Specification<Profile> specification = Specification.where(null);
         if (genders != null && !genders.isEmpty()) {
             specification =
                     specification.and(
                             ProfileSpecification.hasGender(
-                                    genders.stream().map(this::convertToGender).toList()));
+                                    genders.stream()
+                                            .map(this::convertToGender)
+                                            .collect(Collectors.toList())));
         }
         if (minAge != null && maxAge != null) {
             specification =
                     specification.and(
                             ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
         }
-        return profileRepository.findAll(specification).stream()
-                .map(GetProfileDto::from)
-                .collect(Collectors.toList());
+
+        List<Profile> filteredProfiles = profileRepository.findAll(specification);
+
+        Profile userProfile =
+                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
+
+        return calculateMatchScore(userProfile, filteredProfiles);
     }
 
     public Profile getById(Long id) {
@@ -181,5 +192,47 @@ public class ProfileService {
             traits.add(profileTrait);
         }
         return traits;
+    }
+
+    public List<GetProfileDto> calculateMatchScore(
+            Profile userProfile, List<Profile> filteredProfiles) {
+        List<GetProfileDto> getProfileDtoList = new ArrayList<>();
+        for (Profile profile : filteredProfiles) {
+            if (!profile.equals(userProfile)) {
+                int matchScore = 0;
+                for (Preference preference : profile.getPreferences()) {
+                    if (userProfile.getPreferences().contains(preference)) {
+                        matchScore++;
+                    }
+                }
+                for (Sexuality sexuality : profile.getSexualities()) {
+                    if (userProfile.getSexualities().contains(sexuality)) {
+                        matchScore++;
+                    }
+                }
+                for (Interest interest : profile.getInterests()) {
+                    if (userProfile.getInterests().contains(interest)) {
+                        matchScore++;
+                    }
+                }
+                for (ProfileTrait profileTrait : profile.getProfileTraits()) {
+                    List<ProfileTrait> similarProfileTraits =
+                            userProfile.getProfileTraits().stream()
+                                    .filter(
+                                            userProfileTrait ->
+                                                    userProfileTrait.getTrait()
+                                                                    == profileTrait.getTrait()
+                                                            && userProfileTrait.getAnswer()
+                                                                    == profileTrait.getAnswer())
+                                    .toList();
+                    matchScore += similarProfileTraits.size();
+                }
+                GetProfileDto dto = GetProfileDto.from(profile, matchScore);
+                getProfileDtoList.add(dto);
+            }
+        }
+
+        getProfileDtoList.sort(Comparator.comparingInt(GetProfileDto::matchScore).reversed());
+        return getProfileDtoList;
     }
 }
