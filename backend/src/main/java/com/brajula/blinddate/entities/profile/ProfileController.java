@@ -33,6 +33,18 @@ public class ProfileController {
         return profileService.getAll(gender, minAge, maxAge);
     }
 
+    @GetMapping("/judge-list")
+    public ResponseEntity<List<JudgeProfileDto>> getAllProfilesToJudge(
+            Authentication authentication) {
+        User user = authentication == null ? null : (User) authentication.getPrincipal();
+        if (user == null) {
+            throw new NotFoundException();
+        } else {
+            Long currentProfileId = profileService.getByUser(user).getId();
+            return ResponseEntity.ok(profileService.getAllProfilesToJudge(currentProfileId));
+        }
+    }
+
     @GetMapping("/{id}")
     public GetProfileDto getByUser(@PathVariable UUID id) {
         User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
