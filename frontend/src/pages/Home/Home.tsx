@@ -3,26 +3,27 @@ import { Section } from "../Profile/components/Section";
 import PersonalHome from "./PersonalHome/PersonalHome";
 import AppLogo from "../../assets/Logos/2.png";
 import TeamLogo from "../../assets/Logos/5.png";
+import { LabelBox } from "../Profile/components/LabelBox";
 
 export const Home = () => {
     const [user, isLoggedIn] = useUser();
 
     return (
         <>
-            <div className="flex flex-col h-full justify-center items-center p-4">
+            <div className="flex flex-col h-full justify-center items-center p-4 mt-80">
                 {isLoggedIn ? (
                     <>
                         <PersonalHome userId={user.id} />
                     </>
                 ) : (
                     <>
-                        <Section label={"home-page"}>
+                        <Section label={"home-page"} style={"bg-pink-300"}>
                             <img src={AppLogo} alt="app logo" />
                         </Section>
 
-                        <Section label={"about the app"}>
-                            <h1>What is this app about?</h1>
-                            <p>
+                        <Section label={"about the app"} style={"bg-green-300"}>
+                            <LabelBox content={"What is this app about?"} />
+                            <p className="p-2 tracking-wider">
                                 Blind Date is a dating app that let's you
                                 connect on a deeper level. Swipe through photo's
                                 without being influenced by photo's, here it is
@@ -33,7 +34,7 @@ export const Home = () => {
                                 appearance. With Blind Date is all about
                                 substance.
                             </p>
-                            <p>
+                            <p className="p-2 tracking-wider">
                                 In today's digital age, privacy is more
                                 important than ever. Many dating apps expose
                                 your photos, location and personal details right
@@ -45,7 +46,13 @@ export const Home = () => {
                                 got you covered!
                             </p>
                         </Section>
-                        <Section label={"who are we?"}>
+                        <Section label={"who are we?"} style={"bg-blue-300"}>
+                            <LabelBox content={"Who are we?"} />
+                            <p className="p-2 tracking-wider">
+                                We are a passionate team of software developers
+                                dedicated to creating innovative and meaningful
+                                digital experiences.{" "}
+                            </p>
                             <img src={TeamLogo} alt="team logo" />
                         </Section>
                     </>
