@@ -3,6 +3,7 @@ package com.brajula.blinddate.entities.profile;
 import com.brajula.blinddate.entities.images.ImageRepository;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
+import com.brajula.blinddate.entities.judgment.JudgementService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
 import com.brajula.blinddate.entities.specification.ProfileSpecification;
@@ -42,6 +43,7 @@ public class ProfileService {
     private final InterestService interestService;
     private final ProfileTraitService profileTraitService;
     private final TraitService traitService;
+    private final JudgementService judgementService;
 
     private final PreferenceService preferenceService;
 
@@ -75,6 +77,34 @@ public class ProfileService {
                 profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
 
         return calculateMatchScore(userProfile, filteredProfiles);
+    }
+
+    public List<JudgeProfileDto> getAllProfilesToJudge(Long currentProfileId) {
+        List<Long> judgedProfileIds = judgementService.getJudgedIdsByJudgeId(currentProfileId);
+        List<Profile> excludingCurrentProfile = findAllExcludingCurrentProfile(currentProfileId);
+        List<Profile> profilesToJudge = new LinkedList<>();
+
+        if (judgedProfileIds.isEmpty()) {
+            profilesToJudge = excludingCurrentProfile;
+        } else {
+            for (Profile profile : excludingCurrentProfile) {
+                if (!judgedProfileIds.contains(profile.id)) {
+                    profilesToJudge.add(profile);
+                }
+            }
+        }
+
+        return profilesToJudge.stream().map(JudgeProfileDto::toDto).collect(Collectors.toList());
+    }
+
+    private List<Profile> findAllExcludingCurrentProfile(Long currentProfileId) {
+        List<Profile> excludingCurrentProfile = new LinkedList<>();
+        for (Profile profile : profileRepository.findAll()) {
+            if (!currentProfileId.equals(profile.id)) {
+                excludingCurrentProfile.add(profile);
+            }
+        }
+        return excludingCurrentProfile;
     }
 
     public Profile getById(Long id) {
