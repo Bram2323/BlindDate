@@ -31,7 +31,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,51 +48,34 @@ public class ProfileService {
 
     private final UserRepository userRepository;
 
-    public List<GetProfileDto> getAll(
-            List<String> genders, Integer minAge, Integer maxAge) {
+    public List<GetProfileDto> getAll() {
+        return profileRepository.findAll().stream().map(GetProfileDto::from).toList();
+    }
+
+    // overloaded get all
+    public List<GetProfileDto> getAll(User user) {
+        Profile userProfile =
+                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
         Specification<Profile> specification = Specification.where(null);
-        if (genders != null && !genders.isEmpty()) {
+        if (userProfile.getLookingForGender() != null
+                && !userProfile.getLookingForGender().isEmpty()) {
             specification =
                     specification.and(
-                            ProfileSpecification.hasGender(
-                                    genders.stream().map(this::convertToGender).toList()));
+                            ProfileSpecification.hasGender(userProfile.getLookingForGender()));
         }
-        if (minAge != null && maxAge != null) {
-            specification =
-                    specification.and(
-                            ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
-        }
-        return profileRepository.findAll(specification).stream()
-                .map(GetProfileDto::from)
-                .collect(Collectors.toList());
+
+        List<Profile> filteredProfiles = profileRepository.findAll(specification);
+
+        return calculateMatchScore(userProfile, filteredProfiles);
     }
 
-    public List<JudgeProfileDto> getAllProfilesToJudge(Long currentProfileId) {
-        List<Long> judgedProfileIds = judgementService.getJudgedIdsByJudgeId(currentProfileId);
-        List<Profile> excludingCurrentProfile = findAllExcludingCurrentProfile(currentProfileId);
-        List<Profile> profilesToJudge = new LinkedList<>();
-
-        if (judgedProfileIds.isEmpty()) {
-            profilesToJudge = excludingCurrentProfile;
-        } else {
-            for (Profile profile : excludingCurrentProfile) {
-                if (!judgedProfileIds.contains(profile.id)) {
-                    profilesToJudge.add(profile);
-                }
-            }
-        }
-
-        return profilesToJudge.stream().map(JudgeProfileDto::toDto).collect(Collectors.toList());
-    }
-
-    private List<Profile> findAllExcludingCurrentProfile(Long currentProfileId) {
-        List<Profile> excludingCurrentProfile = new LinkedList<>();
-        for (Profile profile : profileRepository.findAll()) {
-            if (!currentProfileId.equals(profile.id)) {
-                excludingCurrentProfile.add(profile);
-            }
-        }
-        return excludingCurrentProfile;
+    public List<GetProfileDto> getAllProfilesToJudge(User user) {
+        Profile userProfile =
+                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
+        List<Long> judgedProfileIds = judgementService.getJudgedIdsByJudgeId(userProfile.getId());
+        return getAll(user).stream()
+                .filter((profile) -> !judgedProfileIds.contains(profile.id()))
+                .toList();
     }
 
     public Profile getById(Long id) {
@@ -211,5 +193,47 @@ public class ProfileService {
             traits.add(profileTrait);
         }
         return traits;
+    }
+
+    public List<GetProfileDto> calculateMatchScore(
+            Profile userProfile, List<Profile> filteredProfiles) {
+        List<GetProfileDto> getProfileDtoList = new ArrayList<>();
+        for (Profile profile : filteredProfiles) {
+            if (!profile.equals(userProfile)) {
+                int matchScore = 0;
+                for (Preference preference : profile.getPreferences()) {
+                    if (userProfile.getPreferences().contains(preference)) {
+                        matchScore++;
+                    }
+                }
+                for (Sexuality sexuality : profile.getSexualities()) {
+                    if (userProfile.getSexualities().contains(sexuality)) {
+                        matchScore++;
+                    }
+                }
+                for (Interest interest : profile.getInterests()) {
+                    if (userProfile.getInterests().contains(interest)) {
+                        matchScore++;
+                    }
+                }
+                for (ProfileTrait profileTrait : profile.getProfileTraits()) {
+                    List<ProfileTrait> similarProfileTraits =
+                            userProfile.getProfileTraits().stream()
+                                    .filter(
+                                            userProfileTrait ->
+                                                    userProfileTrait.getTrait()
+                                                                    == profileTrait.getTrait()
+                                                            && userProfileTrait.getAnswer()
+                                                                    == profileTrait.getAnswer())
+                                    .toList();
+                    matchScore += similarProfileTraits.size();
+                }
+                GetProfileDto dto = GetProfileDto.from(profile, matchScore);
+                getProfileDtoList.add(dto);
+            }
+        }
+
+        getProfileDtoList.sort(Comparator.comparingInt(GetProfileDto::matchScore).reversed());
+        return getProfileDtoList;
     }
 }
