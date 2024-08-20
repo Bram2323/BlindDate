@@ -1,8 +1,22 @@
 package com.brajula.blinddate.entities.profile;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
 import com.brajula.blinddate.entities.images.ImageRepository;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
+import com.brajula.blinddate.entities.judgment.JudgementService;
+import com.brajula.blinddate.entities.preferences.Preference;
+import com.brajula.blinddate.entities.preferences.PreferenceService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
 import com.brajula.blinddate.entities.specification.ProfileSpecification;
@@ -17,30 +31,20 @@ import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.exceptions.BadRequestException;
 import com.brajula.blinddate.exceptions.NotFoundException;
 import com.brajula.blinddate.exceptions.UserNotFoundException;
-import com.brajula.blinddate.preferences.Preference;
-import com.brajula.blinddate.preferences.PreferenceService;
 
 import jakarta.transaction.Transactional;
-
 import lombok.RequiredArgsConstructor;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
-    private static final Logger logger = LoggerFactory.getLogger(ProfileService.class);
     private final ProfileRepository profileRepository;
     private final SexualityService sexualityService;
     private final ImageRepository imageRepository;
     private final InterestService interestService;
     private final ProfileTraitService profileTraitService;
     private final TraitService traitService;
+    private final JudgementService judgementService;
 
     private final PreferenceService preferenceService;
 
@@ -71,6 +75,15 @@ public class ProfileService {
         List<Profile> filteredProfiles = profileRepository.findAll(specification);
 
         return calculateMatchScore(userProfile, filteredProfiles);
+    }
+
+    public List<GetProfileDto> getAllProfilesToJudge(User user) {
+        Profile userProfile =
+                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
+        List<Long> judgedProfileIds = judgementService.getJudgedIdsByJudgeId(userProfile.getId());
+        return getAll(user).stream()
+                .filter((profile) -> !judgedProfileIds.contains(profile.id()))
+                .toList();
     }
 
     public Profile getById(Long id) {

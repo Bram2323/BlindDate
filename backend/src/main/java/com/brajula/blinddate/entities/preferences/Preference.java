@@ -1,4 +1,4 @@
-package com.brajula.blinddate.preferences;
+package com.brajula.blinddate.entities.preferences;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,11 +14,8 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Preference {
-    @Id
-    @GeneratedValue
-    Long id;
-    @Setter
-    String name;
+    @Id @GeneratedValue Long id;
+    @Setter String name;
 
     public Preference(String name) {
         this.name = name;
