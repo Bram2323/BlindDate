@@ -15,6 +15,7 @@ import com.brajula.blinddate.security.Role;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,8 @@ public class ChatController {
     private final ChatService chatService;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+
+    private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("user/{userId}")
     private List<ChatDTO> getFromUser(@PathVariable UUID userId, Authentication authentication) {
@@ -126,7 +129,10 @@ public class ChatController {
         Message newMessage =
                 messageRepository.save(new Message(chat, user, trimmedText, LocalDateTime.now()));
 
-        chatService.setChatUnreadForOtherUser(chat, user);
+        Optional<User> possibleOtherUser = chatService.getOtherUser(chat, user);
+        if (possibleOtherUser.isPresent()){
+            chat = chatService.setChatUnreadForUser(chat, user);
+        }
 
         return MessageDTO.from(newMessage);
     }
