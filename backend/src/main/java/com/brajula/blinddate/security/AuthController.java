@@ -35,6 +35,8 @@ public class AuthController {
         if (!userService.isCorrectPassword(user, password))
             throw new BadRequestException("Password is incorrect!");
 
+        if (!user.isEnabled()) throw new BadRequestException("Account is disabled!");
+
         return ResponseEntity.ok(
                 new TokenDTO(jwtService.generateTokenForUser(user), UserFullDTO.from(user)));
     }

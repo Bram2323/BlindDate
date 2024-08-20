@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+import com.brajula.blinddate.security.Role;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +26,6 @@ public class ProfileController {
     private final ProfileService profileService;
     private final UserRepository userRepository;
 
-    @GetMapping
-    public List<GetProfileDto> getAll(Authentication authentication) {
-        User user = authentication == null ? null : (User) authentication.getPrincipal();
-        if (user == null) {
-            return profileService.getAll();
-        } else {
-            return profileService.getAll(user);
-        }
-    }
 
     @GetMapping("/judge-list")
     public ResponseEntity<List<GetProfileDto>> getAllProfilesToJudge(
@@ -47,8 +39,11 @@ public class ProfileController {
     }
 
     @GetMapping("/{id}")
-    public GetProfileDto getByUser(@PathVariable UUID id) {
+    public GetProfileDto getByUser(@PathVariable UUID id, Authentication authentication) {
+        User authUser = (User) authentication.getPrincipal();
         User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
+
+        if (!authUser.equals(user) && !authUser.hasRole(Role.ADMIN)) throw new ForbiddenException();
 
         return GetProfileDto.from(profileService.getByUser(user));
     }
@@ -66,7 +61,7 @@ public class ProfileController {
     @PostMapping
     public ResponseEntity<GetProfileDto> create(
             @RequestBody PostProfileDto dto, Authentication authentication) {
-        User user = authentication == null ? null : (User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
         Profile savedProfile = profileService.save(dto, user);
         URI location =
                 ServletUriComponentsBuilder.fromCurrentRequest()

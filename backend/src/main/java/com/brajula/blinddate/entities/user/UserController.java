@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,5 +58,31 @@ public class UserController {
         }
 
         return users.map(UserFullDTO::from);
+    }
+
+    @DeleteMapping("{id}")
+    private UserFullDTO disableUser(@PathVariable UUID id, Authentication authentication){
+        User authUser = (User) authentication.getPrincipal();
+        User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
+
+        if (user.hasRole(Role.ADMIN) || (!user.equals(authUser) && !authUser.hasRole(Role.ADMIN))) throw new ForbiddenException();
+
+        user.setEnabled(false);
+        user = userRepository.save(user);
+
+        return UserFullDTO.from(user);
+    }
+
+    @PostMapping("{id}/enable")
+    private UserFullDTO enableUser(@PathVariable UUID id, Authentication authentication){
+        User authUser = (User) authentication.getPrincipal();
+        User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
+
+        if (!authUser.hasRole(Role.ADMIN)) throw new ForbiddenException();
+
+        user.setEnabled(true);
+        user = userRepository.save(user);
+
+        return UserFullDTO.from(user);
     }
 }
