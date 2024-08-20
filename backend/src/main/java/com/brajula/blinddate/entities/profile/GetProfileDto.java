@@ -1,15 +1,5 @@
 package com.brajula.blinddate.entities.profile;
 
-import com.brajula.blinddate.entities.interest.Interest;
-import com.brajula.blinddate.entities.sexuality.Sexuality;
-import com.brajula.blinddate.entities.trait.profiletraits.ProfileTrait;
-import com.brajula.blinddate.preferences.Preference;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 public record GetProfileDto(
         Long id,
         String description,

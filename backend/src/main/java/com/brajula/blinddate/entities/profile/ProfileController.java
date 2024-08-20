@@ -1,5 +1,14 @@
 package com.brajula.blinddate.entities.profile;
 
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import com.brajula.blinddate.Routes;
 import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.entities.user.UserRepository;
@@ -7,15 +16,6 @@ import com.brajula.blinddate.exceptions.ForbiddenException;
 import com.brajula.blinddate.exceptions.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +32,17 @@ public class ProfileController {
             return profileService.getAll();
         } else {
             return profileService.getAll(user);
+        }
+    }
+
+    @GetMapping("/judge-list")
+    public ResponseEntity<List<GetProfileDto>> getAllProfilesToJudge(
+            Authentication authentication) {
+        User user = authentication == null ? null : (User) authentication.getPrincipal();
+        if (user == null) {
+            throw new NotFoundException();
+        } else {
+            return ResponseEntity.ok(profileService.getAllProfilesToJudge(user));
         }
     }
 
