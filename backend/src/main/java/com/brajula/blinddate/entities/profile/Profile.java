@@ -73,6 +73,7 @@ public class Profile {
     }
 
     public int getAge() {
+        if (dateOfBirth == null) return 0;
         LocalDate today = LocalDate.now();
         return Period.between(dateOfBirth, today).getYears();
     }

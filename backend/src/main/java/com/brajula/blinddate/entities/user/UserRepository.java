@@ -13,6 +13,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Page<User> findByUsernameIgnoreCaseContains(String username, Pageable pageable);
 
-    @Query("SELECT u FROM Users u WHERE (u.username LIKE ?1) OR (u.firstName LIKE ?1) OR (u.lastName LIKE ?1)")
+    @Query("SELECT u FROM Users u WHERE (u.username LIKE ?1) OR (u.firstName LIKE ?1) OR (u.lastName LIKE ?1) OR (u.email LIKE ?1)")
     Page<User> searchUsers(String search, Pageable pageable);
 }
