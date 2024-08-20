@@ -22,13 +22,13 @@ function NavBar() {
                                 className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded shadow-xl"
                                 onClick={() => navigate("/login")}
                             >
-                                Inloggen
+                                Login
                             </button>
                             <button
                                 className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
                                 onClick={() => navigate("/register")}
                             >
-                                Registreren
+                                Register
                             </button>
                         </>
                     ) : (
@@ -46,7 +46,7 @@ function NavBar() {
                                     navigate("/");
                                 }}
                             >
-                                Uitloggen
+                                Logout
                             </button>
                         </>
                     )}
