@@ -66,10 +66,15 @@ public class Profile {
             String description,
             Gender gender,
             List<Gender> lookingForGender,
-            LocalDate dateOfBirth) {
+            LocalDate dateOfBirth,
+            Integer minAge,
+            Integer maxAge) {
         this.description = description;
         this.gender = gender;
         this.lookingForGender = lookingForGender;
+        this.dateOfBirth = dateOfBirth;
+        this.minAge = minAge;
+        this.maxAge = maxAge;
     }
 
     public int getAge() {
