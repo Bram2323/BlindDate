@@ -4,6 +4,9 @@ import { ProfileSection } from "./components/ProfileSection";
 import { Button } from "../../generic/Button";
 import { useNavigate } from "react-router-dom";
 import { Section } from "./components/Section";
+import { LabelBox } from "./components/LabelBox";
+import { TraitsList } from "./components/TraitsList";
+import { IProfile } from "./components/ProfileInterfaces";
 
 const fetchProfileData = () => {
     return ApiService.get("profiles/my")
@@ -24,29 +27,17 @@ const fetchProfileData = () => {
         });
 };
 
-const TraitsList = ({ traits }: Traits) => (
-    <div className="w-full rounded-lg bg-white p-4">
-        <h1 className="font-extrabold tracking-wider text-center">Q&A</h1>
-        <ul className="w-full flex flex-col items-center justify-center">
-            {traits.map((trait) => (
-                <li
-                    className="w-full flex flex-row items-center justify-between p-4 border-b-2 border-feminine-primary-dark rounded-lg shadow-lg"
-                    key={trait.id}
-                >
-                    <p>{trait.trait.question}</p>
-                    <p className="capitalize">
-                        {trait.answer.toLowerCase().replace("_", " ")}
-                    </p>
-                </li>
-            ))}
-        </ul>
-    </div>
-);
-
 export const ProfileView = () => {
-    const [profile, setProfile] = useState<Profile | null>(null);
+    const [profile, setProfile] = useState<IProfile | null>(null);
     const [imageSrc, setImageSrc] = useState<string>("");
     const navigate = useNavigate();
+    const sectionsBgColors = [
+        "bg-yellow-300",
+        "bg-purple-300",
+        "bg-blue-300",
+        "bg-pink-300",
+        "bg-green-300",
+    ];
 
     useEffect(() => {
         fetchProfileData()
@@ -58,6 +49,12 @@ export const ProfileView = () => {
                 if (error.response.status == 404) navigate("/create-profile");
             });
     }, []);
+
+    // useEffect(() => {
+    //     ApiService.get("profiles").then((response) => {
+    //         console.log(response.data);
+    //     });
+    // }, []);
 
     return (
         <>
@@ -71,55 +68,95 @@ export const ProfileView = () => {
                             }}
                         />
                     </div>
-                    <Section label={"img-container"}>
-                        <h1 className="font-extrabold tracking-wider text-2xl p-4">
-                            {profile?.username}
-                        </h1>
+                    <Section
+                        label={"img-container"}
+                        style={sectionsBgColors[0]}
+                    >
+                        <LabelBox
+                            content={
+                                profile?.username
+                                    ? profile.username
+                                    : "not found"
+                            }
+                            style={"m-4 text-2xl"}
+                        />
                         {<img src={imageSrc} className="rounded-lg h-56" />}
-                        <span className="p-2">{profile?.age} years</span>
-                        <div className="w-2/3 p-4 flex flex-row items-center justify-between ">
-                            <span className="border-2 border-feminine-secondary-dark p-2 bg-feminine-secondary-dark rounded-lg text-white tracking-wider">
-                                {profile?.gender.toLocaleLowerCase()}
-                            </span>
-                            <span className="font-bold tracking-wider">
+                        <LabelBox
+                            content={`${profile?.age} years`}
+                            style={"mt-4 mb-2"}
+                        />
+                    </Section>
+
+                    <Section label={"gender-box"} style={sectionsBgColors[1]}>
+                        <p className="text-2xl font-extrabold tracking-wider m-4">
+                            Gender &amp; Preferences
+                        </p>
+                        <div className="gap-2 flex flex-col items-center justify-between">
+                            <LabelBox content={profile?.gender.toLowerCase()} />
+                            <span className="font-bold tracking-wider ">
                                 looking for
                             </span>
-                            <div className="flex flex-col overflow-scroll min-w-fit h-10 border-2 border-feminine-secondary-dark p-2 bg-feminine-secondary-dark rounded-lg text-white tracking-wider">
+                            <ul className="flex flex-col gap-2">
                                 {profile?.lookingForGender &&
                                     profile.lookingForGender.map(
                                         (gender, index) => (
-                                            <span key={gender + index}>
-                                                {gender.toLowerCase()}
-                                            </span>
+                                            <LabelBox
+                                                key={index}
+                                                content={gender.toLowerCase()}
+                                            />
                                         )
                                     )}
-                            </div>
+                            </ul>
                         </div>
                     </Section>
 
-                    <Section label={"about-container"}>
+                    <Section
+                        label={"about-container"}
+                        style={sectionsBgColors[2]}
+                    >
                         <p className="text-2xl font-extrabold tracking-wider">
                             About me
                         </p>
-                        <div className="w-full my-4 bg-white p-4 min-h-36 rounded-lg shadow-lg">
+                        <div className="w-full my-4 bg-white p-4 min-h-48 rounded-lg shadow-lg">
                             {profile?.description}
                         </div>
                     </Section>
 
-                    <Section label={"personal-details-container"}>
+                    <Section
+                        label={"preference-container"}
+                        style={sectionsBgColors[3]}
+                    >
                         <ProfileSection
                             title="Preferences"
                             items={profile?.preferences}
                         />
+                    </Section>
+
+                    <Section
+                        label={"gender-identity-container"}
+                        style={sectionsBgColors[4]}
+                    >
                         <ProfileSection
                             title="Gender identities"
                             items={profile?.sexualities}
                         />
+                    </Section>
+
+                    <Section
+                        label={"interest-container"}
+                        style={sectionsBgColors[0]}
+                    >
                         <ProfileSection
                             title="Thinks i like"
                             items={profile?.interests}
                             style={""}
                         />
+                    </Section>
+
+                    <Section
+                        label={"traits-container"}
+                        style={sectionsBgColors[1]}
+                    >
                         <TraitsList traits={profile?.traits} />
                     </Section>
                 </div>
@@ -129,26 +166,3 @@ export const ProfileView = () => {
         </>
     );
 };
-
-interface List {
-    id: number;
-    name: string;
-}
-
-interface Profile {
-    id: number;
-    username: string;
-    description: string;
-    age: number;
-    gender: string;
-    lookingForGender: string[];
-    sexualities: List[];
-    interests: List[];
-    preferences: List[];
-    traits: { id: number; trait: { question: string }; answer: string }[];
-    imageId: number;
-}
-
-interface Traits {
-    traits: { id: number; trait: { question: string }; answer: string }[];
-}

@@ -1,11 +1,22 @@
 package com.brajula.blinddate.entities.profile;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
 import com.brajula.blinddate.entities.images.ImageRepository;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
+import com.brajula.blinddate.entities.judgment.JudgementService;
 import com.brajula.blinddate.entities.preferences.Preference;
 import com.brajula.blinddate.entities.preferences.PreferenceService;
-import com.brajula.blinddate.entities.judgment.JudgementService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
 import com.brajula.blinddate.entities.specification.ProfileSpecification;
@@ -22,20 +33,11 @@ import com.brajula.blinddate.exceptions.NotFoundException;
 import com.brajula.blinddate.exceptions.UserNotFoundException;
 
 import jakarta.transaction.Transactional;
-
 import lombok.RequiredArgsConstructor;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
-    private static final Logger logger = LoggerFactory.getLogger(ProfileService.class);
     private final ProfileRepository profileRepository;
     private final SexualityService sexualityService;
     private final ImageRepository imageRepository;
@@ -62,6 +64,12 @@ public class ProfileService {
             specification =
                     specification.and(
                             ProfileSpecification.hasGender(userProfile.getLookingForGender()));
+        }
+        if (userProfile.getMinAge() != null && userProfile.getMaxAge() != null) {
+            specification =
+                    specification.and(
+                            ProfileSpecification.hasAgeBetween(
+                                    (userProfile.getMinAge() - 1), (userProfile.getMaxAge() + 1)));
         }
 
         List<Profile> filteredProfiles = profileRepository.findAll(specification);
@@ -120,7 +128,6 @@ public class ProfileService {
             patchedProfile.setImage(
                     imageRepository.findById(patch.imageId()).orElseThrow(NotFoundException::new));
         if (patch.gender() != null) patchedProfile.setGender(convertToGender(patch.gender()));
-
         List<Gender> converted = new ArrayList<>();
         if (patch.lookingForGender() != null && !patch.lookingForGender().isEmpty())
             for (String gender : patch.lookingForGender()) {
@@ -136,6 +143,8 @@ public class ProfileService {
         if (patch.interests() != null)
             patchedProfile.setInterests(convertToInterests(patch.interests()));
         if (patch.dateOfBirth() != null) patchedProfile.setDateOfBirth(patch.dateOfBirth());
+        if (patch.minAge() != null) patchedProfile.setMinAge(patch.minAge());
+        if (patch.maxAge() != null) patchedProfile.setMaxAge(patch.maxAge());
         profileRepository.save(patchedProfile);
         return patchedProfile;
     }

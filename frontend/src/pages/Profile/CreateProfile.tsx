@@ -1,26 +1,24 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../../services/UserService";
 import ApiService from "../../services/ApiService";
-import { TextArea } from "../../generic/TextArea";
-import { ImageUpload } from "../../generic/ImageUpload";
-import { DropDownSelect } from "../../generic/DropDownSelect";
-import { ScrollContainer } from "../../generic/ScrollContainer";
-import Checkbox from "../../generic/Checkbox";
-import { DropDownSelectWithList } from "../../generic/DropdownSelectWithList";
+import { TextArea } from "./components/TextArea";
+import { ImageUpload } from "./components/ImageUpload";
+import { DropDownSelect } from "./components/DropDownSelect";
+import { ScrollContainer } from "./components/ScrollContainer";
+import Checkbox from "./components/Checkbox";
+import { EnhancedDropdown } from "./components/EnhancedDropdown";
 import { Button } from "../../generic/Button";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useValidators from "../../hooks/useValidators";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-    IProfile,
-    IFetchOption,
-    IFetchTrait,
-    IProfileForm,
-} from "./ProfileInterfaces";
-import { DateInput } from "../../generic/DateInput";
+import MultiRangeSlider, { ChangeResult } from "multi-range-slider-react";
+import { IProfile, IFetchOption, ITrait } from "./components/ProfileInterfaces";
+import { DateInput } from "./components/DateInput";
 import { Warning } from "../../generic/Warning";
 import { Section } from "./components/Section";
+import { LabelBox } from "./components/LabelBox";
+import { CheckBoxList } from "./components/CheckBoxList";
 export const CreateProfile = () => {
     const [profileExists, setProfileExists] = useState<boolean>(false);
     const [user, loggedIn] = useUser();
@@ -32,16 +30,18 @@ export const CreateProfile = () => {
     const [sexualities, setSexualities] = useState<IFetchOption[]>();
     const [preferences, setPreferences] = useState<IFetchOption[]>();
     const [interests, setInterests] = useState<IFetchOption[]>();
-    const [traits, setTraits] = useState<IFetchTrait[]>();
+    const [traits, setTraits] = useState<ITrait[]>();
     const imageRef = useRef<File | null>(null);
-    const formRef = useRef<IProfileForm>({
-        description: "",
+    const formRef = useRef<IProfile>({
+        imageId: null,
+        dateOfBirth: "",
+        minAge: 0,
+        maxAge: 99,
         gender: "",
         lookingForGender: [],
+        description: "",
         sexualities: [],
         preferences: [],
-        dateOfBirth: "",
-        imageId: null,
         interests: [],
         traits: [],
     });
@@ -50,6 +50,14 @@ export const CreateProfile = () => {
         { id: 2, value: "female" },
         { id: 3, value: "nonbinary" },
         { id: 4, value: "other" },
+    ];
+
+    const sectionsBgColors = [
+        "bg-yellow-300",
+        "bg-purple-300",
+        "bg-blue-300",
+        "bg-pink-300",
+        "bg-green-300",
     ];
 
     const fetchProfileData = () => {
@@ -67,6 +75,9 @@ export const CreateProfile = () => {
                 });
             })
             .catch((error) => {
+                if (error.response && error.response.status != 404) {
+                    console.error(error);
+                }
                 return { profile: null, imageUrl: "" };
             });
     };
@@ -125,13 +136,13 @@ export const CreateProfile = () => {
         if (profile != null) {
             formRef.current = profile;
             formRef.current.sexualities = formRef.current.sexualities.map(
-                (sex) => sex.id
+                (sex: any) => sex.id
             );
             formRef.current.interests = formRef.current.interests.map(
-                (interest) => interest.id
+                (interest: any) => interest.id
             );
             formRef.current.preferences = formRef.current.preferences.map(
-                (pref) => pref.id
+                (pref: any) => pref.id
             );
         }
     }, [profileExists]);
@@ -141,34 +152,19 @@ export const CreateProfile = () => {
         fetchData("interests", setInterests);
         fetchData("traits", setTraits);
         fetchData("preferences", setPreferences);
-    }, []);
-
-    useEffect(() => {
         fetchProfileData().then((res) => {
             setProfile(res.profile);
             setImageUrl(res.imageUrl);
         });
-    }, [traits, sexualities, interests, preferences]);
+    }, []);
 
     const fetchData = (url: string, setState: any) => {
         ApiService.get(url)
             .then((response) => {
+                console.log(url, response.data);
                 setState(response.data);
             })
             .catch((error) => console.error(error));
-    };
-
-    const handleCheckboxChange = (
-        list: number[],
-        id: number,
-        isChecked: boolean
-    ) => {
-        if (isChecked) {
-            list.push(id);
-        } else {
-            const index = list.indexOf(id);
-            if (index > -1) list.splice(index, 1);
-        }
     };
 
     const handleGenderChange = (
@@ -198,10 +194,8 @@ export const CreateProfile = () => {
                 duration={3000}
                 warningColor={"bg-red-500"}
             />
-            <Section label={"img-container"}>
-                <h1 className="text-5xl font-extrabold tracking-wider capitalize m-2 sm:text-2xl">
-                    {user.username}
-                </h1>
+            <Section label={"img-container"} style={sectionsBgColors[0]}>
+                <LabelBox content={user.username} style={"text-xl w-full"} />
                 <ImageUpload
                     style={"h-72"}
                     initialValue={imageSrc ? imageSrc : ""}
@@ -209,25 +203,8 @@ export const CreateProfile = () => {
                 />
             </Section>
 
-            <Section label={"about-container"}>
-                <h1>What you should know about me</h1>
-                <TextArea
-                    initialValue={
-                        profile?.description ? profile.description : ""
-                    }
-                    handleChange={(description) =>
-                        (formRef.current.description = description)
-                    }
-                />
-                <div>
-                    <DateInput
-                        label={"BirthDate"}
-                        initialDate={profile?.dateOfBirth}
-                        getDate={(date) => {
-                            formRef.current.dateOfBirth = date;
-                        }}
-                    />
-                </div>
+            <Section label={"gender-info"} style={sectionsBgColors[1]}>
+                <LabelBox content={"Gender Preferences"} style={"w-full"} />
                 <DropDownSelect
                     label={"I am a"}
                     category={"gender"}
@@ -239,100 +216,133 @@ export const CreateProfile = () => {
                         profile?.gender ? profile.gender.toLowerCase() : ""
                     }
                 />
+                <ul className="flex flex-col gap-2">
+                    <li className="text-center">Looking for</li>
+                    {genders.map((gender) => (
+                        <li
+                            key={gender.id}
+                            className="bg-white border-2 border-gray-800 rounded-lg shadow-lg"
+                        >
+                            <Checkbox
+                                targetId={gender.id}
+                                content={gender.value}
+                                handleChange={(id, isChecked) =>
+                                    handleGenderChange(
+                                        formRef.current.lookingForGender,
+                                        id,
+                                        isChecked
+                                    )
+                                }
+                                isChecked={profile?.lookingForGender.includes(
+                                    gender.value.toUpperCase()
+                                )}
+                            />
+                        </li>
+                    ))}
+                </ul>
+            </Section>
+
+            <Section label={"about-container"} style={sectionsBgColors[2]}>
+                <LabelBox content={"About me"} style={"w-full"} />
+                <TextArea
+                    initialValue={
+                        profile?.description ? profile.description : ""
+                    }
+                    handleChange={(description) =>
+                        (formRef.current.description = description)
+                    }
+                />
+            </Section>
+
+            <Section label={"age-data-box"} style={sectionsBgColors[3]}>
+                <LabelBox content={"Age & preference"} style={"w-full"} />
+                <div>
+                    <DateInput
+                        label={"BirthDate"}
+                        initialDate={profile?.dateOfBirth}
+                        getDate={(date) => {
+                            formRef.current.dateOfBirth = date;
+                        }}
+                    />
+                </div>
+                {/* slider: https://www.npmjs.com/package/multi-range-slider-react */}
+                <h1 className="min-w-48">Select age range</h1>
+                <div className="multi-range-slider-container bg-white rounded-lg p-4 shadow-2xl border-2 border-gray-800 w-full">
+                    <MultiRangeSlider
+                        min={18}
+                        max={99}
+                        minValue={profile?.minAge ? profile.minAge : 18} // set naar min age als doorgegeven
+                        maxValue={profile?.maxAge ? profile.maxAge : 99} // set naar max age als doorgegeven
+                        barInnerColor="#f688c1"
+                        barLeftColor="#D8B4FE"
+                        barRightColor="#D8B4FE"
+                        thumbLeftColor="#FFFFFF"
+                        thumbRightColor="#FFFFFF"
+                        onInput={(e: ChangeResult) => {
+                            formRef.current.minAge = e.minValue;
+                            formRef.current.maxAge = e.maxValue;
+                        }}
+                        style={{
+                            border: "none",
+                            background: "none",
+                            padding: "10px",
+                            boxShadow: "none",
+                        }}
+                    ></MultiRangeSlider>
+                </div>
+            </Section>
+
+            <Section label={"preferences-box"} style={sectionsBgColors[4]}>
+                <LabelBox content={"Morals & Values"} style={"w-full"} />
                 <ScrollContainer
-                    label={"Looking for"}
-                    height={"h-12"}
-                    width={"w-36"}
+                    height={"h-48"}
+                    headerStyle={"font-extrabold m-4"}
                 >
-                    <ul>
-                        {genders.map((gender) => (
-                            <li key={gender.id}>
-                                <Checkbox
-                                    targetId={gender.id}
-                                    content={gender.value}
-                                    handleChange={(id, isChecked) =>
-                                        handleGenderChange(
-                                            formRef.current.lookingForGender,
-                                            id,
-                                            isChecked
-                                        )
-                                    }
-                                    isChecked={profile?.lookingForGender.includes(
-                                        gender.value.toUpperCase()
-                                    )}
-                                />
-                            </li>
-                        ))}
-                    </ul>
+                    {preferences && (
+                        <CheckBoxList
+                            options={preferences}
+                            initialValues={profile ? profile.preferences : []}
+                            getIdList={(list: any) => {
+                                formRef.current.preferences = list;
+                            }}
+                        />
+                    )}
                 </ScrollContainer>
             </Section>
 
-            <Section label={"personal-details-container"}>
+            <Section
+                label={"gender-identities-box"}
+                style={sectionsBgColors[0]}
+            >
+                <LabelBox content={"Gender identity"} style={"w-full"} />
                 <ScrollContainer
-                    label={"Preferences"}
-                    height={"h-24"}
+                    height={"h-48"}
                     headerStyle={"font-extrabold m-4"}
                 >
-                    <ul>
-                        {preferences &&
-                            preferences.map((pref) => (
-                                <li key={pref.id}>
-                                    <Checkbox
-                                        targetId={pref.id}
-                                        content={pref.name}
-                                        handleChange={(id, isChecked) =>
-                                            handleCheckboxChange(
-                                                formRef.current.preferences,
-                                                id,
-                                                isChecked
-                                            )
-                                        }
-                                        isChecked={profile?.preferences.some(
-                                            (p: IFetchOption) =>
-                                                p.id === pref.id
-                                        )}
-                                    />
-                                </li>
-                            ))}
-                    </ul>
+                    {sexualities && (
+                        <CheckBoxList
+                            options={sexualities}
+                            initialValues={profile ? profile.sexualities : []}
+                            getIdList={(list: any) => {
+                                formRef.current.sexualities = list;
+                            }}
+                        />
+                    )}
                 </ScrollContainer>
-                <ScrollContainer
-                    label={"Gender identity"}
-                    height={"h-24"}
-                    headerStyle={"font-extrabold m-4"}
-                >
-                    <ul>
-                        {sexualities &&
-                            sexualities.map((sex) => (
-                                <li key={sex.id}>
-                                    <Checkbox
-                                        targetId={sex.id}
-                                        content={sex.name}
-                                        handleChange={(id, isChecked) =>
-                                            handleCheckboxChange(
-                                                formRef.current.sexualities,
-                                                id,
-                                                isChecked
-                                            )
-                                        }
-                                        isChecked={profile?.sexualities.some(
-                                            (s: IFetchOption) => s.id === sex.id
-                                        )}
-                                    />
-                                </li>
-                            ))}
-                    </ul>
-                </ScrollContainer>
+            </Section>
+
+            <Section label={"traits-box"} style={sectionsBgColors[1]}>
+                <LabelBox content={"Q&A"} style={"w-full text-center"} />
                 {traits && (
-                    <DropDownSelectWithList
+                    <EnhancedDropdown
                         label={"Traits"}
                         category={"Trait"}
-                        options={traits.map((trait) => ({
+                        options={traits?.map((trait: any) => ({
                             id: trait.id,
                             value: trait.question,
                         }))}
                         extraOptions={["yes", "no", "it depends"]}
-                        initialValues={profile?.traits.map((trait) => ({
+                        initialValues={profile?.traits.map((trait: any) => ({
                             id: trait.trait.id,
                             value: trait.trait.question,
                             extra: trait.answer,
@@ -349,18 +359,23 @@ export const CreateProfile = () => {
                         }}
                     />
                 )}
+            </Section>
+
+            <Section label={"interest-box"} style={sectionsBgColors[2]}>
+                <LabelBox content={"Interests"} style={"w-full"} />
                 {interests && (
-                    <DropDownSelectWithList
-                        label={"Things I like "}
+                    <EnhancedDropdown
                         category="interest"
                         options={interests.map((interest) => ({
                             id: interest.id,
                             value: interest.name,
                         }))}
-                        initialValues={profile?.interests.map((interest) => ({
-                            id: interest.id,
-                            value: interest.name,
-                        }))}
+                        initialValues={profile?.interests.map(
+                            (interest: any) => ({
+                                id: interest.id,
+                                value: interest.name,
+                            })
+                        )}
                         getSelected={(selectedInterests) => {
                             formRef.current.interests = selectedInterests.map(
                                 (interest) => interest.id
@@ -369,6 +384,7 @@ export const CreateProfile = () => {
                     />
                 )}
             </Section>
+
             <Button content={"Submit"} handleClick={saveProfile} />
         </div>
     );
