@@ -16,15 +16,16 @@ public record GetProfileDto(
         Gender gender,
         List<Gender> lookingForGender,
         LocalDate dateOfBirth,
-        int age,
+        Integer age,
         UUID userId,
         String username,
         Set<Sexuality> sexualities,
         Set<Interest> interests,
         Set<ProfileTrait> traits,
         Set<Preference> preferences,
-        Long imageId) {
-    public static GetProfileDto from(Profile profile) {
+        Long imageId,
+        int matchScore) {
+    private static GetProfileDto createFrom(Profile profile, int matchScore) {
         return new GetProfileDto(
                 profile.getId(),
                 profile.getDescription(),
@@ -38,6 +39,16 @@ public record GetProfileDto(
                 profile.getInterests(),
                 profile.getProfileTraits(),
                 profile.getPreferences(),
-                profile.getImage().getId());
+                profile.getImage().getId(),
+                matchScore);
+    }
+
+    // als geen score berekend is word er -1 meegegeven
+    public static GetProfileDto from(Profile profile) {
+        return createFrom(profile, -1);
+    }
+
+    public static GetProfileDto from(Profile profile, int matchScore) {
+        return createFrom(profile, matchScore);
     }
 }

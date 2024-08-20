@@ -64,7 +64,6 @@ public class Profile {
         this.description = description;
         this.gender = gender;
         this.lookingForGender = lookingForGender;
-        this.dateOfBirth = dateOfBirth;
     }
 
     public int getAge() {
