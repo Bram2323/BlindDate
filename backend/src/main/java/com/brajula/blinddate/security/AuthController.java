@@ -51,7 +51,7 @@ public class AuthController {
             throw new BadRequestException("Username can't be longer than 20 characters!");
         if (password == null) throw new BadRequestException("Password is required!");
         if (firstName == null) throw new BadRequestException("First name is required!");
-        if (lastName == null) throw new BadRequestException("First name is required!");
+        if (lastName == null) throw new BadRequestException("Last name is required!");
         if (email == null) throw new BadRequestException("Email is required!");
 
         String trimmedFirstName = firstName.trim();

@@ -10,6 +10,7 @@ import Chat from "./pages/chat/Chat";
 import { CreateProfile } from "./pages/Profile/CreateProfile";
 import { ProfileView } from "./pages/Profile/ProfileView";
 import Admin from "./pages/Admin/Admin";
+import Judging from "./pages/Judging/Judging";
 
 function App() {
     history.navigate = useNavigate();
@@ -27,6 +28,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/admin/*" element={<Admin />} />
+                    <Route path="/judging" element={<Judging />} />
                 </Routes>
             </div>
         </>

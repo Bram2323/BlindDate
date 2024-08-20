@@ -1,4 +1,4 @@
-package com.brajula.blinddate.preferences;
+package com.brajula.blinddate.entities.preferences;
 
 import static com.brajula.blinddate.Routes.PREFERENCES;
 

@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { IProfile } from "../pages/Profile/components/ProfileInterfaces";
 
 const useValidators = () => {
     const isValidEmail = useCallback((email: string) => {
@@ -19,7 +20,7 @@ const useValidators = () => {
         return passwordRegex.test(password);
     }, []);
 
-    const validateForm = useCallback((form: ProfileForm) => {
+    const validateForm = useCallback((form: IProfile) => {
         if (form.description === "") {
             return false;
         }
@@ -52,19 +53,3 @@ const useValidators = () => {
 };
 
 export default useValidators;
-
-interface ProfileForm {
-    description: string;
-    gender: string;
-    lookingForGender: string[];
-    sexualities: number[];
-    dateOfBirth: string;
-    imageId: number | null;
-    interests: number[];
-    traits: Trait[];
-}
-
-interface Trait {
-    id: number;
-    answer: string;
-}

@@ -1,8 +1,22 @@
 package com.brajula.blinddate.entities.profile;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
 import com.brajula.blinddate.entities.images.ImageRepository;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
+import com.brajula.blinddate.entities.judgment.JudgementService;
+import com.brajula.blinddate.entities.preferences.Preference;
+import com.brajula.blinddate.entities.preferences.PreferenceService;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.sexuality.SexualityService;
 import com.brajula.blinddate.entities.specification.ProfileSpecification;
@@ -17,53 +31,59 @@ import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.exceptions.BadRequestException;
 import com.brajula.blinddate.exceptions.NotFoundException;
 import com.brajula.blinddate.exceptions.UserNotFoundException;
-import com.brajula.blinddate.preferences.Preference;
-import com.brajula.blinddate.preferences.PreferenceService;
 
 import jakarta.transaction.Transactional;
-
 import lombok.RequiredArgsConstructor;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
-    private static final Logger logger = LoggerFactory.getLogger(ProfileService.class);
     private final ProfileRepository profileRepository;
     private final SexualityService sexualityService;
     private final ImageRepository imageRepository;
     private final InterestService interestService;
     private final ProfileTraitService profileTraitService;
     private final TraitService traitService;
+    private final JudgementService judgementService;
 
     private final PreferenceService preferenceService;
 
     private final UserRepository userRepository;
 
-    public List<GetProfileDto> getAll(
-            List<String> genders, Integer minAge, Integer maxAge) {
+    public List<GetProfileDto> getAll() {
+        return profileRepository.findAll().stream().map(GetProfileDto::from).toList();
+    }
+
+    // overloaded get all
+    public List<GetProfileDto> getAll(User user) {
+        Profile userProfile =
+                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
         Specification<Profile> specification = Specification.where(null);
-        if (genders != null && !genders.isEmpty()) {
+        if (userProfile.getLookingForGender() != null
+                && !userProfile.getLookingForGender().isEmpty()) {
             specification =
                     specification.and(
-                            ProfileSpecification.hasGender(
-                                    genders.stream().map(this::convertToGender).toList()));
+                            ProfileSpecification.hasGender(userProfile.getLookingForGender()));
         }
-        if (minAge != null && maxAge != null) {
+        if (userProfile.getMinAge() != null && userProfile.getMaxAge() != null) {
             specification =
                     specification.and(
-                            ProfileSpecification.hasAgeBetween((minAge - 1), (maxAge + 1)));
+                            ProfileSpecification.hasAgeBetween(
+                                    (userProfile.getMinAge() - 1), (userProfile.getMaxAge() + 1)));
         }
-        return profileRepository.findAll(specification).stream()
-                .map(GetProfileDto::from)
-                .collect(Collectors.toList());
+
+        List<Profile> filteredProfiles = profileRepository.findAll(specification);
+
+        return calculateMatchScore(userProfile, filteredProfiles);
+    }
+
+    public List<GetProfileDto> getAllProfilesToJudge(User user) {
+        Profile userProfile =
+                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
+        List<Long> judgedProfileIds = judgementService.getJudgedIdsByJudgeId(userProfile.getId());
+        return getAll(user).stream()
+                .filter((profile) -> !judgedProfileIds.contains(profile.id()))
+                .toList();
     }
 
     public Profile getById(Long id) {
@@ -108,7 +128,6 @@ public class ProfileService {
             patchedProfile.setImage(
                     imageRepository.findById(patch.imageId()).orElseThrow(NotFoundException::new));
         if (patch.gender() != null) patchedProfile.setGender(convertToGender(patch.gender()));
-
         List<Gender> converted = new ArrayList<>();
         if (patch.lookingForGender() != null && !patch.lookingForGender().isEmpty())
             for (String gender : patch.lookingForGender()) {
@@ -124,6 +143,8 @@ public class ProfileService {
         if (patch.interests() != null)
             patchedProfile.setInterests(convertToInterests(patch.interests()));
         if (patch.dateOfBirth() != null) patchedProfile.setDateOfBirth(patch.dateOfBirth());
+        if (patch.minAge() != null) patchedProfile.setMinAge(patch.minAge());
+        if (patch.maxAge() != null) patchedProfile.setMaxAge(patch.maxAge());
         profileRepository.save(patchedProfile);
         return patchedProfile;
     }
@@ -181,5 +202,47 @@ public class ProfileService {
             traits.add(profileTrait);
         }
         return traits;
+    }
+
+    public List<GetProfileDto> calculateMatchScore(
+            Profile userProfile, List<Profile> filteredProfiles) {
+        List<GetProfileDto> getProfileDtoList = new ArrayList<>();
+        for (Profile profile : filteredProfiles) {
+            if (!profile.equals(userProfile)) {
+                int matchScore = 0;
+                for (Preference preference : profile.getPreferences()) {
+                    if (userProfile.getPreferences().contains(preference)) {
+                        matchScore++;
+                    }
+                }
+                for (Sexuality sexuality : profile.getSexualities()) {
+                    if (userProfile.getSexualities().contains(sexuality)) {
+                        matchScore++;
+                    }
+                }
+                for (Interest interest : profile.getInterests()) {
+                    if (userProfile.getInterests().contains(interest)) {
+                        matchScore++;
+                    }
+                }
+                for (ProfileTrait profileTrait : profile.getProfileTraits()) {
+                    List<ProfileTrait> similarProfileTraits =
+                            userProfile.getProfileTraits().stream()
+                                    .filter(
+                                            userProfileTrait ->
+                                                    userProfileTrait.getTrait()
+                                                                    == profileTrait.getTrait()
+                                                            && userProfileTrait.getAnswer()
+                                                                    == profileTrait.getAnswer())
+                                    .toList();
+                    matchScore += similarProfileTraits.size();
+                }
+                GetProfileDto dto = GetProfileDto.from(profile, matchScore);
+                getProfileDtoList.add(dto);
+            }
+        }
+
+        getProfileDtoList.sort(Comparator.comparingInt(GetProfileDto::matchScore).reversed());
+        return getProfileDtoList;
     }
 }

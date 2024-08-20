@@ -3,6 +3,7 @@ import { login } from "../../services/UserService";
 import { useNavigate } from "react-router-dom";
 import FieldInput from "../../generic/FieldInput";
 import { Button } from "../../generic/Button";
+import { Warning } from "../../generic/Warning";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -32,26 +33,38 @@ const Login = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-full items-center justify-center">
-            <div className={"h-8 p-2 text-red-600"}>{error}</div>
-            <FieldInput
-                label={"username"}
-                content={username}
-                handleChange={(value) => {
-                    setUsername(value);
-                }}
-            />
-            <FieldInput
-                label={"password"}
-                type={"password"}
-                content={password}
-                handleChange={(value) => {
-                    setPassword(value);
-                }}
-                onSubmit={handleLogin}
-            />
-            <Button content="submit" handleClick={handleLogin} />
-        </div>
+        <>
+            <div className="flex min-h-full items-center justify-center">
+                <div className=" bg-green-300 h-fit px-1 pb-2 rounded-xl border-2 border-green-800 flex flex-col items-center justify-center">
+                    <Warning
+                        message={error}
+                        duration={2000}
+                        warningColor="bg-red-400"
+                    />
+                    <FieldInput
+                        label="Username"
+                        content={username}
+                        style={"rounded-lg border-green-800"}
+                        layout="flex flex-col border-none w-72"
+                        handleChange={(value) => {
+                            setUsername(value);
+                        }}
+                    />
+                    <FieldInput
+                        label="password"
+                        content={password}
+                        type="password"
+                        style={"rounded-lg border-green-800"}
+                        layout="flex flex-col border-none w-72"
+                        handleChange={(value) => {
+                            setPassword(value);
+                        }}
+                        onSubmit={handleLogin}
+                    />
+                    <Button content="submit" handleClick={handleLogin} />
+                </div>
+            </div>
+        </>
     );
 };
 

@@ -11,7 +11,7 @@ const FieldInput: React.FC<FieldInputProps> = ({
     return (
         <div className={`${layout} border-2 `} data-value={content}>
             {label && (
-                <label htmlFor="label" className={`${style}`}>
+                <label htmlFor="label" className={`${style} font-bold`}>
                     {label}
                 </label>
             )}

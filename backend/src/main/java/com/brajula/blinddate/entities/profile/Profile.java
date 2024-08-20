@@ -2,10 +2,10 @@ package com.brajula.blinddate.entities.profile;
 
 import com.brajula.blinddate.entities.images.Image;
 import com.brajula.blinddate.entities.interest.Interest;
+import com.brajula.blinddate.entities.preferences.Preference;
 import com.brajula.blinddate.entities.sexuality.Sexuality;
 import com.brajula.blinddate.entities.trait.profiletraits.ProfileTrait;
 import com.brajula.blinddate.entities.user.User;
-import com.brajula.blinddate.preferences.Preference;
 
 import jakarta.persistence.*;
 
@@ -30,6 +30,8 @@ public class Profile {
     @Setter private Gender gender;
     @Setter private List<Gender> lookingForGender = new ArrayList<>();
     @Setter private LocalDate dateOfBirth;
+    @Setter private Integer minAge;
+    @Setter private Integer maxAge;
 
     @OneToOne @Setter private User user;
 
@@ -48,12 +50,16 @@ public class Profile {
             Gender gender,
             List<Gender> lookingForGender,
             LocalDate dateOfBirth,
-            User user) {
+            User user,
+            Integer minAge,
+            Integer maxAge) {
         this.description = description;
         this.gender = gender;
         this.lookingForGender = lookingForGender;
         this.dateOfBirth = dateOfBirth;
         this.user = user;
+        this.minAge = minAge;
+        this.maxAge = maxAge;
     }
 
     public Profile(
@@ -64,7 +70,6 @@ public class Profile {
         this.description = description;
         this.gender = gender;
         this.lookingForGender = lookingForGender;
-        this.dateOfBirth = dateOfBirth;
     }
 
     public int getAge() {

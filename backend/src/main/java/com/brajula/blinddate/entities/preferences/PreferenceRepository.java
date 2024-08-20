@@ -1,4 +1,4 @@
-package com.brajula.blinddate.preferences;
+package com.brajula.blinddate.entities.preferences;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
