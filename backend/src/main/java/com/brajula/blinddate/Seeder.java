@@ -104,10 +104,18 @@ public class Seeder implements CommandLineRunner {
                         "Not a robot!",
                         Gender.MALE,
                         List.of(Gender.FEMALE),
-                        LocalDate.of(1969, 4, 20));
+                        LocalDate.of(1969, 4, 20),
+                        18,
+                        99);
 
         Profile profile2 =
-                new Profile("sus", Gender.MALE, List.of(Gender.FEMALE), LocalDate.of(1969, 4, 20));
+                new Profile(
+                        "sus",
+                        Gender.MALE,
+                        List.of(Gender.FEMALE),
+                        LocalDate.of(1969, 4, 20),
+                        18,
+                        99);
 
         seedProfile(profile1, user1);
         seedProfile(profile2, user2);

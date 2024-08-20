@@ -83,6 +83,8 @@ public record PostProfileDto(
                 this.description,
                 Gender.valueOf(this.gender.toUpperCase()),
                 getSearchGenderList,
-                this.dateOfBirth);
+                this.dateOfBirth,
+                this.minAge,
+                this.maxAge);
     }
 }
