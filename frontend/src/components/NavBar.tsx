@@ -19,13 +19,13 @@ function NavBar() {
                     {!isLoggedIn ? (
                         <>
                             <button
-                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded"
+                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded shadow-xl"
                                 onClick={() => navigate("/login")}
                             >
                                 Inloggen
                             </button>
                             <button
-                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded"
+                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
                                 onClick={() => navigate("/register")}
                             >
                                 Registreren
@@ -34,13 +34,13 @@ function NavBar() {
                     ) : (
                         <>
                             <button
-                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded"
+                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded shadow-xl"
                                 onClick={() => navigate("/profile")}
                             >
                                 Account
                             </button>
                             <button
-                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded"
+                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
                                 onClick={() => {
                                     logout();
                                     navigate("/");
