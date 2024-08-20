@@ -78,7 +78,8 @@ public class Seeder implements CommandLineRunner {
         seedInterests();
         seedQuestions();
         seedChats();
-        SeedProfilesWithUsersAndImages();
+        seedProfilesWithUsersAndImages();
+        seedModerators();
     }
 
     @Value("${image.folder.path:src/main/resources/images}")
@@ -236,7 +237,7 @@ public class Seeder implements CommandLineRunner {
         return randomPreferences;
     }
 
-    private void SeedProfilesWithUsersAndImages() throws IOException {
+    private void seedProfilesWithUsersAndImages() throws IOException {
         if (userRepository.count() > 4) return;
         int count = MockProfiles.PROFILES.size();
         for (SeedUserDto user : USERS) {
@@ -268,5 +269,17 @@ public class Seeder implements CommandLineRunner {
         ImageUploadResponse savedImage =
                 imageService.uploadImage(imageData, resource.getFilename(), "image/png");
         return savedImage.id();
+    }
+
+    public void seedModerators() {
+        User moderator =
+                userService.register(
+                        "InternetJanitor",
+                        "securePassword1!",
+                        "Charles",
+                        "Stockton",
+                        "Stockton@Slap.com");
+        moderator.setRole(Role.MODERATOR);
+        userRepository.save(moderator);
     }
 }
