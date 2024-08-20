@@ -7,6 +7,7 @@ function Admin() {
             <div className="flex flex-col items-center">
                 <Routes>
                     <Route path="/users" element={<UserList />} />
+                    <Route path="/users/:id" element={<UserList />} />
                 </Routes>
             </div>
         </>
