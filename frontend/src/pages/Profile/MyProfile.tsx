@@ -41,7 +41,7 @@ function MyProfile() {
 
     return (
         <>
-            <ProfileView profile={profile} imageSrc={imageSrc} />
+            <ProfileView profile={profile} imageSrc={imageSrc} canEdit={true} />
         </>
     );
 }

@@ -9,9 +9,14 @@ import { IProfile } from "./components/ProfileInterfaces";
 interface ProfileViewProps {
     profile?: IProfile;
     imageSrc: string;
+    canEdit: boolean;
 }
 
-export const ProfileView = ({ profile, imageSrc }: ProfileViewProps) => {
+export const ProfileView = ({
+    profile,
+    imageSrc,
+    canEdit,
+}: ProfileViewProps) => {
     const navigate = useNavigate();
     const sectionsBgColors = [
         "bg-yellow-300",
@@ -31,14 +36,17 @@ export const ProfileView = ({ profile, imageSrc }: ProfileViewProps) => {
     return (
         <>
             <div className="w-full flex flex-col items-center justify-center">
-                <div className="p-4 w-full flex flex-col items-end">
-                    <Button
-                        content={"edit"}
-                        handleClick={() => {
-                            navigate("/create-profile");
-                        }}
-                    />
-                </div>
+                {canEdit && (
+                    <div className="p-4 w-full flex flex-col items-end">
+                        <Button
+                            content={"edit"}
+                            handleClick={() => {
+                                navigate("/create-profile");
+                            }}
+                        />
+                    </div>
+                )}
+
                 <Section label={"img-container"} style={sectionsBgColors[0]}>
                     <LabelBox
                         content={

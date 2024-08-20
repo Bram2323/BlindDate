@@ -36,20 +36,7 @@ class ApiService {
         data: any = null,
         otherConfig: any = null
     ) {
-        return axios
-            .request(this.#getConfig(method, url, data, otherConfig))
-            .catch((error) => {
-                if (error.response && error.response.status === 401) {
-                    logout();
-                    const currentPath = history.location.pathname;
-                    history.navigate("/login", {
-                        state: {
-                            prevPath: currentPath,
-                        },
-                    });
-                }
-                return Promise.reject(error);
-            });
+        return axios.request(this.#getConfig(method, url, data, otherConfig));
     }
 
     static #getConfig(

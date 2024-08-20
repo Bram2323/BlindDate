@@ -24,9 +24,9 @@ function UserList() {
         ApiService.get("users/all", params).then((response) => {
             const data = response.data;
             setUsers(data.content);
-            setTotalUsers(data.totalElements);
-            setTotalPages(data.totalPages);
-            setCurrentPage(data.number + 1);
+            setTotalUsers(data.page.totalElements);
+            setTotalPages(data.page.totalPages);
+            setCurrentPage(data.page.number + 1);
         });
     }
 

@@ -27,7 +27,7 @@ export function useConfirm(): [
     const element = (
         <>
             {active && (
-                <div className="z-50 fixed w-full h-full bg-black bg-opacity-10 flex flex-col justify-center items-center">
+                <div className="z-50 fixed top-0 right-0 w-full h-full bg-black bg-opacity-10 flex flex-col justify-center items-center">
                     <div className="flex flex-col items-center justify-center gap-2 bg-gray-100 p-4 rounded-xl border-4 border-gray-600 shadow-xl">
                         <div className="flex flex-col items-center justify-center">
                             {text.map((row, index) => (
