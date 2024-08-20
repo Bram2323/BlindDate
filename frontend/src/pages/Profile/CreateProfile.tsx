@@ -161,6 +161,7 @@ export const CreateProfile = () => {
     const fetchData = (url: string, setState: any) => {
         ApiService.get(url)
             .then((response) => {
+                console.log(url, response.data);
                 setState(response.data);
             })
             .catch((error) => console.error(error));
@@ -297,10 +298,10 @@ export const CreateProfile = () => {
                     height={"h-48"}
                     headerStyle={"font-extrabold m-4"}
                 >
-                    {profile && (
+                    {preferences && (
                         <CheckBoxList
                             options={preferences}
-                            initialValues={profile.preferences}
+                            initialValues={profile ? profile.preferences : []}
                             getIdList={(list: any) => {
                                 formRef.current.preferences = list;
                             }}
@@ -318,10 +319,10 @@ export const CreateProfile = () => {
                     height={"h-48"}
                     headerStyle={"font-extrabold m-4"}
                 >
-                    {profile && (
+                    {sexualities && (
                         <CheckBoxList
                             options={sexualities}
-                            initialValues={profile.sexualities}
+                            initialValues={profile ? profile.sexualities : []}
                             getIdList={(list: any) => {
                                 formRef.current.sexualities = list;
                             }}

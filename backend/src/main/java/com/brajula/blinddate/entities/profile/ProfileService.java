@@ -38,7 +38,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
-    private static final Logger logger = LoggerFactory.getLogger(ProfileService.class);
     private final ProfileRepository profileRepository;
     private final SexualityService sexualityService;
     private final ImageRepository imageRepository;
