@@ -5,7 +5,6 @@ function NavBar() {
     const navigate = useNavigate();
 
     const [user, isLoggedIn] = useUser();
-
     return (
         <>
             <div className="bg-purple-300 flex justify-between">
@@ -33,6 +32,14 @@ function NavBar() {
                         </>
                     ) : (
                         <>
+                            {user.role == "ROLE_MODERATOR" && (
+                                <button
+                                    className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
+                                    onClick={() => navigate("/moderator")}
+                                >
+                                    Mod
+                                </button>
+                            )}
                             <button
                                 className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
                                 onClick={() => navigate("/")}
