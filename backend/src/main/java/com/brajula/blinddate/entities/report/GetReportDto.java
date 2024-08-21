@@ -8,6 +8,7 @@ public record GetReportDto(
         Long id,
         String reportMessage,
         Long reportedProfileId,
+        String moderatorDetails,
         LocalDate reportedOn,
         Boolean isClosed,
         String reportedBy) {
@@ -17,6 +18,7 @@ public record GetReportDto(
                 report.getId(),
                 report.getReportMessage(),
                 report.getReportedProfile().getId(),
+                report.getModeratorDetails(),
                 report.getReportedOn(),
                 report.getIsClosed(),
                 report.getReportedBy().getUsername());

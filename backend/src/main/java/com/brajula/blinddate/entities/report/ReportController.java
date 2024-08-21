@@ -64,12 +64,10 @@ public class ReportController {
         return reportService.getById(id);
     }
 
-    /*
     // moderator should be able to close a report, and/or add details to report
     @PatchMapping("/{id}")
-    public Report update() {
-        return reportService.patch();
+    public ResponseEntity<GetReportDto> update(
+            @PathVariable Long id, @RequestBody GetReportDto patch) {
+        return ResponseEntity.ok().body(reportService.patch(patch, id));
     }
-
-     */
 }

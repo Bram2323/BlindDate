@@ -1,3 +1,4 @@
+import { Report } from "../../pages/Moderator/components/Report";
 import JudgeProfile from "./JudgeProfile";
 
 function JudgeProfileBox({ profile }: { profile: JudgeProfile }) {
@@ -5,8 +6,9 @@ function JudgeProfileBox({ profile }: { profile: JudgeProfile }) {
         <>
             <div
                 key={profile.id}
-                className="bg-blue-300 flex flex-col items-center my-8 px-16 py-8 rounded-lg shadow-xl"
+                className="bg-blue-300 flex flex-col items-center my-8 px-16 py-8 rounded-lg shadow-xl relative"
             >
+                <Report profileId={profile.id} />
                 <p>{profile.username}</p>
                 <p>Age: {profile.age}</p>
                 <p>{profile.description}</p>

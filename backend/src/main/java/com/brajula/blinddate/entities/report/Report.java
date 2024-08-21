@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
@@ -19,7 +20,7 @@ public class Report {
     @GeneratedValue @Id private Long id;
 
     private String reportMessage;
-    private String moderatorDetails;
+    @Setter private String moderatorDetails;
 
     @ManyToOne private Profile reportedProfile;
 

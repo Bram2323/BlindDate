@@ -35,10 +35,14 @@ public class ReportService {
         return GetReportDto.from(report);
     }
 
-    /*
-       public Report patch() {
-           return null; // patched report
-       }
-
-    */
+    public GetReportDto patch(GetReportDto patch, Long id) {
+        Report report = reportRepository.findById(id).orElseThrow(NotFoundException::new);
+        if (patch.isClosed() != null) {
+            report.setIsClosed(patch.isClosed());
+        }
+        if (patch.moderatorDetails() != null) {
+            report.setModeratorDetails(patch.moderatorDetails());
+        }
+        return GetReportDto.from(reportRepository.save(report));
+    }
 }
