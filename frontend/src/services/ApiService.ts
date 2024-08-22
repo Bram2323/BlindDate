@@ -4,7 +4,7 @@ import history from "./History";
 
 const API_URL = "http://localhost:8080/api/v1/";
 
-export const TOKEN_STORAGE_LOCATION: string = "JWT";
+const TOKEN_STORAGE_LOCATION: string = "JWT";
 
 class ApiService {
     static get(url: string, params: any = null, responseType: string = "json") {
@@ -28,6 +28,18 @@ class ApiService {
 
     static delete(url: string) {
         return this.#doRequest("delete", url);
+    }
+
+    static getToken() {
+        return sessionStorage.getItem(TOKEN_STORAGE_LOCATION);
+    }
+
+    static setToken(token: string) {
+        sessionStorage.setItem(TOKEN_STORAGE_LOCATION, token);
+    }
+
+    static removeToken() {
+        sessionStorage.removeItem(TOKEN_STORAGE_LOCATION);
     }
 
     static #doRequest(
@@ -70,7 +82,7 @@ class ApiService {
     }
 
     static #getHeaders(data: any = null) {
-        let token = sessionStorage.getItem(TOKEN_STORAGE_LOCATION);
+        let token = this.getToken();
         let headers: any = {};
 
         if (token != null) {

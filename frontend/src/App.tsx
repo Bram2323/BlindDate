@@ -10,6 +10,8 @@ import Chat from "./pages/chat/Chat";
 import { CreateProfile } from "./pages/Profile/CreateProfile";
 import { ProfileView } from "./pages/Profile/ProfileView";
 import Judging from "./pages/Judging/Judging";
+import { StompSessionProvider } from "react-stomp-hooks";
+import ApiService from "./services/ApiService";
 
 function App() {
     history.navigate = useNavigate();
@@ -17,18 +19,28 @@ function App() {
 
     return (
         <>
-            <NavBar />
-            <div className="w-full h-full overflow-y-auto">
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/create-profile" element={<CreateProfile />} />
-                    <Route path="/profile" element={<ProfileView />} />
-                    <Route path="/chats/:id" element={<Chat />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/judging" element={<Judging />} />
-                </Routes>
-            </div>
+            <StompSessionProvider
+                url="http://localhost:8080/api/v1/websocket"
+                connectHeaders={{
+                    Authorization: "Bearer " + ApiService.getToken(),
+                }}
+            >
+                <NavBar />
+                <div className="w-full h-full overflow-y-auto">
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route
+                            path="/create-profile"
+                            element={<CreateProfile />}
+                        />
+                        <Route path="/profile" element={<ProfileView />} />
+                        <Route path="/chats/:id" element={<Chat />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/judging" element={<Judging />} />
+                    </Routes>
+                </div>
+            </StompSessionProvider>
         </>
     );
 }
