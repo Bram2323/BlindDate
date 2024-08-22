@@ -8,7 +8,8 @@ import Login from "./pages/Login/Login";
 
 import Chat from "./pages/chat/Chat";
 import { CreateProfile } from "./pages/Profile/CreateProfile";
-import { ProfileView } from "./pages/Profile/ProfileView";
+import MyProfile from "./pages/Profile/MyProfile";
+import Admin from "./pages/Admin/Admin";
 import Judging from "./pages/Judging/Judging";
 import { ModeratorPage } from "./pages/Moderator/ModeratorPage";
 
@@ -23,10 +24,11 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/create-profile" element={<CreateProfile />} />
-                    <Route path="/profile" element={<ProfileView />} />
+                    <Route path="/profile" element={<MyProfile />} />
                     <Route path="/chats/:id" element={<Chat />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/admin/*" element={<Admin />} />
                     <Route path="/judging" element={<Judging />} />
                     <Route path="/moderator" element={<ModeratorPage />} />
                 </Routes>
