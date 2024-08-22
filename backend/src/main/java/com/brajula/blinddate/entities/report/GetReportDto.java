@@ -1,6 +1,7 @@
 package com.brajula.blinddate.entities.report;
 
 import java.time.LocalDate;
+import java.util.List;
 
 // reported by = username
 
@@ -8,7 +9,7 @@ public record GetReportDto(
         Long id,
         String reportMessage,
         Long reportedProfileId,
-        String moderatorDetails,
+        List<String> moderatorDetails,
         LocalDate reportedOn,
         Boolean isClosed,
         String reportedBy) {

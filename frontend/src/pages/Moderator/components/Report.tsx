@@ -34,7 +34,7 @@ export const Report: React.FC<ReportProps> = ({ profileId }) => {
             } absolute right-0 top-0 rounded-lg border-gray-800`}
         >
             {isOpen ? (
-                <div className="bg-pink-300 p-10 rounded-lg flex flex-col">
+                <div className="bg-gray-300 p-10 rounded-lg flex flex-col">
                     {completed ? (
                         <p className="font-bold tracking-wider">
                             Thank you for keeping this app safe!

@@ -41,7 +41,7 @@ public class ReportService {
             report.setIsClosed(patch.isClosed());
         }
         if (patch.moderatorDetails() != null) {
-            report.setModeratorDetails(patch.moderatorDetails());
+            report.addModeratorDetail(patch.moderatorDetails());
         }
         return GetReportDto.from(reportRepository.save(report));
     }
