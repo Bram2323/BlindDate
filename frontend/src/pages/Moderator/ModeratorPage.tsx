@@ -15,12 +15,15 @@ export const ModeratorPage = () => {
     useEffect(() => {
         ApiService.get("/reports")
             .then((response) => {
-                setOpenReports(
-                    response.data.filter((report: IReport) => !report.isClosed)
+                const open = response.data.filter(
+                    (report: IReport) => !report.isClosed
                 );
-                setClosedReports(
-                    response.data.filter((report: IReport) => report.isClosed)
+                setOpenReports(sortById(open));
+
+                const closed = response.data.filter(
+                    (report: IReport) => report.isClosed
                 );
+                setClosedReports(sortById(closed));
             })
             .catch((error) => console.error(error));
     }, [refresh]);
@@ -29,16 +32,28 @@ export const ModeratorPage = () => {
         setShowOpen(!showOpen);
     };
 
+    const sortById = (list: IReport[]) => {
+        return list.sort((a, b) => {
+            if (a.id < b.id) {
+                return -1;
+            }
+            if (a.id > b.id) {
+                return 1;
+            }
+            return 0;
+        });
+    };
+
     return (
         <div className="flex flex-col justify-center items-center">
-            <Section label={"start"} style={"bg-yellow-300"}>
+            <Section label={"start"} style={"bg-yellow-300 py-16"}>
                 <LabelBox content="Welcome to the Janitor's Lounge!" />
                 <Button
                     content={`${
                         showOpen ? "show Closed Reports" : "show Open Reports"
                     }`}
                     handleClick={toggleShowOpen}
-                    style={"my-2"}
+                    style={"mt-8"}
                 />
             </Section>
 

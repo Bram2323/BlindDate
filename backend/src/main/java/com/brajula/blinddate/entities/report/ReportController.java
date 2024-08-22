@@ -35,7 +35,7 @@ public class ReportController {
         URI location =
                 ServletUriComponentsBuilder.fromCurrentRequest()
                         .path("/id")
-                        .buildAndExpand(savedReport.reportedProfileId())
+                        .buildAndExpand(savedReport.id())
                         .toUri();
         return ResponseEntity.created(location).body(savedReport);
     }

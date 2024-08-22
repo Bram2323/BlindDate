@@ -1,6 +1,5 @@
 package com.brajula.blinddate.entities.report;
 
-import com.brajula.blinddate.entities.profile.Profile;
 import com.brajula.blinddate.entities.user.User;
 
 import jakarta.persistence.*;
@@ -24,7 +23,7 @@ public class Report {
     private String reportMessage;
     @Setter private List<String> moderatorDetails = new ArrayList<>();
 
-    @ManyToOne private Profile reportedProfile;
+    @ManyToOne private User reportedUser;
 
     @ManyToOne private User reportedBy;
 
@@ -36,9 +35,9 @@ public class Report {
         moderatorDetails.addAll(messages);
     }
 
-    public Report(String reportMessage, Profile reportedProfile, User reportedBy) {
+    public Report(String reportMessage, User reportedUser, User reportedBy) {
         this.reportMessage = reportMessage;
-        this.reportedProfile = reportedProfile;
+        this.reportedUser = reportedUser;
         this.reportedOn = LocalDate.now();
         this.isClosed = false;
         this.reportedBy = reportedBy;

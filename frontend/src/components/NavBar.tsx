@@ -24,6 +24,16 @@ function NavBar() {
                             Admin
                         </button>
                     )}
+
+                    {(user.role == "ROLE_MODERATOR" ||
+                        user.role == "ROLE_ADMIN") && (
+                        <button
+                            className="text-xl bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded"
+                            onClick={() => navigate("/moderator")}
+                        >
+                            Reports
+                        </button>
+                    )}
                 </div>
 
                 <div className="flex text-xl">
@@ -44,14 +54,6 @@ function NavBar() {
                         </>
                     ) : (
                         <>
-                            {user.role == "ROLE_MODERATOR" && (
-                                <button
-                                    className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
-                                    onClick={() => navigate("/moderator")}
-                                >
-                                    Mod
-                                </button>
-                            )}
                             <button
                                 className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
                                 onClick={() => navigate("/")}

@@ -1,8 +1,7 @@
 package com.brajula.blinddate.entities.report;
 
-import com.brajula.blinddate.entities.profile.Profile;
-import com.brajula.blinddate.entities.profile.ProfileRepository;
 import com.brajula.blinddate.entities.user.User;
+import com.brajula.blinddate.entities.user.UserService;
 import com.brajula.blinddate.exceptions.ForbiddenException;
 import com.brajula.blinddate.exceptions.NotFoundException;
 
@@ -16,12 +15,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReportService {
     private final ReportRepository reportRepository;
-    private final ProfileRepository profileRepository;
+    private final UserService userService;
 
     public GetReportDto save(PostReportDto report, User user) {
-        Profile reportedProfile =
-                profileRepository.findById(report.profileId()).orElseThrow(NotFoundException::new);
-        Report savedReport = new Report(report.reportMessage(), reportedProfile, user);
+        User reportedUser =
+                userService
+                        .loadUserByUsername(report.reportedUsername());
+        Report savedReport = new Report(report.reportMessage(), reportedUser, user);
         reportRepository.save(savedReport);
         return GetReportDto.from(savedReport);
     }

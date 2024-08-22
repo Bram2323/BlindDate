@@ -1,7 +1,8 @@
 export interface IReport {
     id: number;
     reportMessage: string;
-    reportedProfileId: number;
+    reportedUserId: string;
+    reportedUsername: string;
     reportedBy: string;
     reportedOn: string;
     isClosed: boolean;

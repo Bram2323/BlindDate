@@ -8,7 +8,7 @@ function JudgeProfileBox({ profile }: { profile: JudgeProfile }) {
                 key={profile.id}
                 className="bg-blue-300 flex flex-col items-center my-8 px-16 py-8 rounded-lg shadow-xl relative"
             >
-                <UserReport profileId={profile.id} />
+                <UserReport profileUsername={profile.username} />
                 <p>{profile.username}</p>
                 <p>Age: {profile.age}</p>
                 <p>{profile.description}</p>

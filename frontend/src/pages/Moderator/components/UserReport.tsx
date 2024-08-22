@@ -3,7 +3,7 @@ import { Button } from "../../../generic/Button";
 import { TextArea } from "../../Profile/components/TextArea";
 import ApiService from "../../../services/ApiService";
 
-export const UserReport: React.FC<ReportProps> = ({ profileId }) => {
+export const UserReport: React.FC<ReportProps> = ({ profileUsername }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [reportMsg, setReportMsg] = useState<string>("");
     const [completed, setCompleted] = useState<boolean>(false);
@@ -12,9 +12,10 @@ export const UserReport: React.FC<ReportProps> = ({ profileId }) => {
         if (reportMsg == "") {
             return;
         }
+        console.log(profileUsername);
         ApiService.post("/reports", {
             reportMessage: reportMsg,
-            profileId: profileId,
+            reportedUsername: profileUsername,
         }).then((response) => {
             if (response.status == 201) {
                 setCompleted(true);
@@ -31,7 +32,7 @@ export const UserReport: React.FC<ReportProps> = ({ profileId }) => {
         <div
             className={`${
                 isOpen ? "border-2" : ""
-            } absolute right-0 top-0 rounded-lg border-gray-800`}
+            } absolute right-0 top-0 rounded-lg border-gray-800 m-2`}
         >
             {isOpen ? (
                 <div className="bg-gray-300 p-10 rounded-lg flex flex-col">
@@ -79,5 +80,5 @@ export const UserReport: React.FC<ReportProps> = ({ profileId }) => {
 };
 
 interface ReportProps {
-    profileId: number;
+    profileUsername: string;
 }

@@ -4,14 +4,16 @@ import FieldInput from "../../../generic/FieldInput";
 import { Button } from "../../../generic/Button";
 import ApiService from "../../../services/ApiService";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../../services/UserService";
 
 export const Report: React.FC<ReportProps> = ({ report, updatePage }) => {
     const [modMessage, setModMessage] = useState<string>("");
+    const [user, loggedIn] = useUser();
     const navigate = useNavigate();
 
     const submitModMessage = () => {
         ApiService.patch(`/reports/${report.id}`, {
-            moderatorDetails: [modMessage],
+            moderatorDetails: [`${user.username}: ${modMessage}`],
         })
             .then(updatePage)
             .then(() => {
@@ -26,12 +28,29 @@ export const Report: React.FC<ReportProps> = ({ report, updatePage }) => {
             .catch((error) => console.error(error));
     };
 
-    useEffect(() => {
-        console.log(report);
-    }, [modMessage]);
-
+    useEffect(() => {}, [modMessage]);
     return (
-        <div className="rounded-lg bg-white p-10 w-3/4 h-fit">
+        <div className="rounded-lg bg-white p-10 w-3/4 h-fit shadow-lg">
+            <div className="flex flex-row items-center justify-between">
+                <Button
+                    style={"m-2"}
+                    content={"Go to Reported Profile"}
+                    handleClick={() => {
+                        navigate(`/admin/users/${report.reportedUserId}`);
+                    }}
+                />
+                {!report.isClosed && (
+                    <Button
+                        content={"Close report"}
+                        handleClick={closeReport}
+                        style={"bg-red-400 hover:bg-red-600"}
+                    />
+                )}
+            </div>
+
+            <p className="font-bold p-2">Reported user:</p>
+            <p className="p-2">{report.reportedUsername}</p>
+
             <p className="font-bold p-2">Report:</p>
             <p className="p-2">{report.reportMessage}</p>
 
@@ -42,16 +61,7 @@ export const Report: React.FC<ReportProps> = ({ report, updatePage }) => {
             <p className="p-2">{report.reportedOn}</p>
 
             <p className="font-bold p-2">Status:</p>
-            <div className="h-16 flex flex-row justify-between items-center">
-                <p className="p-2">{report.isClosed ? "Closed" : "Open"}</p>
-                {!report.isClosed && (
-                    <Button
-                        content={"Close report"}
-                        handleClick={closeReport}
-                        style={"bg-red-400 hover:bg-red-600"}
-                    />
-                )}
-            </div>
+            <p className="p-2">{report.isClosed ? "Closed" : "Open"}</p>
 
             <p className="font-bold p-2">Moderator Details</p>
             {report.moderatorDetails.map((detail, index) => (
@@ -59,26 +69,17 @@ export const Report: React.FC<ReportProps> = ({ report, updatePage }) => {
                     {detail}
                 </p>
             ))}
-
-            <div className="flex flex-row items-center gap-4">
-                <p className="p-2">Add mod Message</p>
-                <FieldInput
-                    style={"border-none"}
-                    content={modMessage}
-                    handleChange={(value) => setModMessage(value)}
-                />
-                <Button content={"add"} handleClick={submitModMessage} />
-            </div>
-
-            <div className="flex flex-row items-center gap-4">
-                <Button
-                    content={"Go to Reported Profile"}
-                    handleClick={() => {
-                        // navigate(`/users/${report.reportedProfileId}`);
-                        // TODO even uitvogelen hoe alles in elkaar zit
-                    }}
-                />
-            </div>
+            {!report.isClosed && (
+                <div className="flex flex-row items-center gap-4">
+                    <p className="p-2">Add mod Message</p>
+                    <FieldInput
+                        style={"border-none"}
+                        content={modMessage}
+                        handleChange={(value) => setModMessage(value)}
+                    />
+                    <Button content={"add"} handleClick={submitModMessage} />
+                </div>
+            )}
         </div>
     );
 };
