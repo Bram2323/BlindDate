@@ -19,10 +19,10 @@ public class ChatService {
         return false;
     }
 
-    public Chat setChatUnreadForUser(Chat chat, User user) {
-        if (chat.getUserOne().equals(user)) chat.setReadByUserOne(false);
-        if (chat.getUserTwo().equals(user)) chat.setReadByUserTwo(false);
-        return chatRepository.save(chat);
+    public void setChatReadForUser(Chat chat, User user, boolean read) {
+        if (chat.getUserOne().equals(user)) chat.setReadByUserOne(read);
+        if (chat.getUserTwo().equals(user)) chat.setReadByUserTwo(read);
+        chatRepository.save(chat);
     }
 
     public Optional<User> getOtherUser(Chat chat, User currentUser) {
