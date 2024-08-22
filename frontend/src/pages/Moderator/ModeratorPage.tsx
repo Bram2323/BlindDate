@@ -2,45 +2,75 @@ import { useEffect, useState } from "react";
 import { LabelBox } from "../Profile/components/LabelBox";
 import { Section } from "../Profile/components/Section";
 import ApiService from "../../services/ApiService";
+import { IReport } from "./components/IReport";
+import { Report } from "./components/Report";
+import { Button } from "../../generic/Button";
 
 export const ModeratorPage = () => {
-    const [reports, setReports] = useState<{}>();
+    const [openReports, setOpenReports] = useState<IReport[]>([]);
+    const [closedReports, setClosedReports] = useState<IReport[]>([]);
+    const [showOpen, setShowOpen] = useState<boolean>(true);
+    const [refresh, setRefresh] = useState<boolean>(false);
 
     useEffect(() => {
-        ApiService.get("/reports").then((response) => {
-            setReports(response.data), console.log(response.data);
-        });
-    }, []);
+        ApiService.get("/reports")
+            .then((response) => {
+                setOpenReports(
+                    response.data.filter((report: IReport) => !report.isClosed)
+                );
+                setClosedReports(
+                    response.data.filter((report: IReport) => report.isClosed)
+                );
+            })
+            .catch((error) => console.error(error));
+    }, [refresh]);
+
+    const toggleShowOpen = () => {
+        setShowOpen(!showOpen);
+    };
 
     return (
         <div className="flex flex-col justify-center items-center">
             <Section label={"start"} style={"bg-yellow-300"}>
                 <LabelBox content="Welcome to the Janitor's Lounge!" />
+                <Button
+                    content={`${
+                        showOpen ? "show Closed Reports" : "show Open Reports"
+                    }`}
+                    handleClick={toggleShowOpen}
+                    style={"my-2"}
+                />
             </Section>
 
-            <Section label={"reports"} style={"bg-green-300 gap-2"}>
-                <LabelBox content={"Reports"} />
-                {reports &&
-                    reports.map((report) => (
-                        <div
-                            key={report.id}
-                            className="rounded-lg bg-white p-10"
-                        >
-                            <p className="font-bold border-b-2">Report:</p>
-                            <p>{report.reportMessage}</p>
-                            <p className="font-bold border-b-2">Reported by:</p>
-                            <p>{report.reportedBy}</p>
-                            <p className="font-bold border-b-2">Reported on:</p>
-                            <p>{report.reportedOn}</p>
-                            <p className="font-bold border-b-2">Status:</p>
-                            <p>{report.isClosed ? "Closed" : "Open"}</p>
-                            <p className="font-bold border-b-2">
-                                Moderator Details
-                            </p>
-                            <p>{report.moderatorDetails}</p>
-                        </div>
-                    ))}
-            </Section>
+            {showOpen ? (
+                <Section label={"open-reports"} style={"bg-green-300 gap-4"}>
+                    <LabelBox content={"Open Reports"} />
+                    {openReports &&
+                        openReports.map((report) => (
+                            <Report
+                                report={report}
+                                key={report.id}
+                                updatePage={() => {
+                                    setRefresh(!refresh);
+                                }}
+                            />
+                        ))}
+                </Section>
+            ) : (
+                <Section label={"closed-reports"} style={"bg-blue-300 gap-4"}>
+                    <LabelBox content={"Closed Reports"} />
+                    {closedReports &&
+                        closedReports.map((report) => (
+                            <Report
+                                report={report}
+                                key={report.id}
+                                updatePage={() => {
+                                    setRefresh(!refresh);
+                                }}
+                            />
+                        ))}
+                </Section>
+            )}
         </div>
     );
 };

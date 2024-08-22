@@ -1,83 +1,89 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { IReport } from "./IReport";
+import FieldInput from "../../../generic/FieldInput";
 import { Button } from "../../../generic/Button";
-import { TextArea } from "../../Profile/components/TextArea";
 import ApiService from "../../../services/ApiService";
+import { useNavigate } from "react-router-dom";
 
-export const Report: React.FC<ReportProps> = ({ profileId }) => {
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [reportMsg, setReportMsg] = useState<string>("");
-    const [completed, setCompleted] = useState<boolean>(false);
+export const Report: React.FC<ReportProps> = ({ report, updatePage }) => {
+    const [modMessage, setModMessage] = useState<string>("");
+    const navigate = useNavigate();
 
-    const submitReport = () => {
-        if (reportMsg == "") {
-            return;
-        }
-        ApiService.post("/reports", {
-            reportMessage: reportMsg,
-            profileId: profileId,
-        }).then((response) => {
-            if (response.status == 201) {
-                setCompleted(true);
-                setTimeout(() => {
-                    setReportMsg("");
-                    setIsOpen(false);
-                    setCompleted(false);
-                }, 2500);
-            }
-        });
+    const submitModMessage = () => {
+        ApiService.patch(`/reports/${report.id}`, {
+            moderatorDetails: [modMessage],
+        })
+            .then(updatePage)
+            .then(() => {
+                setModMessage("");
+            })
+            .catch((error) => console.error(error));
     };
 
+    const closeReport = () => {
+        ApiService.patch(`/reports/${report.id}`, { isClosed: true })
+            .then(updatePage)
+            .catch((error) => console.error(error));
+    };
+
+    useEffect(() => {
+        console.log(report);
+    }, [modMessage]);
+
     return (
-        <div
-            className={`${
-                isOpen ? "border-2" : ""
-            } absolute right-0 top-0 rounded-lg border-gray-800`}
-        >
-            {isOpen ? (
-                <div className="bg-gray-300 p-10 rounded-lg flex flex-col">
-                    {completed ? (
-                        <p className="font-bold tracking-wider">
-                            Thank you for keeping this app safe!
-                        </p>
-                    ) : (
-                        <>
-                            <Button
-                                content={"Close"}
-                                style={"bg-red-500 hover:bg-red-600"}
-                                handleClick={() => {
-                                    setIsOpen(false);
-                                }}
-                            />
-                            <div className="flex flex-col items-center justify-center py-2">
-                                <p className="font-bold tracking-wider pt-2">
-                                    Reason for reporting:
-                                </p>
-                                <TextArea
-                                    handleChange={(value) => {
-                                        setReportMsg(value);
-                                    }}
-                                />
-                                <Button
-                                    content={"Submit"}
-                                    handleClick={submitReport}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-            ) : (
+        <div className="rounded-lg bg-white p-10 w-3/4 h-fit">
+            <p className="font-bold p-2">Report:</p>
+            <p className="p-2">{report.reportMessage}</p>
+
+            <p className="font-bold p-2">Reported by:</p>
+            <p className="p-2">{report.reportedBy}</p>
+
+            <p className="font-bold p-2">Reported on:</p>
+            <p className="p-2">{report.reportedOn}</p>
+
+            <p className="font-bold p-2">Status:</p>
+            <div className="h-16 flex flex-row justify-between items-center">
+                <p className="p-2">{report.isClosed ? "Closed" : "Open"}</p>
+                {!report.isClosed && (
+                    <Button
+                        content={"Close report"}
+                        handleClick={closeReport}
+                        style={"bg-red-400 hover:bg-red-600"}
+                    />
+                )}
+            </div>
+
+            <p className="font-bold p-2">Moderator Details</p>
+            {report.moderatorDetails.map((detail, index) => (
+                <p className="p-2" key={index}>
+                    {detail}
+                </p>
+            ))}
+
+            <div className="flex flex-row items-center gap-4">
+                <p className="p-2">Add mod Message</p>
+                <FieldInput
+                    style={"border-none"}
+                    content={modMessage}
+                    handleChange={(value) => setModMessage(value)}
+                />
+                <Button content={"add"} handleClick={submitModMessage} />
+            </div>
+
+            <div className="flex flex-row items-center gap-4">
                 <Button
-                    content={"Report"}
-                    style={"bg-red-500 hover:bg-red-600"}
+                    content={"Go to Reported Profile"}
                     handleClick={() => {
-                        setIsOpen(true);
+                        // navigate(`/users/${report.reportedProfileId}`);
+                        // TODO even uitvogelen hoe alles in elkaar zit
                     }}
                 />
-            )}
+            </div>
         </div>
     );
 };
 
 interface ReportProps {
-    profileId: number;
+    report: IReport;
+    updatePage: () => void;
 }

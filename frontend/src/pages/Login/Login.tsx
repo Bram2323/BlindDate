@@ -35,7 +35,7 @@ const Login = () => {
     return (
         <>
             <div className="flex min-h-full items-center justify-center">
-                <div className=" bg-green-300 h-fit px-1 pb-2 rounded-xl border-2 border-green-800 flex flex-col items-center justify-center">
+                <div className=" bg-green-300 h-fit p-4 rounded-xl border-2 border-green-800 flex flex-col items-center justify-center">
                     <Warning
                         message={error}
                         duration={2000}
@@ -61,7 +61,11 @@ const Login = () => {
                         }}
                         onSubmit={handleLogin}
                     />
-                    <Button content="submit" handleClick={handleLogin} />
+                    <Button
+                        content="submit"
+                        handleClick={handleLogin}
+                        style={"mt-4"}
+                    />
                 </div>
             </div>
         </>
