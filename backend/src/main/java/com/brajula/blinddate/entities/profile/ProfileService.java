@@ -72,7 +72,7 @@ public class ProfileService {
                                     (userProfile.getMinAge() - 1), (userProfile.getMaxAge() + 1)));
         }
 
-        List<Profile> filteredProfiles = profileRepository.findAll(specification);
+        List<Profile> filteredProfiles = profileRepository.findAll(specification).stream().filter((profile) -> profile.getUser().isEnabled()).toList();
 
         return calculateMatchScore(userProfile, filteredProfiles);
     }

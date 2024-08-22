@@ -124,6 +124,7 @@ export interface User {
     email: string;
     role: string;
     id: string;
+    enabled: boolean;
 }
 
 const defaultUser: User = {
@@ -133,4 +134,5 @@ const defaultUser: User = {
     email: "",
     role: "",
     id: "",
+    enabled: true,
 };

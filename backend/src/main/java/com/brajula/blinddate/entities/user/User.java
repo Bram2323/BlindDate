@@ -39,6 +39,8 @@ public class User implements UserDetails {
 
     @Setter private String email;
 
+    @Setter private Boolean enabled;
+
     public User(
             String username,
             String password,
@@ -51,6 +53,7 @@ public class User implements UserDetails {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        enabled = true;
 
         setRole(role);
     }
@@ -91,6 +94,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }
