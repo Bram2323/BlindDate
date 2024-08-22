@@ -6,9 +6,10 @@ const FieldInput: React.FC<FieldInputProps> = ({
     style,
     handleChange,
     onSubmit,
+    onBlur,
 }) => {
     return (
-        <div className={`${layout} border-2 p-2 `} data-value={content}>
+        <div className={`${layout} border-2 `} data-value={content}>
             {label && (
                 <label htmlFor="label" className={`${style} font-bold`}>
                     {label}
@@ -20,6 +21,9 @@ const FieldInput: React.FC<FieldInputProps> = ({
                 }}
                 onKeyDown={(e) => {
                     if (e.key == "Enter" && onSubmit) onSubmit();
+                }}
+                onBlur={() => {
+                    if (onBlur) onBlur();
                 }}
                 className={`${style} border-2 p-2`}
                 name={label}
@@ -40,4 +44,5 @@ interface FieldInputProps {
     style?: string;
     handleChange: (e: string) => void;
     onSubmit?: () => void;
+    onBlur?: () => void;
 }

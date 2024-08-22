@@ -32,8 +32,7 @@ public class SecurityConfiguration {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         requests ->
-                                requests.requestMatchers(HttpMethod.PATCH, "/api/v1/profiles/**")
-                                        .authenticated()
+                                requests
                                         .requestMatchers(Routes.AUTHENTICATION + "/**")
                                         .permitAll()
                                         .requestMatchers(Routes.WEBSOCKETS + "/**")

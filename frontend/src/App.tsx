@@ -8,7 +8,8 @@ import Login from "./pages/Login/Login";
 
 import Chat from "./pages/chat/Chat";
 import { CreateProfile } from "./pages/Profile/CreateProfile";
-import { ProfileView } from "./pages/Profile/ProfileView";
+import MyProfile from "./pages/Profile/MyProfile";
+import Admin from "./pages/Admin/Admin";
 import Judging from "./pages/Judging/Judging";
 import { StompSessionProvider } from "react-stomp-hooks";
 import ApiService from "./services/ApiService";
@@ -33,7 +34,7 @@ function App() {
                             path="/create-profile"
                             element={<CreateProfile />}
                         />
-                        <Route path="/profile" element={<ProfileView />} />
+                        <Route path="/profile" element={<MyProfile />} />
                         <Route path="/chats/:id" element={<Chat />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
