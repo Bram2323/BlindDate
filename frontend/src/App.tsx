@@ -11,6 +11,7 @@ import { CreateProfile } from "./pages/Profile/CreateProfile";
 import MyProfile from "./pages/Profile/MyProfile";
 import Admin from "./pages/Admin/Admin";
 import Judging from "./pages/Judging/Judging";
+import { ModeratorPage } from "./pages/Moderator/ModeratorPage";
 
 function App() {
     history.navigate = useNavigate();
@@ -29,6 +30,7 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/admin/*" element={<Admin />} />
                     <Route path="/judging" element={<Judging />} />
+                    <Route path="/moderator" element={<ModeratorPage />} />
                 </Routes>
             </div>
         </>

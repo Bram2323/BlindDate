@@ -5,7 +5,6 @@ function NavBar() {
     const navigate = useNavigate();
 
     const [user, isLoggedIn] = useUser();
-
     return (
         <>
             <div className="bg-purple-300 flex justify-between">
@@ -23,6 +22,16 @@ function NavBar() {
                             onClick={() => navigate("/admin/users")}
                         >
                             Admin
+                        </button>
+                    )}
+
+                    {(user.role == "ROLE_MODERATOR" ||
+                        user.role == "ROLE_ADMIN") && (
+                        <button
+                            className="text-xl bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded"
+                            onClick={() => navigate("/moderator")}
+                        >
+                            Reports
                         </button>
                     )}
                 </div>
@@ -45,6 +54,18 @@ function NavBar() {
                         </>
                     ) : (
                         <>
+                            <button
+                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
+                                onClick={() => navigate("/")}
+                            >
+                                Chats
+                            </button>
+                            <button
+                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
+                                onClick={() => navigate("/judging")}
+                            >
+                                Matchmaking
+                            </button>
                             <button
                                 className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded shadow-xl"
                                 onClick={() => navigate("/profile")}

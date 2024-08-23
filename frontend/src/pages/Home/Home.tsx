@@ -25,21 +25,21 @@ export const Home = () => {
                             <LabelBox content={"What is this app about?"} />
                             <p className="p-2 tracking-wider">
                                 Blind Date is a dating app that let's you
-                                connect on a deeper level. Swipe through photo's
-                                without being influenced by photo's, here it is
-                                all about personality and meaningfull
+                                connect on a deeper level. Swipe through
+                                profiles without being influenced by photo's,
+                                here it is all about personality and meaningfull
                                 conversations. When you match you can start
                                 chatting right away, and as your connection
                                 grows so does the clarity of your match's
-                                appearance. With Blind Date is all about
+                                appearance. With Blind Date it is all about
                                 substance.
                             </p>
                             <p className="p-2 tracking-wider">
                                 In today's digital age, privacy is more
                                 important than ever. Many dating apps expose
                                 your photos, location and personal details right
-                                from the start for everyone to see. This van
-                                geel intrusive and even unsafe. Wether you are a
+                                from the start for everyone to see. This can
+                                feel intrusive and even unsafe. Wether you are a
                                 public figure, just someone who values their
                                 privacy or someone that wants to avoid all that
                                 superficiality of dating apps, Blind Date has
