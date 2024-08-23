@@ -42,10 +42,6 @@ public class ProfileController {
         User authUser = (User) authentication.getPrincipal();
         User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
 
-        if (!authUser.equals(user)
-                && !authUser.hasRole(Role.ADMIN)
-                && !authUser.hasRole(Role.MODERATOR)) throw new ForbiddenException();
-
         return GetProfileDto.from(profileService.getByUser(user));
     }
 

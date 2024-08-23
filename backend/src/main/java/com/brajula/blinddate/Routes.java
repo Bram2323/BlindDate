@@ -13,5 +13,6 @@ public class Routes {
     public static final String TRAITS = BASE_ROUTE + "traits";
     public static final String ANSWERS = BASE_ROUTE + "profile-traits";
     public static final String JUDGEMENTS = BASE_ROUTE + "judgements";
+    public static final String WEBSOCKETS = BASE_ROUTE + "websocket";
     public static final String REPORTS = BASE_ROUTE + "reports";
 }

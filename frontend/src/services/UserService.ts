@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ApiService, { TOKEN_STORAGE_LOCATION } from "./ApiService";
+import ApiService from "./ApiService";
 
 export const USER_STORAGE_LOCATION = "USER";
 
@@ -48,7 +48,7 @@ class UserService {
     }
 
     static #setToken(token: string) {
-        sessionStorage.setItem(TOKEN_STORAGE_LOCATION, token);
+        ApiService.setToken(token);
     }
 
     static #setUser(user: any) {
@@ -56,13 +56,13 @@ class UserService {
     }
 
     static logout() {
-        sessionStorage.removeItem(TOKEN_STORAGE_LOCATION);
+        ApiService.removeToken();
         sessionStorage.removeItem(USER_STORAGE_LOCATION);
         window.dispatchEvent(new Event("logout"));
     }
 
     static isLoggedIn() {
-        return sessionStorage.getItem(TOKEN_STORAGE_LOCATION) !== null;
+        return ApiService.getToken() !== null;
     }
 
     static getUser(): User {

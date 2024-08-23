@@ -1,10 +1,7 @@
 package com.brajula.blinddate.entities.chat;
 
 import com.brajula.blinddate.Routes;
-import com.brajula.blinddate.entities.message.Message;
-import com.brajula.blinddate.entities.message.MessageDTO;
-import com.brajula.blinddate.entities.message.MessageRepository;
-import com.brajula.blinddate.entities.message.TextDTO;
+import com.brajula.blinddate.entities.message.*;
 import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.exceptions.BadRequestException;
@@ -15,6 +12,10 @@ import com.brajula.blinddate.security.Role;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,8 @@ public class ChatController {
     private final ChatService chatService;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+
+    private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("user/{userId}")
     private List<ChatDTO> getFromUser(@PathVariable UUID userId, Authentication authentication) {
@@ -88,13 +91,11 @@ public class ChatController {
         Optional<Chat> possibleChat = chatRepository.findById(id);
         Chat chat = possibleChat.orElseThrow(NotFoundException::new);
 
-        if (user.equals(chat.getUserOne())) {
-            chat.setReadByUserOne(true);
-        } else if (user.equals(chat.getUserTwo())) {
-            chat.setReadByUserTwo(true);
-        } else throw new ForbiddenException();
+        if (!user.equals(chat.getUserOne()) && !user.equals(chat.getUserTwo())) {
+            throw new ForbiddenException();
+        }
 
-        chat = chatRepository.save(chat);
+        chatService.setChatReadForUser(chat, user, true);
 
         Set<Message> messages = messageRepository.findByChatOrderByCreatedOn(chat);
 
@@ -126,9 +127,26 @@ public class ChatController {
         Message newMessage =
                 messageRepository.save(new Message(chat, user, trimmedText, LocalDateTime.now()));
 
-        chatService.setChatUnreadForOtherUser(chat, user);
+        Optional<User> possibleOtherUser = chatService.getOtherUser(chat, user);
+        if (possibleOtherUser.isPresent()){
+            User otherUser = possibleOtherUser.get();
+            chatService.setChatReadForUser(chat, otherUser, false);
+        }
+
+        sendNotification(chat.getUserOne(), newMessage);
+        sendNotification(chat.getUserTwo(), newMessage);
 
         return MessageDTO.from(newMessage);
+    }
+
+    @MessageMapping("/read-chat-{chatId}")
+    public void setRead(@Payload String userId, @DestinationVariable Long chatId){
+        Optional<Chat> chat = chatRepository.findById(chatId);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
+
+        if (chat.isEmpty() || user.isEmpty()) return;
+
+        chatService.setChatReadForUser(chat.get(), user.get(), true);
     }
 
     @DeleteMapping("{id}")
@@ -146,5 +164,10 @@ public class ChatController {
         chatRepository.save(chat);
 
         return ResponseEntity.noContent().build();
+    }
+
+
+    private void sendNotification(User user, Message message){
+        messagingTemplate.convertAndSendToUser(user.getId().toString(),"notification", MessageNotificationDTO.from(message));
     }
 }

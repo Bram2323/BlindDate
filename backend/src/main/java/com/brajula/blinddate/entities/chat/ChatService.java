@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ChatService {
@@ -17,9 +19,15 @@ public class ChatService {
         return false;
     }
 
-    public Chat setChatUnreadForOtherUser(Chat chat, User user) {
-        if (chat.getUserOne().equals(user)) chat.setReadByUserTwo(false);
-        if (chat.getUserTwo().equals(user)) chat.setReadByUserOne(false);
-        return chatRepository.save(chat);
+    public void setChatReadForUser(Chat chat, User user, boolean read) {
+        if (chat.getUserOne().equals(user)) chat.setReadByUserOne(read);
+        if (chat.getUserTwo().equals(user)) chat.setReadByUserTwo(read);
+        chatRepository.save(chat);
+    }
+
+    public Optional<User> getOtherUser(Chat chat, User currentUser) {
+        if (chat.getUserOne().equals(currentUser)) return Optional.of(chat.getUserTwo());
+        if (chat.getUserTwo().equals(currentUser)) return Optional.of(chat.getUserOne());
+        return Optional.empty();
     }
 }
