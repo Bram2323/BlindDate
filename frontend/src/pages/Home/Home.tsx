@@ -10,7 +10,7 @@ export const Home = () => {
 
     return (
         <>
-            <div className="flex flex-col h-full justify-center items-center p-4 mt-80">
+            <div className="flex flex-col min-h-full h-fit justify-center items-center p-4">
                 {isLoggedIn ? (
                     <>
                         <PersonalHome userId={user.id} />
