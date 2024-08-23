@@ -75,7 +75,10 @@ export const ModeratorPage = () => {
                         ))}
                 </Section>
             ) : (
-                <Section label={"closed-reports"} style={"bg-blue-300 gap-4"}>
+                <Section
+                    label={"closed-reports"}
+                    style={"bg-blue-300 gap-4  lg:px-10"}
+                >
                     <LabelBox content={"Closed Reports"} />
                     {closedReports &&
                         closedReports.map((report) => (

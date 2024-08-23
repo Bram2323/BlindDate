@@ -49,7 +49,7 @@ export const UserReport: React.FC<ReportProps> = ({ profileUsername }) => {
                                     setIsOpen(false);
                                 }}
                             />
-                            <div className="flex flex-col items-center justify-center py-2">
+                            <div className="flex flex-row items-center justify-center py-2">
                                 <p className="font-bold tracking-wider pt-2">
                                     Reason for reporting:
                                 </p>
