@@ -117,16 +117,16 @@ export const EnhancedDropdown: React.FC<DropDownSelectProps> = ({
                     {selected &&
                         selected.map((selection) => (
                             <li
-                                className={`${layoutIfExtra} w-full flex items-center justify-between sm:flex-row sm:border-none`}
+                                className={`${layoutIfExtra} w-full grid grid-cols-8`}
                                 key={selection.id + selection.value}
                             >
-                                <div className="text-sm w-4/8">
+                                <div className="text-sm col-span-4">
                                     {selection.value}
                                 </div>
-                                <div className="w-3/4">
+                                <div className="col-span-3">
                                     {extraOptions && (
                                         <DropDownSelect
-                                            category={"choice"}
+                                            category={""}
                                             id={selection.id}
                                             options={extraOptions.map(
                                                 (option, i) => ({
@@ -147,7 +147,7 @@ export const EnhancedDropdown: React.FC<DropDownSelectProps> = ({
                                         />
                                     )}
                                 </div>
-                                <div className="w-1/8">
+                                <div className="col-span-1">
                                     <TbHttpDelete
                                         onClick={() => handleDelete(selection)}
                                         className="text-red-900 cursor-pointer text-3xl"

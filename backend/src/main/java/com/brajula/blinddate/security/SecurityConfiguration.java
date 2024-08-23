@@ -35,6 +35,8 @@ public class SecurityConfiguration {
                                 requests
                                         .requestMatchers(Routes.AUTHENTICATION + "/**")
                                         .permitAll()
+                                        .requestMatchers(Routes.WEBSOCKETS + "/**")
+                                        .permitAll()
                                         .anyRequest()
                                         .authenticated())
                 .addFilterBefore(

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ApiService, { TOKEN_STORAGE_LOCATION } from "./ApiService";
+import ApiService from "./ApiService";
 
 export const USER_STORAGE_LOCATION = "USER";
 
@@ -48,7 +48,7 @@ class UserService {
     }
 
     static #setToken(token: string) {
-        sessionStorage.setItem(TOKEN_STORAGE_LOCATION, token);
+        ApiService.setToken(token);
     }
 
     static #setUser(user: any) {
@@ -56,13 +56,13 @@ class UserService {
     }
 
     static logout() {
-        sessionStorage.removeItem(TOKEN_STORAGE_LOCATION);
+        ApiService.removeToken();
         sessionStorage.removeItem(USER_STORAGE_LOCATION);
         window.dispatchEvent(new Event("logout"));
     }
 
     static isLoggedIn() {
-        return sessionStorage.getItem(TOKEN_STORAGE_LOCATION) !== null;
+        return ApiService.getToken() !== null;
     }
 
     static getUser(): User {
@@ -89,8 +89,8 @@ export function register(
 export const logout = UserService.logout;
 
 export function useUser(): [User, boolean] {
-    const [user, setUser] = useState<User>(defaultUser);
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [user, setUser] = useState<User>(UserService.getUser());
+    const [loggedIn, setLoggedIn] = useState(UserService.isLoggedIn());
 
     useEffect(() => {
         function handleLogin(e: any) {
@@ -107,11 +107,6 @@ export function useUser(): [User, boolean] {
             window.removeEventListener("login", handleLogin);
             window.removeEventListener("logout", handleLogout);
         };
-    }, []);
-
-    useEffect(() => {
-        setUser(UserService.getUser());
-        setLoggedIn(UserService.isLoggedIn());
     }, []);
 
     return [user, loggedIn];

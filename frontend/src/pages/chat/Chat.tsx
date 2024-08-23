@@ -7,6 +7,7 @@ import { User, useUser } from "../../services/UserService";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../generic/Button";
 import { useConfirm } from "../../hooks/useConfirm";
+import { useStompClient, useSubscription } from "react-stomp-hooks";
 
 function Chat() {
     const [message, setMessage] = useState("");
@@ -18,6 +19,16 @@ function Chat() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [confirmElement, confirm] = useConfirm();
+
+    const [user] = useUser();
+
+    const destination = `/user/${user.id}/notification`;
+    useSubscription(destination, (response) => {
+        const data = JSON.parse(response.body);
+        handleNotification(data);
+    });
+
+    const stompClient = useStompClient();
 
     useEffect(() => {
         ApiService.get("chats/" + id).then((response) => {
@@ -44,23 +55,41 @@ function Chat() {
         });
     }, [otherUsers]);
 
+    function handleNotification(data: any) {
+        const chatId = data.chatId;
+        const message = data.message;
+
+        if (chatId != id) return;
+
+        addMessage(message);
+        setRead();
+    }
+
+    function setRead() {
+        if (!stompClient) return;
+
+        stompClient.publish({
+            destination: "/app/read-chat-" + id,
+            body: user.id,
+        });
+    }
+
     function postMessage() {
         if (message.trim().length == 0) return;
         setMessage("");
 
-        ApiService.post("chats/" + id, { text: message })
-            .then((response) => {
-                setChat({
-                    ...chat,
-                    messages: [...chat.messages, response.data],
-                });
-            })
-            .catch((error) => {
-                if (error.response.data.detail == "This chat is closed!") {
-                    console.log("test", error);
-                    window.location.reload();
-                }
-            });
+        ApiService.post("chats/" + id, { text: message }).catch((error) => {
+            if (error.response.data.detail == "This chat is closed!") {
+                window.location.reload();
+            }
+        });
+    }
+
+    function addMessage(message: any) {
+        setChat({
+            ...chat,
+            messages: [...chat.messages, message],
+        });
     }
 
     function closeChat() {

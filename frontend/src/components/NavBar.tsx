@@ -36,7 +36,9 @@ function NavBar() {
                     className={"hidden lg:flex items-center gap-4"}
                 >
                     {user.role === "ROLE_ADMIN" && (
+
                         <NavigationLink label={"Admin"} url={"/admin/users"} />
+
                     )}
 
                     {(user.role === "ROLE_MODERATOR" ||

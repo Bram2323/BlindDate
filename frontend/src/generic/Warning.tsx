@@ -27,7 +27,7 @@ export const Warning: React.FC<WarningProps> = ({
         <div
             className={`${
                 hidden ? "collapse" : ""
-            } ${warningColor} text-white font-extrabold w-48 p-4 rounded-lg absolute top-1/4 left-1/4 z-20`}
+            } ${warningColor} text-white font-extrabold w-48 p-4 rounded-lg absolute top-2 left-2 z-20`}
         >
             {error}
         </div>
