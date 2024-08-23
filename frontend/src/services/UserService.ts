@@ -89,8 +89,8 @@ export function register(
 export const logout = UserService.logout;
 
 export function useUser(): [User, boolean] {
-    const [user, setUser] = useState<User>(defaultUser);
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [user, setUser] = useState<User>(UserService.getUser());
+    const [loggedIn, setLoggedIn] = useState(UserService.isLoggedIn());
 
     useEffect(() => {
         function handleLogin(e: any) {
@@ -107,11 +107,6 @@ export function useUser(): [User, boolean] {
             window.removeEventListener("login", handleLogin);
             window.removeEventListener("logout", handleLogout);
         };
-    }, []);
-
-    useEffect(() => {
-        setUser(UserService.getUser());
-        setLoggedIn(UserService.isLoggedIn());
     }, []);
 
     return [user, loggedIn];
