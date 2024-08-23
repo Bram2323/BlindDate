@@ -6,6 +6,7 @@ import { LabelBox } from "./components/LabelBox";
 import { TraitsList } from "./components/TraitsList";
 import { IProfile } from "./components/ProfileInterfaces";
 import { UserReport } from "../Moderator/components/UserReport";
+import { useState } from "react";
 
 interface ProfileViewProps {
     profile?: IProfile;
@@ -21,6 +22,7 @@ export const ProfileView = ({
     canReport,
 }: ProfileViewProps) => {
     const navigate = useNavigate();
+    const [scroll, setScroll] = useState<boolean>(true);
     const sectionsBgColors = [
         "bg-yellow-300",
         "bg-purple-300",
@@ -37,7 +39,7 @@ export const ProfileView = ({
         );
 
     return (
-        <div className="relative">
+        <div className={`relative`}>
             <div className="w-full flex flex-col items-center justify-center">
                 {canEdit && (
                     <div className="p-4 w-full flex flex-col items-end">

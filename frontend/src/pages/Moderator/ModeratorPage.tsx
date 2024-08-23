@@ -58,7 +58,10 @@ export const ModeratorPage = () => {
             </Section>
 
             {showOpen ? (
-                <Section label={"open-reports"} style={"bg-green-300 gap-4"}>
+                <Section
+                    label={"open-reports"}
+                    style={"bg-green-300 gap-4 lg:px-10"}
+                >
                     <LabelBox content={"Open Reports"} />
                     {openReports &&
                         openReports.map((report) => (
