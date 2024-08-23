@@ -53,7 +53,7 @@ function Judging() {
                 </div>
             ) : (
                 <div>
-                    <div className="absolute left-2 top-1/2 z-50">
+                    <div className="absolute left-2 bottom-5 z-50">
                         <button
                             onClick={() => handleAnswer(false)}
                             className="w-2/3 text-center text-4xl md:text-6xl  bg-red-300 hover:bg-red-500 p-8 rounded-full flex items-center justify-center shadow-lg"
@@ -62,7 +62,7 @@ function Judging() {
                         </button>
                     </div>
                     {profiles && <JudgeProfileBox profile={profiles[0]} />}
-                    <div className="absolute right-2 top-1/2 z-50">
+                    <div className="absolute right-2 bottom-5 z-50">
                         <button
                             onClick={() => handleAnswer(true)}
                             className="w-2/3 text-center text-4xl md:text-6xl text-green-600 bg-green-300 hover:text-green-800 hover:bg-green-500 p-8 rounded-full flex items-center justify-center shadow-lg"
