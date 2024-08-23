@@ -14,18 +14,25 @@ import Judging from "./pages/Judging/Judging";
 import { StompSessionProvider } from "react-stomp-hooks";
 import ApiService from "./services/ApiService";
 import { ModeratorPage } from "./pages/Moderator/ModeratorPage";
+import { useUser } from "./services/UserService";
 
 function App() {
     history.navigate = useNavigate();
     history.location = useLocation();
 
+    const [, loggedIn] = useUser();
+
     return (
         <>
             <StompSessionProvider
                 url="http://localhost:8080/api/v1/websocket"
-                connectHeaders={{
-                    Authorization: "Bearer " + ApiService.getToken(),
-                }}
+                connectHeaders={
+                    loggedIn
+                        ? {
+                              Authorization: "Bearer " + ApiService.getToken(),
+                          }
+                        : {}
+                }
             >
                 <NavBar />
                 <div className="w-full h-full overflow-y-auto">

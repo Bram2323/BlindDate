@@ -17,10 +17,13 @@ function PersonalHome({ userId }: PersonalHomeProps) {
     const [user] = useUser();
 
     const destination = `/user/${user.id}/notification`;
-    useSubscription(destination, (response) => {
-        const data = JSON.parse(response.body);
-        handleNotification(data);
-    });
+    useSubscription(
+        destination,
+        (response) => handleNotification(JSON.parse(response.body)),
+        {
+            Authorization: "Bearer " + ApiService.getToken(),
+        }
+    );
 
     useEffect(() => {
         ApiService.get("chats/user/" + userId).then((response) => {

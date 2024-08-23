@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,7 @@ public class ChatController {
     private final UserRepository userRepository;
 
     private final SimpMessagingTemplate messagingTemplate;
+    private final SimpMessageSendingOperations simpMessageSendingOperations;
 
     @GetMapping("user/{userId}")
     private List<ChatDTO> getFromUser(@PathVariable UUID userId, Authentication authentication) {
