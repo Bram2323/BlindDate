@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ApiService from "../../../services/ApiService";
 import ChatList from "./ChatList/ChatList";
-import { useNavigate } from "react-router-dom";
 import { useSubscription } from "react-stomp-hooks";
 import { useUser } from "../../../services/UserService";
 
@@ -12,7 +11,6 @@ interface PersonalHomeProps {
 function PersonalHome({ userId }: PersonalHomeProps) {
     const [allChats, setAllChats] = useState<any[]>([]);
     const [unreadChats, setUnreadChats] = useState<any[]>([]);
-    const navigate = useNavigate();
 
     const [user] = useUser();
 
