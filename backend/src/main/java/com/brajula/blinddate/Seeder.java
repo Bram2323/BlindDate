@@ -32,6 +32,7 @@ import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.entities.user.UserService;
 import com.brajula.blinddate.exceptions.NotFoundException;
 import com.brajula.blinddate.mockdata.MockProfiles;
+import com.brajula.blinddate.mockdata.SeedProfileDto;
 import com.brajula.blinddate.security.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -242,8 +243,19 @@ public class Seeder implements CommandLineRunner {
         int count = MockProfiles.PROFILES.size();
         for (SeedUserDto user : USERS) {
             User savedUser = seedUser(user);
-            Profile profile = MockProfiles.PROFILES.get(random.nextInt(0, count));
-            seedProfile(profile, savedUser);
+            SeedProfileDto mockProfile = MockProfiles.PROFILES.get(random.nextInt(0, count));
+            Profile profile = SeedProfileDto.from(mockProfile);
+            profile.setUser(savedUser);
+            profile.setImage(
+                    imageRepository
+                            .findById(seedProfileImage())
+                            .orElseThrow(NotFoundException::new));
+            profile.setSexualities(new HashSet<>(getSexualities()));
+            profile.setInterests(new HashSet<>(getInterests()));
+            profile.setProfileTraits(new HashSet<>(getProfileTraits()));
+            profile.setPreferences(new HashSet<>(getPreferences()));
+
+            profileRepository.save(profile);
         }
     }
 
