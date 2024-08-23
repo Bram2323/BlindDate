@@ -2,7 +2,8 @@ package com.brajula.blinddate.security;
 
 public enum Role {
     USER("USER"),
-    ADMIN("ADMIN");
+    ADMIN("ADMIN"),
+    MODERATOR("MODERATOR");
 
     public final String label;
 

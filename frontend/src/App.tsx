@@ -13,6 +13,7 @@ import Admin from "./pages/Admin/Admin";
 import Judging from "./pages/Judging/Judging";
 import { StompSessionProvider } from "react-stomp-hooks";
 import ApiService from "./services/ApiService";
+import { ModeratorPage } from "./pages/Moderator/ModeratorPage";
 
 function App() {
     history.navigate = useNavigate();
@@ -38,7 +39,9 @@ function App() {
                         <Route path="/chats/:id" element={<Chat />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
+                        <Route path="/admin/*" element={<Admin />} />
                         <Route path="/judging" element={<Judging />} />
+                        <Route path="/moderator" element={<ModeratorPage />} />
                     </Routes>
                 </div>
             </StompSessionProvider>

@@ -32,6 +32,7 @@ import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.entities.user.UserService;
 import com.brajula.blinddate.exceptions.NotFoundException;
 import com.brajula.blinddate.mockdata.MockProfiles;
+import com.brajula.blinddate.mockdata.SeedProfileDto;
 import com.brajula.blinddate.security.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -78,7 +79,8 @@ public class Seeder implements CommandLineRunner {
         seedInterests();
         seedQuestions();
         seedChats();
-        SeedProfilesWithUsersAndImages();
+        seedProfilesWithUsersAndImages();
+        seedModerators();
     }
 
     @Value("${image.folder.path:src/main/resources/images}")
@@ -236,13 +238,24 @@ public class Seeder implements CommandLineRunner {
         return randomPreferences;
     }
 
-    private void SeedProfilesWithUsersAndImages() throws IOException {
+    private void seedProfilesWithUsersAndImages() throws IOException {
         if (userRepository.count() > 4) return;
         int count = MockProfiles.PROFILES.size();
         for (SeedUserDto user : USERS) {
             User savedUser = seedUser(user);
-            Profile profile = MockProfiles.PROFILES.get(random.nextInt(0, count));
-            seedProfile(profile, savedUser);
+            SeedProfileDto mockProfile = MockProfiles.PROFILES.get(random.nextInt(0, count));
+            Profile profile = SeedProfileDto.from(mockProfile);
+            profile.setUser(savedUser);
+            profile.setImage(
+                    imageRepository
+                            .findById(seedProfileImage())
+                            .orElseThrow(NotFoundException::new));
+            profile.setSexualities(new HashSet<>(getSexualities()));
+            profile.setInterests(new HashSet<>(getInterests()));
+            profile.setProfileTraits(new HashSet<>(getProfileTraits()));
+            profile.setPreferences(new HashSet<>(getPreferences()));
+
+            profileRepository.save(profile);
         }
     }
 
@@ -268,5 +281,18 @@ public class Seeder implements CommandLineRunner {
         ImageUploadResponse savedImage =
                 imageService.uploadImage(imageData, resource.getFilename(), "image/png");
         return savedImage.id();
+    }
+
+    public void seedModerators() {
+        if (userRepository.findByUsernameIgnoreCase("InternetJanitor").isPresent()) return;
+        User moderator =
+                userService.register(
+                        "InternetJanitor",
+                        "securePassword1!",
+                        "Charles",
+                        "Stockton",
+                        "Stockton@Slap.com");
+        moderator.setRole(Role.MODERATOR);
+        userRepository.save(moderator);
     }
 }

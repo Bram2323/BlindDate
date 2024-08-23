@@ -7,11 +7,10 @@ import com.brajula.blinddate.security.Role;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,14 +24,14 @@ import java.util.UUID;
 public class UserController {
     public static final int USERS_PER_PAGE = 25;
 
-
     private final UserRepository userRepository;
 
     @GetMapping("{id}")
     private UserFullDTO getFullUser(@PathVariable UUID id, Authentication authentication) {
         User authUser = (User) authentication.getPrincipal();
-        if (!(authUser.getId().equals(id) || authUser.hasRole(Role.ADMIN)))
-            throw new ForbiddenException();
+        if (!(authUser.getId().equals(id)
+                || authUser.hasRole(Role.ADMIN)
+                || authUser.hasRole(Role.MODERATOR))) throw new ForbiddenException();
 
         Optional<User> possibleUser = userRepository.findById(id);
         User user = possibleUser.orElseThrow(NotFoundException::new);
@@ -41,7 +40,10 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    private Page<UserFullDTO> getAllUsers(@RequestParam(required = false, name = "search") String search, @RequestParam(required = false, name = "page") Integer pageParam, Authentication authentication){
+    private Page<UserFullDTO> getAllUsers(
+            @RequestParam(required = false, name = "search") String search,
+            @RequestParam(required = false, name = "page") Integer pageParam,
+            Authentication authentication) {
         User user = (User) authentication.getPrincipal();
 
         if (!user.hasRole(Role.ADMIN)) throw new ForbiddenException();
@@ -50,10 +52,9 @@ public class UserController {
         Pageable pageable = PageRequest.of(page, USERS_PER_PAGE, Sort.by("username"));
 
         Page<User> users;
-        if (search == null || search.isEmpty()){
+        if (search == null || search.isEmpty()) {
             users = userRepository.findAll(pageable);
-        }
-        else {
+        } else {
             users = userRepository.searchUsers(search, pageable);
         }
 
@@ -61,11 +62,15 @@ public class UserController {
     }
 
     @DeleteMapping("{id}")
-    private UserFullDTO disableUser(@PathVariable UUID id, Authentication authentication){
+    private UserFullDTO disableUser(@PathVariable UUID id, Authentication authentication) {
         User authUser = (User) authentication.getPrincipal();
         User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
 
-        if (user.hasRole(Role.ADMIN) || (!user.equals(authUser) && !authUser.hasRole(Role.ADMIN))) throw new ForbiddenException();
+        if (user.hasRole(Role.ADMIN)
+                || user.hasRole(Role.MODERATOR)
+                || (!user.equals(authUser)
+                        && !(authUser.hasRole(Role.ADMIN) || authUser.hasRole(Role.MODERATOR))))
+            throw new ForbiddenException();
 
         user.setEnabled(false);
         user = userRepository.save(user);
@@ -74,7 +79,7 @@ public class UserController {
     }
 
     @PostMapping("{id}/enable")
-    private UserFullDTO enableUser(@PathVariable UUID id, Authentication authentication){
+    private UserFullDTO enableUser(@PathVariable UUID id, Authentication authentication) {
         User authUser = (User) authentication.getPrincipal();
         User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
 

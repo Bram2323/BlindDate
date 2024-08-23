@@ -1,22 +1,22 @@
 package com.brajula.blinddate.entities.profile;
 
-import java.net.URI;
-import java.util.List;
-import java.util.UUID;
-
-import com.brajula.blinddate.security.Role;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import com.brajula.blinddate.Routes;
 import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.exceptions.ForbiddenException;
 import com.brajula.blinddate.exceptions.NotFoundException;
+import com.brajula.blinddate.security.Role;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 public class ProfileController {
     private final ProfileService profileService;
     private final UserRepository userRepository;
-
 
     @GetMapping("/judge-list")
     public ResponseEntity<List<GetProfileDto>> getAllProfilesToJudge(
@@ -43,7 +42,9 @@ public class ProfileController {
         User authUser = (User) authentication.getPrincipal();
         User user = userRepository.findById(id).orElseThrow(NotFoundException::new);
 
-        if (!authUser.equals(user) && !authUser.hasRole(Role.ADMIN)) throw new ForbiddenException();
+        if (!authUser.equals(user)
+                && !authUser.hasRole(Role.ADMIN)
+                && !authUser.hasRole(Role.MODERATOR)) throw new ForbiddenException();
 
         return GetProfileDto.from(profileService.getByUser(user));
     }

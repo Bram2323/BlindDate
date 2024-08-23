@@ -11,7 +11,6 @@ function Judging() {
         ApiService.get("profiles/judge-list")
             .then((response) => {
                 setProfiles(response.data);
-                //console.log(response.data);
             })
             .catch((error) => {
                 console.error(error);
