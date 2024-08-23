@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import ApiService from "../../services/ApiService";
-import JudgeProfile from "../../components/Profile/JudgeProfile";
 import JudgeProfileBox from "../../components/Profile/JudgeProfileBox";
+import { IProfile } from "../Profile/components/ProfileInterfaces";
 
 function Judging() {
-    const [profiles, setProfiles] = useState<JudgeProfile[]>();
-    const [currentProfile, setCurrentProfile] = useState<JudgeProfile>();
+    const [profiles, setProfiles] = useState<IProfile[]>();
+    const [currentProfile, setCurrentProfile] = useState<IProfile>();
 
     useEffect(() => {
         ApiService.get("profiles/judge-list")
@@ -52,7 +52,7 @@ function Judging() {
                     </p>
                 </div>
             ) : (
-                <div>
+                <div className="border-2">
                     <div className="absolute left-2 bottom-5 z-50">
                         <button
                             onClick={() => handleAnswer(false)}
@@ -62,7 +62,7 @@ function Judging() {
                         </button>
                     </div>
                     {profiles && <JudgeProfileBox profile={profiles[0]} />}
-                    <div className="absolute right-2 bottom-5 z-50">
+                    <div className="absolute right-0 bottom-5 z-50">
                         <button
                             onClick={() => handleAnswer(true)}
                             className="w-2/3 text-center text-4xl md:text-6xl text-green-600 bg-green-300 hover:text-green-800 hover:bg-green-500 p-8 rounded-full flex items-center justify-center shadow-lg"
