@@ -6,7 +6,7 @@ export const Button: React.FC<ButtonProps> = ({
     handleClick,
 }) => {
     const defaultStyle =
-        "bg-blue-600 hover:bg-blue-400 border-3 border-blue-600 text-white font-bold rounded tracking-wider";
+        "bg-blue-600 hover:bg-blue-400 border-3 border-blue-600 text-white font-bold rounded tracking-wider transition";
     return (
         <>
             <button

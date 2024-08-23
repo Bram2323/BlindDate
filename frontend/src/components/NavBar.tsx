@@ -15,6 +15,7 @@ function NavBar() {
             <nav className="bg-purple-300 flex items-center justify-between px-4 py-2 relative shadow-lg">
                 <div className="flex items-center gap-2">
                     <button
+                        className="text-4xl font-bold text-pink-500 hover:text-pink-400 hover:bg-purple-500 px-2 mx-2 my-2 rounded transition"
                         className="flex items-center text-4xl text-white hover:bg-purple-500 px-2 mx-2 my-2 rounded gap-2"
                         onClick={() => navigate("/")}
                     >
@@ -36,9 +37,7 @@ function NavBar() {
                     className={"hidden lg:flex items-center gap-4"}
                 >
                     {user.role === "ROLE_ADMIN" && (
-
                         <NavigationLink label={"Admin"} url={"/admin/users"} />
-
                     )}
 
                     {(user.role === "ROLE_MODERATOR" ||
