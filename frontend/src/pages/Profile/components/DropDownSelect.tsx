@@ -36,7 +36,7 @@ export const DropDownSelect: React.FC<DropDownSelectProps> = ({
                 {initialValue ? (
                     <option>{selectedValue}</option>
                 ) : (
-                    <option>Select a {category}</option>
+                    <option>Select {category}</option>
                 )}
                 {providedOptions &&
                     providedOptions.map((option) => (

@@ -4,16 +4,25 @@ import { Button } from "../../generic/Button";
 import useValidators from "../../hooks/useValidators";
 import { register } from "../../services/UserService";
 import { useNavigate } from "react-router-dom";
+import { Warning } from "../../generic/Warning";
 
 function Register() {
-    const { isValidPassword } = useValidators();
+    const { isValidPassword, isValidEmail } = useValidators();
     const [username, setUsername] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const navigate = useNavigate();
+
+    const showError = (message: string) => {
+        setTimeout(() => {
+            setError("");
+        }, 3000);
+        setError(message);
+    };
 
     function TryRegister() {
         let errors: string[] = [];
@@ -26,11 +35,12 @@ function Register() {
         if (firstName.length == 0) errors.push("First name can't be blank!");
         if (lastName.length == 0) errors.push("Last name can't be blank!");
         if (email.length == 0) errors.push("Email can't be blank!");
+        if (!isValidEmail(email)) errors.push("Email is invalid!");
 
         if (!isValidPassword(password)) errors.push("Password is invalid!");
 
         if (errors.length > 0) {
-            window.alert(errors.join("\n"));
+            showError(errors[0]);
             return;
         }
 
@@ -42,7 +52,12 @@ function Register() {
     return (
         <>
             <div className="flex min-h-full items-center justify-center">
-                <div className=" bg-gray-100 h-fit px-3 p-2 rounded-xl border border-gray-500 flex flex-col gap-3 items-center justify-center">
+                <div className=" bg-gray-100 h-fit px-3 p-2 rounded-xl border border-gray-500 flex flex-col gap-3 items-center justify-center relative">
+                    <Warning
+                        message={error}
+                        duration={2000}
+                        warningColor="bg-red-400"
+                    />
                     <FieldInput
                         label="Username"
                         content={username}

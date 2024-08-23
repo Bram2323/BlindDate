@@ -37,12 +37,6 @@ function PersonalHome({ userId }: PersonalHomeProps) {
                     </h1>
                     <ChatList chats={allChats} />
                 </div>
-                <button
-                    className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-2 rounded shadow-xl"
-                    onClick={() => navigate("/judging")}
-                >
-                    <h2 className="font-bold text-xl">Judge profiles here</h2>
-                </button>
             </div>
         </>
     );
