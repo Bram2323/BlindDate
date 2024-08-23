@@ -5,17 +5,20 @@ import { Section } from "./components/Section";
 import { LabelBox } from "./components/LabelBox";
 import { TraitsList } from "./components/TraitsList";
 import { IProfile } from "./components/ProfileInterfaces";
+import { UserReport } from "../Moderator/components/UserReport";
 
 interface ProfileViewProps {
     profile?: IProfile;
-    imageSrc: string;
-    canEdit: boolean;
+    imageSrc?: string;
+    canEdit?: boolean;
+    canReport?: boolean;
 }
 
 export const ProfileView = ({
     profile,
     imageSrc,
     canEdit,
+    canReport,
 }: ProfileViewProps) => {
     const navigate = useNavigate();
     const sectionsBgColors = [
@@ -34,7 +37,7 @@ export const ProfileView = ({
         );
 
     return (
-        <>
+        <div className="relative">
             <div className="w-full flex flex-col items-center justify-center">
                 {canEdit && (
                     <div className="p-4 w-full flex flex-col items-end">
@@ -48,6 +51,9 @@ export const ProfileView = ({
                 )}
 
                 <Section label={"img-container"} style={sectionsBgColors[0]}>
+                    {canReport && (
+                        <UserReport profileUsername={profile.username} />
+                    )}
                     <LabelBox
                         content={
                             profile?.username ? profile.username : "not found"
@@ -128,6 +134,6 @@ export const ProfileView = ({
                     <TraitsList traits={profile?.traits} />
                 </Section>
             </div>
-        </>
+        </div>
     );
 };
