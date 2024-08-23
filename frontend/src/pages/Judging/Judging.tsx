@@ -62,7 +62,11 @@ function Judging() {
                         </button>
                     </div>
                     {profiles && (
-                        <ProfileView profile={profiles[0]} canReport={true} />
+                        <ProfileView
+                            profile={profiles[0]}
+                            canReport={true}
+                            hideImage={true}
+                        />
                     )}
                     <div className="absolute right-4 bottom-5 z-40">
                         <button

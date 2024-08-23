@@ -7,12 +7,14 @@ import { TraitsList } from "./components/TraitsList";
 import { IProfile } from "./components/ProfileInterfaces";
 import { UserReport } from "../Moderator/components/UserReport";
 import { useState } from "react";
+import Placeholder from "../../assets/images/sst.png";
 
 interface ProfileViewProps {
     profile?: IProfile;
     imageSrc?: string;
     canEdit?: boolean;
     canReport?: boolean;
+    hideImage?: boolean;
 }
 
 export const ProfileView = ({
@@ -20,6 +22,7 @@ export const ProfileView = ({
     imageSrc,
     canEdit,
     canReport,
+    hideImage,
 }: ProfileViewProps) => {
     const navigate = useNavigate();
     const [scroll, setScroll] = useState<boolean>(true);
@@ -62,7 +65,11 @@ export const ProfileView = ({
                         }
                         style={"m-4 text-2xl"}
                     />
-                    {<img src={imageSrc} className="rounded-lg h-56" />}
+                    {hideImage === undefined ? (
+                        <img src={imageSrc} className="rounded-lg h-56" />
+                    ) : (
+                        <img src={Placeholder} className="rounded-lg h-24" />
+                    )}
                     <LabelBox
                         content={`${profile?.age} years`}
                         style={"mt-4 mb-2"}
