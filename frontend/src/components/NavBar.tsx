@@ -1,90 +1,148 @@
 import { useNavigate } from "react-router-dom";
-import { useUser, logout } from "../services/UserService";
+import { useUser } from "../services/UserService";
+import Logo from "../../src/assets/Logos/2.png";
+import { NavigationLink } from "./NavigationLink";
+import { FaHamburger } from "react-icons/fa";
+import { useState } from "react";
 
 function NavBar() {
     const navigate = useNavigate();
-
     const [user, isLoggedIn] = useUser();
+    const [showNav, setShowNav] = useState<boolean>(false);
+
     return (
         <>
-            <div className="bg-purple-300 flex justify-between">
-                <div className="flex">
+            <nav className="bg-purple-300 flex items-center justify-between px-4 py-2 relative shadow-lg">
+                <div className="flex items-center gap-2">
                     <button
-                        className="text-4xl text-white hover:bg-purple-500 px-2 mx-2 my-2 rounded"
+                        className="text-4xl font-bold text-pink-500 hover:text-pink-400 hover:bg-purple-500 px-2 mx-2 my-2 rounded transition"
+                        className="flex items-center text-4xl text-white hover:bg-purple-500 px-2 mx-2 my-2 rounded gap-2"
                         onClick={() => navigate("/")}
                     >
+                        <img src={Logo} className="h-8" alt="Blind Date Logo" />
                         Blind Date
                     </button>
-
-                    {user.role === "ROLE_ADMIN" && (
-                        <button
-                            className="text-xl bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded"
-                            onClick={() => navigate("/admin/users")}
-                        >
-                            Users
-                        </button>
-                    )}
-
-                    {(user.role == "ROLE_MODERATOR" ||
-                        user.role == "ROLE_ADMIN") && (
-                        <button
-                            className="text-xl bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded"
-                            onClick={() => navigate("/moderator")}
-                        >
-                            Reports
-                        </button>
-                    )}
                 </div>
 
-                <div className="flex text-xl">
+                <div
+                    id="burger-menu"
+                    className="lg:hidden ml-auto cursor-pointer p-2 rounded hover:bg-purple-500"
+                    onClick={() => setShowNav(!showNav)}
+                >
+                    <FaHamburger className="text-4xl text-white" />
+                </div>
+
+                <ul
+                    id="regular-menu"
+                    className={"hidden lg:flex items-center gap-4"}
+                >
+                    {user.role === "ROLE_ADMIN" && (
+                        <NavigationLink label={"Admin"} url={"/admin/users"} />
+                    )}
+
+                    {(user.role === "ROLE_MODERATOR" ||
+                        user.role === "ROLE_ADMIN") && (
+                        <NavigationLink label={"Reports"} url={"/moderator"} />
+                    )}
+
                     {!isLoggedIn ? (
                         <>
-                            <button
-                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded shadow-xl"
-                                onClick={() => navigate("/login")}
-                            >
-                                Login
-                            </button>
-                            <button
-                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
-                                onClick={() => navigate("/register")}
-                            >
-                                Register
-                            </button>
+                            <NavigationLink label={"Login"} url={"/login"} />
+                            <NavigationLink
+                                label={"Register"}
+                                url={"/register"}
+                            />
                         </>
                     ) : (
                         <>
-                            <button
-                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
-                                onClick={() => navigate("/")}
-                            >
-                                Chats
-                            </button>
-                            <button
-                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
-                                onClick={() => navigate("/judging")}
-                            >
-                                Matchmaking
-                            </button>
-                            <button
-                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded shadow-xl"
-                                onClick={() => navigate("/profile")}
-                            >
-                                Account
-                            </button>
-                            <button
-                                className="bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 ml-4 mr-8 my-4 rounded shadow-xl"
-                                onClick={() => {
-                                    logout();
-                                    navigate("/");
-                                }}
-                            >
-                                Logout
-                            </button>
+                            <NavigationLink label={"Chat"} url={"/"} />
+                            <NavigationLink label={"Browse"} url={"/judging"} />
+                            <NavigationLink
+                                label={"Profile"}
+                                url={"/profile"}
+                            />
+                            <NavigationLink
+                                label={"Logout"}
+                                url={"/"}
+                                logoutUser={true}
+                            />
                         </>
                     )}
+                </ul>
+            </nav>
+
+            {showNav && (
+                <div
+                    id={"small-screen-menu"}
+                    className={
+                        "bg-purple-300 absolute left-0 right-0 top-0 bottom-0 flex flex-col items-center justify-center z-50 p-4"
+                    }
+                >
+                    <button
+                        className="absolute top-4 right-4 text-3xl text-black"
+                        onClick={() => setShowNav(false)}
+                    >
+                        ❌
+                    </button>
+                    <ul className="flex flex-col gap-4 w-full">
+                        {user.role === "ROLE_ADMIN" && (
+                            <NavigationLink
+                                label={"Admin"}
+                                url={"/admin/users"}
+                                hideAfterNav={() => setShowNav(false)}
+                            />
+                        )}
+
+                        {(user.role === "ROLE_MODERATOR" ||
+                            user.role === "ROLE_ADMIN") && (
+                            <NavigationLink
+                                label={"Reports"}
+                                url={"/moderator"}
+                                hideAfterNav={() => setShowNav(false)}
+                            />
+                        )}
+
+                        {!isLoggedIn ? (
+                            <>
+                                <NavigationLink
+                                    label={"Login"}
+                                    url={"/login"}
+                                    hideAfterNav={() => setShowNav(false)}
+                                />
+                                <NavigationLink
+                                    label={"Register"}
+                                    url={"/register"}
+                                    hideAfterNav={() => setShowNav(false)}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                <NavigationLink
+                                    label={"Chat"}
+                                    url={"/"}
+                                    hideAfterNav={() => setShowNav(false)}
+                                />
+                                <NavigationLink
+                                    label={"Browse"}
+                                    url={"/judging"}
+                                    hideAfterNav={() => setShowNav(false)}
+                                />
+                                <NavigationLink
+                                    label={"Profile"}
+                                    url={"/profile"}
+                                    hideAfterNav={() => setShowNav(false)}
+                                />
+                                <NavigationLink
+                                    label={"Logout"}
+                                    url={"/"}
+                                    logoutUser={true}
+                                    hideAfterNav={() => setShowNav(false)}
+                                />
+                            </>
+                        )}
+                    </ul>
                 </div>
-            </div>
+            )}
         </>
     );
 }

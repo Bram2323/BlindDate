@@ -52,7 +52,7 @@ function Register() {
     return (
         <>
             <div className="flex min-h-full items-center justify-center">
-                <div className=" bg-gray-100 h-fit px-3 p-2 rounded-xl border border-gray-500 flex flex-col gap-3 items-center justify-center relative">
+                <div className=" bg-blue-300 h-fit p-4 rounded-xl border-2 border-blue-800 flex flex-col gap-3 items-center justify-center relative">
                     <Warning
                         message={error}
                         duration={2000}
@@ -61,24 +61,28 @@ function Register() {
                     <FieldInput
                         label="Username"
                         content={username}
+                        style="rounded-lg border-blue-800"
                         layout="flex flex-col border-none w-72"
                         handleChange={(value: string) => setUsername(value)}
                     />
                     <FieldInput
                         label="FirstName"
                         content={firstName}
+                        style="rounded-lg border-blue-800"
                         layout="flex flex-col border-none w-72"
                         handleChange={(value: string) => setFirstName(value)}
                     />
                     <FieldInput
                         label="LastName"
                         content={lastName}
+                        style="rounded-lg border-blue-800"
                         layout="flex flex-col border-none w-72"
                         handleChange={(value: string) => setLastName(value)}
                     />
                     <FieldInput
                         label="Email"
                         content={email}
+                        style="rounded-lg border-blue-800"
                         layout="flex flex-col border-none w-72"
                         handleChange={(value: string) => setEmail(value)}
                     />
@@ -86,6 +90,7 @@ function Register() {
                         label="Password"
                         content={password}
                         type="password"
+                        style="rounded-lg border-blue-800"
                         layout="flex flex-col border-none w-72"
                         handleChange={(value: string) => setPassword(value)}
                         onSubmit={TryRegister}
