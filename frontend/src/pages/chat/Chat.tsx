@@ -120,7 +120,7 @@ function Chat() {
             {confirmElement}
             <div className="flex flex-col h-full items-center justify-center">
                 <div
-                    className={`${borderColor} bg-gray-100 w-[500px] h-[750px] rounded-xl border-2  flex flex-col items-center justify-center overflow-hidden`}
+                    className={`${borderColor} bg-gray-100 w-[500px] min-h-[90%] max-h-[100%] h-[750px] rounded-xl border-2  flex flex-col items-center justify-center overflow-hidden`}
                 >
                     <div
                         className={`${borderColor} relative p-2 bg-gray-200 w-full text-center font-bold border-b-2 rounded-t-xl`}
