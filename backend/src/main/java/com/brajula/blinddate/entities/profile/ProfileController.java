@@ -37,8 +37,7 @@ public class ProfileController {
     }
 
     @GetMapping("/matches")
-    public List<GetProfileDto> getMatches(Authentication authentication) {
-        // TODO maak match dto, geef aan of er al een chat bestaat
+    public List<MatchDto> getMatches(Authentication authentication) {
         User user = authentication == null ? null : (User) authentication.getPrincipal();
         if (user == null) {
             throw new NotFoundException();

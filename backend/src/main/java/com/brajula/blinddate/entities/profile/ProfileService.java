@@ -1,5 +1,6 @@
 package com.brajula.blinddate.entities.profile;
 
+import com.brajula.blinddate.entities.chat.ChatService;
 import com.brajula.blinddate.entities.images.ImageRepository;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
@@ -45,10 +46,9 @@ public class ProfileService {
     private final ProfileTraitService profileTraitService;
     private final TraitService traitService;
     private final JudgementService judgementService;
-
     private final PreferenceService preferenceService;
-
     private final UserRepository userRepository;
+    private final ChatService chatService;
 
     public List<GetProfileDto> getAll() {
         return profileRepository.findAll().stream().map(GetProfileDto::from).toList();
@@ -87,11 +87,17 @@ public class ProfileService {
                 .toList();
     }
 
-    public List<GetProfileDto> getMatches(User user) {
+    public List<MatchDto> getMatches(User user) {
         Profile userProfile = getUserProfile(user);
         List<Long> matchIdList = judgementService.findMutualMatches(userProfile.getId());
         List<Profile> profileMatches = matchIdList.stream().map(this::getById).toList();
-        return profileMatches.stream().map(GetProfileDto::from).toList();
+        return profileMatches.stream()
+                .map(
+                        profile ->
+                                MatchDto.from(
+                                        profile,
+                                        chatService.hasChatBetween(user, profile.getUser())))
+                .toList();
     }
 
     public Profile getById(Long id) {
