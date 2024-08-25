@@ -33,6 +33,7 @@ function MyProfile() {
             .then(({ profile, imageUrl }) => {
                 setProfile(profile);
                 setImageSrc(imageUrl);
+                console.log(profile);
             })
             .catch((error) => {
                 if (error.response.status == 404) navigate("/create-profile");

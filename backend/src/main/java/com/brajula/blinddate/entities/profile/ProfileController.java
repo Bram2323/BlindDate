@@ -5,7 +5,6 @@ import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.entities.user.UserRepository;
 import com.brajula.blinddate.exceptions.ForbiddenException;
 import com.brajula.blinddate.exceptions.NotFoundException;
-import com.brajula.blinddate.security.Role;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +33,17 @@ public class ProfileController {
             throw new NotFoundException();
         } else {
             return ResponseEntity.ok(profileService.getAllProfilesToJudge(user));
+        }
+    }
+
+    @GetMapping("/matches")
+    public List<GetProfileDto> getMatches(Authentication authentication) {
+        // TODO maak match dto, geef aan of er al een chat bestaat
+        User user = authentication == null ? null : (User) authentication.getPrincipal();
+        if (user == null) {
+            throw new NotFoundException();
+        } else {
+            return profileService.getMatches(user);
         }
     }
 

@@ -15,6 +15,6 @@ public class Judgement {
     @Id @GeneratedValue private Long id;
 
     @Setter private Long judgeId;
-    @Setter private Long judgedId;
+    @Setter private Long potentialMatchId;
     @Setter private Boolean accepted;
 }

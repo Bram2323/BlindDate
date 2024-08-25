@@ -18,7 +18,9 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -30,13 +32,23 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "${blinddate.cors}")
 public class ChatController {
-
     private final ChatRepository chatRepository;
     private final ChatService chatService;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
-
     private final SimpMessagingTemplate messagingTemplate;
+
+    @PostMapping("/new/{matchId}")
+    private void createChat(@PathVariable UUID matchId, Authentication authentication) {
+        User authUser = (User) authentication.getPrincipal();
+        User match = userRepository.findById(matchId).orElseThrow(NotFoundException::new);
+        Chat savedChat = chatService.startNewChat(authUser, match);
+        URI location =
+                ServletUriComponentsBuilder.fromCurrentRequest()
+                        .path("/id")
+                        .buildAndExpand(savedChat.getId())
+                        .toUri();
+    }
 
     @GetMapping("user/{userId}")
     private List<ChatDTO> getFromUser(@PathVariable UUID userId, Authentication authentication) {
@@ -128,7 +140,7 @@ public class ChatController {
                 messageRepository.save(new Message(chat, user, trimmedText, LocalDateTime.now()));
 
         Optional<User> possibleOtherUser = chatService.getOtherUser(chat, user);
-        if (possibleOtherUser.isPresent()){
+        if (possibleOtherUser.isPresent()) {
             User otherUser = possibleOtherUser.get();
             chatService.setChatReadForUser(chat, otherUser, false);
         }
@@ -140,7 +152,7 @@ public class ChatController {
     }
 
     @MessageMapping("/read-chat-{chatId}")
-    public void setRead(@Payload String userId, @DestinationVariable Long chatId){
+    public void setRead(@Payload String userId, @DestinationVariable Long chatId) {
         Optional<Chat> chat = chatRepository.findById(chatId);
         Optional<User> user = userRepository.findById(UUID.fromString(userId));
 
@@ -166,8 +178,8 @@ public class ChatController {
         return ResponseEntity.noContent().build();
     }
 
-
-    private void sendNotification(User user, Message message){
-        messagingTemplate.convertAndSendToUser(user.getId().toString(),"notification", MessageNotificationDTO.from(message));
+    private void sendNotification(User user, Message message) {
+        messagingTemplate.convertAndSendToUser(
+                user.getId().toString(), "notification", MessageNotificationDTO.from(message));
     }
 }

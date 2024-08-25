@@ -15,8 +15,7 @@ function NavBar() {
             <nav className="bg-purple-300 flex items-center justify-between px-4 py-2 relative shadow-lg">
                 <div className="flex items-center gap-2">
                     <button
-                        className="text-4xl font-bold text-pink-500 hover:text-pink-400 hover:bg-purple-500 px-2 mx-2 my-2 rounded transition"
-                        className="flex items-center text-4xl text-white hover:bg-purple-500 px-2 mx-2 my-2 rounded gap-2"
+                        className="flex items-center text-4xl text-white hover:bg-purple-500 p-2 mx-2 my-2 rounded gap-2"
                         onClick={() => navigate("/")}
                     >
                         <img src={Logo} className="h-8" alt="Blind Date Logo" />
@@ -56,6 +55,10 @@ function NavBar() {
                     ) : (
                         <>
                             <NavigationLink label={"Chat"} url={"/"} />
+                            <NavigationLink
+                                label={"Matches"}
+                                url={"/matches"}
+                            />
                             <NavigationLink label={"Browse"} url={"/judging"} />
                             <NavigationLink
                                 label={"Profile"}
@@ -121,6 +124,10 @@ function NavBar() {
                                     label={"Chat"}
                                     url={"/"}
                                     hideAfterNav={() => setShowNav(false)}
+                                />
+                                <NavigationLink
+                                    label={"Matches"}
+                                    url={"/matches"}
                                 />
                                 <NavigationLink
                                     label={"Browse"}

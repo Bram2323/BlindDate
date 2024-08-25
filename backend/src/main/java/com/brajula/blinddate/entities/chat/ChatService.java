@@ -30,4 +30,14 @@ public class ChatService {
         if (chat.getUserTwo().equals(currentUser)) return Optional.of(chat.getUserOne());
         return Optional.empty();
     }
+
+    // TODO check of chat al bestaat of niet
+    public Chat startNewChat(User userOne, User userTwo) {
+        Chat chat = new Chat();
+        chat.setUserOne(userOne);
+        chat.setUserTwo(userTwo);
+        chat.setReadByUserOne(false);
+        chat.setReadByUserTwo(false);
+        return chatRepository.save(chat);
+    }
 }

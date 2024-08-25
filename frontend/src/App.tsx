@@ -5,7 +5,7 @@ import { Home } from "./pages/Home/Home";
 import NavBar from "./components/NavBar";
 import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
-
+import { Matches } from "./pages/Match/Matches";
 import Chat from "./pages/chat/Chat";
 import { CreateProfile } from "./pages/Profile/CreateProfile";
 import MyProfile from "./pages/Profile/MyProfile";
@@ -42,6 +42,7 @@ function App() {
                         <Route path="/admin/*" element={<Admin />} />
                         <Route path="/judging" element={<Judging />} />
                         <Route path="/moderator" element={<ModeratorPage />} />
+                        <Route path="/matches" element={<Matches />} />
                     </Routes>
                 </div>
             </StompSessionProvider>
