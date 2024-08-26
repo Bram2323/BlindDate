@@ -42,7 +42,7 @@ export const ProfileView = ({
         );
 
     return (
-        <div className={`relative`}>
+        <div className="relative w-full">
             <div className="w-full flex flex-col items-center justify-center">
                 {canEdit && (
                     <div className="p-4 w-full flex flex-col items-end">
