@@ -6,12 +6,15 @@ import { LabelBox } from "./components/LabelBox";
 import { TraitsList } from "./components/TraitsList";
 import { IProfile } from "./components/ProfileInterfaces";
 import { UserReport } from "../Moderator/components/UserReport";
+import { useState } from "react";
+import Placeholder from "../../assets/images/sst.png";
 
 interface ProfileViewProps {
     profile?: IProfile;
     imageSrc?: string;
     canEdit?: boolean;
     canReport?: boolean;
+    hideImage?: boolean;
 }
 
 export const ProfileView = ({
@@ -19,8 +22,10 @@ export const ProfileView = ({
     imageSrc,
     canEdit,
     canReport,
+    hideImage,
 }: ProfileViewProps) => {
     const navigate = useNavigate();
+    const [scroll, setScroll] = useState<boolean>(true);
     const sectionsBgColors = [
         "bg-yellow-300",
         "bg-purple-300",
@@ -37,7 +42,7 @@ export const ProfileView = ({
         );
 
     return (
-        <div className="relative">
+        <div className="relative w-full">
             <div className="w-full flex flex-col items-center justify-center">
                 {canEdit && (
                     <div className="p-4 w-full flex flex-col items-end">
@@ -60,7 +65,11 @@ export const ProfileView = ({
                         }
                         style={"m-4 text-2xl"}
                     />
-                    {<img src={imageSrc} className="rounded-lg h-56" />}
+                    {hideImage === undefined ? (
+                        <img src={imageSrc} className="rounded-lg h-56" />
+                    ) : (
+                        <img src={Placeholder} className="rounded-lg h-24" />
+                    )}
                     <LabelBox
                         content={`${profile?.age} years`}
                         style={"mt-4 mb-2"}

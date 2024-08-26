@@ -31,8 +31,8 @@ export const UserReport: React.FC<ReportProps> = ({ profileUsername }) => {
     return (
         <div
             className={`${
-                isOpen ? "border-2" : ""
-            } absolute right-5 top-5 rounded-lg border-gray-800 m-2`}
+                isOpen ? " z-50 border-2 right-0 top-0 left-0" : ""
+            }z-20 top-2 right-2 absolute bg-gray-300 rounded-lg border-gray-800 m-2`}
         >
             {isOpen ? (
                 <div className="bg-gray-300 p-10 rounded-lg flex flex-col">

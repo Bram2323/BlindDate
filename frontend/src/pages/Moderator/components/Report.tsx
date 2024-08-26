@@ -30,15 +30,8 @@ export const Report: React.FC<ReportProps> = ({ report, updatePage }) => {
 
     useEffect(() => {}, [modMessage]);
     return (
-        <div className="rounded-lg bg-white p-10 w-3/4 h-fit shadow-lg">
+        <div className="rounded-lg bg-white p-10 w-full h-fit shadow-lg">
             <div className="flex flex-row items-center justify-between">
-                <Button
-                    style={"m-2"}
-                    content={"Go to Reported Profile"}
-                    handleClick={() => {
-                        navigate(`/admin/users/${report.reportedUserId}`);
-                    }}
-                />
                 {!report.isClosed && (
                     <Button
                         content={"Close report"}
@@ -49,7 +42,14 @@ export const Report: React.FC<ReportProps> = ({ report, updatePage }) => {
             </div>
 
             <p className="font-bold p-2">Reported user:</p>
-            <p className="p-2">{report.reportedUsername}</p>
+            <p
+                className="p-2 cursor-pointer text-blue-700 underline"
+                onClick={() => {
+                    navigate(`/admin/users/${report.reportedUserId}`);
+                }}
+            >
+                {report.reportedUsername}
+            </p>
 
             <p className="font-bold p-2">Report:</p>
             <p className="p-2">{report.reportMessage}</p>
@@ -70,7 +70,7 @@ export const Report: React.FC<ReportProps> = ({ report, updatePage }) => {
                 </p>
             ))}
             {!report.isClosed && (
-                <div className="flex flex-row items-center gap-4">
+                <div className="flex flex-col items-center gap-4">
                     <p className="p-2">Add mod Message</p>
                     <FieldInput
                         style={"border-none"}
