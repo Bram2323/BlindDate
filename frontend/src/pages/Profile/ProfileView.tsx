@@ -14,7 +14,7 @@ interface ProfileViewProps {
     imageSrc?: string;
     canEdit?: boolean;
     canReport?: boolean;
-    hideImage?: boolean;
+    judging?: boolean;
 }
 
 export const ProfileView = ({
@@ -22,7 +22,7 @@ export const ProfileView = ({
     imageSrc,
     canEdit,
     canReport,
-    hideImage,
+    judging,
 }: ProfileViewProps) => {
     const navigate = useNavigate();
     const [scroll, setScroll] = useState<boolean>(true);
@@ -54,7 +54,6 @@ export const ProfileView = ({
                         />
                     </div>
                 )}
-
                 <Section label={"img-container"} style={sectionsBgColors[0]}>
                     {canReport && (
                         <UserReport profileUsername={profile.username} />
@@ -65,7 +64,7 @@ export const ProfileView = ({
                         }
                         style={"m-4 text-2xl"}
                     />
-                    {hideImage === undefined ? (
+                    {judging === undefined || judging === false ? (
                         <img src={imageSrc} className="rounded-lg h-56" />
                     ) : (
                         <img src={Placeholder} className="rounded-lg h-24" />
@@ -75,30 +74,32 @@ export const ProfileView = ({
                         style={"mt-4 mb-2"}
                     />
                 </Section>
-
                 <Section label={"gender-box"} style={sectionsBgColors[1]}>
                     <p className="text-2xl font-extrabold tracking-wider m-4">
-                        Gender &amp; Preferences
+                        Gender
                     </p>
                     <div className="gap-2 flex flex-col items-center justify-between">
                         <LabelBox content={profile?.gender.toLowerCase()} />
-                        <span className="font-bold tracking-wider ">
-                            looking for
-                        </span>
-                        <ul className="flex flex-col gap-2">
-                            {profile?.lookingForGender &&
-                                profile.lookingForGender.map(
-                                    (gender, index) => (
-                                        <LabelBox
-                                            key={index}
-                                            content={gender.toLowerCase()}
-                                        />
-                                    )
-                                )}
-                        </ul>
+                        {!judging && (
+                            <>
+                                <span className="font-bold tracking-wider ">
+                                    looking for
+                                </span>
+                                <ul className="flex flex-col gap-2">
+                                    {profile.lookingForGender &&
+                                        profile.lookingForGender.map(
+                                            (gender, index) => (
+                                                <LabelBox
+                                                    key={index}
+                                                    content={gender.toLowerCase()}
+                                                />
+                                            )
+                                        )}
+                                </ul>
+                            </>
+                        )}
                     </div>
                 </Section>
-
                 <Section label={"about-container"} style={sectionsBgColors[2]}>
                     <p className="text-2xl font-extrabold tracking-wider">
                         About me
@@ -107,6 +108,18 @@ export const ProfileView = ({
                         {profile?.description}
                     </div>
                 </Section>
+
+                {judging && (
+                    <Section
+                        label={"gender-identity-container"}
+                        style={sectionsBgColors[4]}
+                    >
+                        <ProfileSection
+                            title="Gender identities"
+                            items={profile?.sexualities}
+                        />
+                    </Section>
+                )}
 
                 <Section
                     label={"preference-container"}
@@ -117,17 +130,6 @@ export const ProfileView = ({
                         items={profile?.preferences}
                     />
                 </Section>
-
-                <Section
-                    label={"gender-identity-container"}
-                    style={sectionsBgColors[4]}
-                >
-                    <ProfileSection
-                        title="Gender identities"
-                        items={profile?.sexualities}
-                    />
-                </Section>
-
                 <Section
                     label={"interest-container"}
                     style={sectionsBgColors[0]}
@@ -138,7 +140,6 @@ export const ProfileView = ({
                         style={""}
                     />
                 </Section>
-
                 <Section label={"traits-container"} style={sectionsBgColors[1]}>
                     <TraitsList traits={profile?.traits} />
                 </Section>
