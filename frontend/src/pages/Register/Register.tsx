@@ -52,7 +52,7 @@ function Register() {
     return (
         <>
             <div className="flex min-h-full items-center justify-center">
-                <div className=" bg-blue-300 h-fit p-4 rounded-xl border-2 border-blue-800 flex flex-col gap-3 items-center justify-center relative">
+                <div className=" bg-blue-200 h-fit p-4 rounded-xl border-2 border-blue-800 flex flex-col gap-3 items-center justify-center relative">
                     <Warning
                         message={error}
                         duration={2000}

@@ -53,11 +53,11 @@ export const CreateProfile = () => {
     ];
 
     const sectionsBgColors = [
-        "bg-yellow-300",
-        "bg-purple-300",
-        "bg-blue-300",
-        "bg-pink-300",
-        "bg-green-300",
+        "bg-yellow-200",
+        "bg-purple-200",
+        "bg-blue-200",
+        "bg-pink-200",
+        "bg-green-200",
     ];
 
     const fetchProfileData = () => {
