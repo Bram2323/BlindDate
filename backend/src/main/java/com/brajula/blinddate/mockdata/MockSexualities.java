@@ -7,20 +7,17 @@ import java.util.List;
 public class MockSexualities {
     public static final List<Sexuality> SEXUALITIES =
             List.of(
-                    (new Sexuality("Heterosexual")), // tegenovergestelde geslacht
-                    (new Sexuality("Homosexual")), // hetzelfde geslacht
-                    (new Sexuality("Bisexual")), // beide geslachten
-                    (new Sexuality("Pansexual")), // ongeacht geslacht
-                    (new Sexuality("Asexual")), // staat los van geslacht, dus geen filter?
-                    (new Sexuality("Demisexual")), // alle genders
-                    (new Sexuality("Omnisexual")), // alle genders
-                    (new Sexuality("Sexual Fluidity")), // varierend, dus geen filter?
-                    (new Sexuality(
-                            "Androsexual")), // mannelijkheid of mannelijke kenmerken. dus any?
-                    (new Sexuality(
-                            "Gynosexual")), //  vrouwelijkheid of vrouwelijke kenmerken, ook any?
-                    (new Sexuality("Graysexual")), // variant van aseksueel dus geen filter?
-                    (new Sexuality("Skoliosexual")), // nonbinary mensen
-                    (new Sexuality(
-                            "Polysexual"))); // meerdere maar niet alle genders, welke filter?
+                    (new Sexuality("Heterosexual")),
+                    (new Sexuality("Homosexual")),
+                    (new Sexuality("Bisexual")),
+                    (new Sexuality("Pansexual")),
+                    (new Sexuality("Asexual")),
+                    (new Sexuality("Demisexual")),
+                    (new Sexuality("Omnisexual")),
+                    (new Sexuality("Sexual Fluidity")),
+                    (new Sexuality("Androsexual")),
+                    (new Sexuality("Gynosexual")),
+                    (new Sexuality("Graysexual")),
+                    (new Sexuality("Skoliosexual")),
+                    (new Sexuality("Polysexual")));
 }
