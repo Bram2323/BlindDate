@@ -29,6 +29,7 @@ export const Report: React.FC<ReportProps> = ({ report, updatePage }) => {
     };
 
     useEffect(() => {}, [modMessage]);
+
     return (
         <div className="rounded-lg bg-white p-10 w-full h-fit shadow-lg">
             <div className="flex flex-row items-center justify-between">
