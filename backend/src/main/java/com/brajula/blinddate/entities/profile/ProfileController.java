@@ -29,7 +29,7 @@ public class ProfileController {
     private final UserRepository userRepository;
 
     @GetMapping("/judge-list")
-    public ResponseEntity<List<GetProfileDto>> getAllProfilesToJudge(
+    public ResponseEntity<List<GetProfileMinimalDto>> getAllProfilesToJudge(
             Authentication authentication) {
         User user = authentication == null ? null : (User) authentication.getPrincipal();
         if (user == null) {

@@ -1,6 +1,16 @@
 package com.brajula.blinddate.entities.profile;
 
 import com.brajula.blinddate.entities.chat.ChatService;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
 import com.brajula.blinddate.entities.images.ImageRepository;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
@@ -53,13 +63,14 @@ public class ProfileService {
     private final ChatService chatService;
     private static final Logger logger = LoggerFactory.getLogger(ProfileController.class);
 
-    public List<GetProfileDto> getAll() {
+    public List<GetProfileDto> getAllForUser() {
         return profileRepository.findAll().stream().map(GetProfileDto::from).toList();
     }
 
     // overloaded get all
-    public List<GetProfileDto> getAll(User user) {
-        Profile userProfile = getUserProfile(user);
+    public List<GetProfileMinimalDto> getAllForUser(User user) {
+        Profile userProfile =
+                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
         Specification<Profile> specification = Specification.where(null);
         if (userProfile.getLookingForGender() != null
                 && !userProfile.getLookingForGender().isEmpty()) {
@@ -82,10 +93,11 @@ public class ProfileService {
         return calculateMatchScore(userProfile, filteredProfiles);
     }
 
-    public List<GetProfileDto> getAllProfilesToJudge(User user) {
-        Profile userProfile = getUserProfile(user);
+    public List<GetProfileMinimalDto> getAllProfilesToJudge(User user) {
+        Profile userProfile =
+                profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
         List<Long> judgedProfileIds = judgementService.getJudgedIdsByJudgeId(userProfile.getId());
-        return getAll(user).stream()
+        return getAllForUser(user).stream()
                 .filter((profile) -> !judgedProfileIds.contains(profile.id()))
                 .toList();
     }
@@ -222,9 +234,9 @@ public class ProfileService {
         return traits;
     }
 
-    public List<GetProfileDto> calculateMatchScore(
+    public List<GetProfileMinimalDto> calculateMatchScore(
             Profile userProfile, List<Profile> filteredProfiles) {
-        List<GetProfileDto> getProfileDtoList = new ArrayList<>();
+        List<GetProfileMinimalDto> getProfileDtoList = new ArrayList<>();
         for (Profile profile : filteredProfiles) {
             if (!profile.equals(userProfile)) {
                 int matchScore = 0;
@@ -255,12 +267,12 @@ public class ProfileService {
                                     .toList();
                     matchScore += similarProfileTraits.size();
                 }
-                GetProfileDto dto = GetProfileDto.from(profile, matchScore);
+                GetProfileMinimalDto dto = GetProfileMinimalDto.from(profile, matchScore);
                 getProfileDtoList.add(dto);
             }
         }
 
-        getProfileDtoList.sort(Comparator.comparingInt(GetProfileDto::matchScore).reversed());
+        getProfileDtoList.sort(Comparator.comparingInt(GetProfileMinimalDto::matchScore).reversed());
         return getProfileDtoList;
     }
 
