@@ -3,20 +3,24 @@ package com.brajula.blinddate.mockdata;
 import com.brajula.blinddate.entities.profile.Gender;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class MockProfiles {
-    // profile
     private static final Random RANDOM = new Random();
 
     private static Gender getRandomGender() {
         return Gender.values()[RANDOM.nextInt(Gender.values().length)];
     }
 
-    // todo deze gaat niet helemaal goed, op dubbele waardes checken.
     private static List<Gender> getRandomGenderList() {
-        return List.of(getRandomGender(), getRandomGender());
+        List<Gender> lookingForList = new ArrayList<>();
+        lookingForList.add(getRandomGender());
+        do {
+            lookingForList.add(1, getRandomGender());
+        } while (lookingForList.get(0) == lookingForList.get(1));
+        return lookingForList;
     }
 
     public static final List<SeedProfileDto> PROFILES =

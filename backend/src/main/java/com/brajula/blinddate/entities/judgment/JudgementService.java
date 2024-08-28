@@ -1,11 +1,8 @@
 package com.brajula.blinddate.entities.judgment;
 
-import com.brajula.blinddate.entities.profile.ProfileController;
 
 import lombok.RequiredArgsConstructor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -14,7 +11,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class JudgementService {
     private final JudgementRepository judgementRepository;
-    private static final Logger logger = LoggerFactory.getLogger(ProfileController.class);
 
     public List<Long> getJudgedIdsByJudgeId(Long judgeId) {
         List<Long> judgedIds = new LinkedList<>();

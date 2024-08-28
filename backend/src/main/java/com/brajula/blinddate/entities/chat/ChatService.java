@@ -1,13 +1,10 @@
 package com.brajula.blinddate.entities.chat;
 
-import com.brajula.blinddate.entities.profile.ProfileController;
 import com.brajula.blinddate.entities.user.User;
 import com.brajula.blinddate.exceptions.BadRequestException;
 
 import lombok.RequiredArgsConstructor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,7 +13,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ChatService {
     private final ChatRepository chatRepository;
-    private static final Logger logger = LoggerFactory.getLogger(ProfileController.class);
 
     public boolean isChatUnreadByUser(Chat chat, User user) {
         if (chat.getUserOne().equals(user) && !chat.getReadByUserOne()) return true;
@@ -49,9 +45,6 @@ public class ChatService {
     }
 
     public boolean hasChatBetween(User userOne, User userTwo) {
-        boolean chatExists = chatRepository.chatBetweenUsersExists(userOne, userTwo);
-        logger.info(
-                "Chat exists between {} and {}: {}", userOne.getId(), userTwo.getId(), chatExists);
-        return chatExists;
+        return chatRepository.chatBetweenUsersExists(userOne, userTwo);
     }
 }

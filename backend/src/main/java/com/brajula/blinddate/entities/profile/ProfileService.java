@@ -1,16 +1,6 @@
 package com.brajula.blinddate.entities.profile;
 
 import com.brajula.blinddate.entities.chat.ChatService;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
 import com.brajula.blinddate.entities.images.ImageRepository;
 import com.brajula.blinddate.entities.interest.Interest;
 import com.brajula.blinddate.entities.interest.InterestService;
@@ -36,8 +26,6 @@ import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +49,6 @@ public class ProfileService {
     private final PreferenceService preferenceService;
     private final UserRepository userRepository;
     private final ChatService chatService;
-    private static final Logger logger = LoggerFactory.getLogger(ProfileController.class);
 
     public List<GetProfileDto> getAllForUser() {
         return profileRepository.findAll().stream().map(GetProfileDto::from).toList();
@@ -105,7 +92,6 @@ public class ProfileService {
     public List<MatchDto> getMatches(User user) {
         Profile userProfile = getUserProfile(user);
         List<Long> matchIdList = judgementService.findMutualMatches(userProfile.getId());
-        logger.info("Potential Match IDs from getmatches: {}", matchIdList);
         List<Profile> profileMatches = matchIdList.stream().map(this::getById).toList();
         return profileMatches.stream()
                 .map(
