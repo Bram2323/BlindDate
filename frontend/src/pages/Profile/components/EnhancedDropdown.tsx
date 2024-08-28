@@ -14,8 +14,8 @@ export const EnhancedDropdown: React.FC<DropDownSelectProps> = ({
     const [showOptions, setShowOptions] = useState<Option[]>([]);
     const [selected, setSelected] = useState<SelectedOption[]>([]);
     const layoutIfExtra = extraOptions
-        ? "flex-col border-b-2 border-gray-200"
-        : "";
+        ? "flex-col border-t-2 border-gray-200"
+        : "flex-col border-t-2 border-gray-200";
 
     useEffect(() => {
         setShowOptions(sortOptions(options));
@@ -92,7 +92,7 @@ export const EnhancedDropdown: React.FC<DropDownSelectProps> = ({
             <div className="w-full">
                 {label && <label htmlFor={label}>{label}</label>}
                 <select
-                    className="bg-white px-2 py-1 rounded-lg border-gray-800 border-2 m-2 w-full"
+                    className="bg-white px-2 py-1 rounded-lg border-gray-800 border-2 my-2 w-full"
                     name={label}
                     id={label}
                     onChange={(e) => {
@@ -115,9 +115,11 @@ export const EnhancedDropdown: React.FC<DropDownSelectProps> = ({
             <ScrollContainer width={"w-full"}>
                 <ul className="bg-white w-full rounded-lg flex flex-col items-center justify-center">
                     {selected &&
-                        selected.map((selection) => (
+                        selected.map((selection, index) => (
                             <li
-                                className={`${layoutIfExtra} w-full grid grid-cols-8`}
+                                className={`${
+                                    index != 0 && layoutIfExtra
+                                } w-full grid grid-cols-8`}
                                 key={selection.id + selection.value}
                             >
                                 <div className="text-sm col-span-4">

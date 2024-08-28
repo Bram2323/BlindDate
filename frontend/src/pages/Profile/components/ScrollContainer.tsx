@@ -17,9 +17,11 @@ export const ScrollContainer: React.FC<ScrollContainerProps> = ({
             <div
                 className={`${height ? height : "h-36"} ${
                     width ? width : "w-full"
-                } border-2 bg-white border-gray-800 overflow-y-scroll overflow-x-hidden rounded-lg`}
+                } border-2 bg-white border-gray-800 overflow-hidden rounded-lg`}
             >
-                {children}
+                <div className={`w-full h-full overflow-auto p-1`}>
+                    {children}
+                </div>
             </div>
         </div>
     );

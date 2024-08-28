@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -50,12 +49,12 @@ public class ProfileService {
 
     private final UserRepository userRepository;
 
-    public List<GetProfileDto> getAll() {
+    public List<GetProfileDto> getAllForUser() {
         return profileRepository.findAll().stream().map(GetProfileDto::from).toList();
     }
 
     // overloaded get all
-    public List<GetProfileDto> getAll(User user) {
+    public List<GetProfileMinimalDto> getAllForUser(User user) {
         Profile userProfile =
                 profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
         Specification<Profile> specification = Specification.where(null);
@@ -77,11 +76,11 @@ public class ProfileService {
         return calculateMatchScore(userProfile, filteredProfiles);
     }
 
-    public List<GetProfileDto> getAllProfilesToJudge(User user) {
+    public List<GetProfileMinimalDto> getAllProfilesToJudge(User user) {
         Profile userProfile =
                 profileRepository.findByUser(user).orElseThrow(NotFoundException::new);
         List<Long> judgedProfileIds = judgementService.getJudgedIdsByJudgeId(userProfile.getId());
-        return getAll(user).stream()
+        return getAllForUser(user).stream()
                 .filter((profile) -> !judgedProfileIds.contains(profile.id()))
                 .toList();
     }
@@ -204,9 +203,9 @@ public class ProfileService {
         return traits;
     }
 
-    public List<GetProfileDto> calculateMatchScore(
+    public List<GetProfileMinimalDto> calculateMatchScore(
             Profile userProfile, List<Profile> filteredProfiles) {
-        List<GetProfileDto> getProfileDtoList = new ArrayList<>();
+        List<GetProfileMinimalDto> getProfileDtoList = new ArrayList<>();
         for (Profile profile : filteredProfiles) {
             if (!profile.equals(userProfile)) {
                 int matchScore = 0;
@@ -237,12 +236,12 @@ public class ProfileService {
                                     .toList();
                     matchScore += similarProfileTraits.size();
                 }
-                GetProfileDto dto = GetProfileDto.from(profile, matchScore);
+                GetProfileMinimalDto dto = GetProfileMinimalDto.from(profile, matchScore);
                 getProfileDtoList.add(dto);
             }
         }
 
-        getProfileDtoList.sort(Comparator.comparingInt(GetProfileDto::matchScore).reversed());
+        getProfileDtoList.sort(Comparator.comparingInt(GetProfileMinimalDto::matchScore).reversed());
         return getProfileDtoList;
     }
 }

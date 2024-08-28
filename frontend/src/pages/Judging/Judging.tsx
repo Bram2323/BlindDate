@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import ApiService from "../../services/ApiService";
-import { IProfile } from "../Profile/components/ProfileInterfaces";
+import { IMinimalProfile } from "../Profile/components/ProfileInterfaces";
 import { ProfileView } from "../Profile/ProfileView";
 
 function Judging() {
-    const [profiles, setProfiles] = useState<IProfile[]>();
-    const [currentProfile, setCurrentProfile] = useState<IProfile>();
+    const [profiles, setProfiles] = useState<IMinimalProfile[]>();
+    const [currentProfile, setCurrentProfile] = useState<IMinimalProfile>();
 
     useEffect(() => {
         ApiService.get("profiles/judge-list")
@@ -63,9 +63,16 @@ function Judging() {
                     </div>
                     {profiles && (
                         <ProfileView
-                            profile={profiles[0]}
+                            profile={{
+                                ...profiles[0],
+                                imageId: null,
+                                minAge: 0,
+                                maxAge: 0,
+                                lookingForGender: [],
+                                sexualities: [],
+                            }}
                             canReport={true}
-                            hideImage={true}
+                            judging={true}
                         />
                     )}
                     <div className="absolute right-4 bottom-5 z-40">

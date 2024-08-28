@@ -63,13 +63,13 @@ function UserView() {
                         <Button
                             content="Disable"
                             handleClick={disableUser}
-                            style="absolute top-4 left-4"
+                            style="absolute top-4 left-4 z-30"
                         />
                     ) : (
                         <Button
                             content="Enable"
                             handleClick={enableUser}
-                            style="absolute top-4 left-4"
+                            style="absolute top-4 left-4 z-30"
                         />
                     ))}
 

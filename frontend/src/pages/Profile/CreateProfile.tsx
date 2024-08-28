@@ -203,7 +203,7 @@ export const CreateProfile = () => {
             </Section>
 
             <Section label={"gender-info"} style={sectionsBgColors[1]}>
-                <LabelBox content={"Gender Preferences"} style={"w-full"} />
+                <LabelBox content={"Gender"} style={"w-full"} />
                 <DropDownSelect
                     label={"I am a"}
                     category={"gender"}
@@ -253,8 +253,29 @@ export const CreateProfile = () => {
                 />
             </Section>
 
+            <Section
+                label={"gender-identities-box"}
+                style={sectionsBgColors[0]}
+            >
+                <LabelBox content={"Gender identity"} style={"w-full"} />
+                <ScrollContainer
+                    height={"h-48"}
+                    headerStyle={"font-extrabold m-4"}
+                >
+                    {sexualities && (
+                        <CheckBoxList
+                            options={sexualities}
+                            initialValues={profile ? profile.sexualities : []}
+                            getIdList={(list: any) => {
+                                formRef.current.sexualities = list;
+                            }}
+                        />
+                    )}
+                </ScrollContainer>
+            </Section>
+
             <Section label={"age-data-box"} style={sectionsBgColors[3]}>
-                <LabelBox content={"Age & preference"} style={"w-full"} />
+                <LabelBox content={"Age & Preference"} style={"w-full"} />
                 <div>
                     <DateInput
                         label={"BirthDate"}
@@ -303,27 +324,6 @@ export const CreateProfile = () => {
                             initialValues={profile ? profile.preferences : []}
                             getIdList={(list: any) => {
                                 formRef.current.preferences = list;
-                            }}
-                        />
-                    )}
-                </ScrollContainer>
-            </Section>
-
-            <Section
-                label={"gender-identities-box"}
-                style={sectionsBgColors[0]}
-            >
-                <LabelBox content={"Gender identity"} style={"w-full"} />
-                <ScrollContainer
-                    height={"h-48"}
-                    headerStyle={"font-extrabold m-4"}
-                >
-                    {sexualities && (
-                        <CheckBoxList
-                            options={sexualities}
-                            initialValues={profile ? profile.sexualities : []}
-                            getIdList={(list: any) => {
-                                formRef.current.sexualities = list;
                             }}
                         />
                     )}
