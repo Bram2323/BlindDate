@@ -93,7 +93,7 @@ public class ProfileService {
     public List<MatchDto> getMatches(User user) {
         Profile userProfile = getUserProfile(user);
         List<Long> matchIdList = judgementService.findMutualMatches(userProfile.getId());
-        logger.info("Potential Match IDs: " + matchIdList);
+        logger.info("Potential Match IDs from getmatches: {}", matchIdList);
         List<Profile> profileMatches = matchIdList.stream().map(this::getById).toList();
         return profileMatches.stream()
                 .map(

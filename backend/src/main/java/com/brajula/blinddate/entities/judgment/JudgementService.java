@@ -8,8 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,17 +26,22 @@ public class JudgementService {
     }
 
     public List<Long> findMutualMatches(Long judgeId) {
-        List<Long> potentialMatchIds =
-                judgementRepository.findByJudgedIdAndJudgeIdAndAcceptedTrue(judgeId);
-        logger.debug("potential match ids: " + potentialMatchIds);
-        logger.debug("Judge id: " + judgeId);
-        return potentialMatchIds.stream()
-                .filter(
-                        potentialMatchId ->
-                                !judgementRepository
-                                        .findByJudgeIdAndJudgedIdAndAcceptedTrue(
-                                                potentialMatchId, judgeId)
-                                        .isEmpty())
-                .toList();
+        List<Judgement> userAcceptedMatches =
+                judgementRepository.findByJudgeIdAndAccepted(judgeId, true);
+        List<Judgement> matchesAcceptedUser =
+                judgementRepository.findByJudgedIdAndAccepted(judgeId, true);
+
+        Set<Long> acceptedByUser = new HashSet<>();
+        for (Judgement judgement : userAcceptedMatches) {
+            acceptedByUser.add(judgement.getJudgedId());
+        }
+        List<Long> matches = new ArrayList<>();
+        for (Judgement judgement : matchesAcceptedUser) {
+            if (acceptedByUser.contains(judgement.getJudgeId())) {
+                matches.add(judgement.getJudgeId());
+            }
+        }
+
+        return matches;
     }
 }

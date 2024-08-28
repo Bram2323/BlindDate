@@ -51,12 +51,7 @@ public class ChatService {
     public boolean hasChatBetween(User userOne, User userTwo) {
         boolean chatExists = chatRepository.chatBetweenUsersExists(userOne, userTwo);
         logger.info(
-                "Chat exists between "
-                        + userOne.getId()
-                        + " and "
-                        + userTwo.getId()
-                        + ": "
-                        + chatExists);
+                "Chat exists between {} and {}: {}", userOne.getId(), userTwo.getId(), chatExists);
         return chatExists;
     }
 }

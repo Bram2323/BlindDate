@@ -32,7 +32,7 @@ function Judging() {
         ApiService.post("judgements", {
             accepted: answer,
             judgeId: currentProfile.id,
-            potentialMatchId: profiles[0].id,
+            judgedId: profiles[0].id,
         }).catch((error) => {
             console.error(error);
         });

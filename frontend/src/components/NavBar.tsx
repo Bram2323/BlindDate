@@ -128,6 +128,7 @@ function NavBar() {
                                 <NavigationLink
                                     label={"Matches"}
                                     url={"/matches"}
+                                    hideAfterNav={() => setShowNav(false)}
                                 />
                                 <NavigationLink
                                     label={"Browse"}
