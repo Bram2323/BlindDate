@@ -8,6 +8,8 @@ import com.brajula.blinddate.exceptions.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ import java.util.UUID;
 @CrossOrigin(origins = "${blinddate.cors}")
 @RequestMapping(Routes.PROFILES)
 public class ProfileController {
+    private static final Logger logger = LoggerFactory.getLogger(ProfileController.class);
     private final ProfileService profileService;
     private final UserRepository userRepository;
 
@@ -40,6 +43,7 @@ public class ProfileController {
     public List<MatchDto> getMatches(Authentication authentication) {
         User user = authentication == null ? null : (User) authentication.getPrincipal();
         if (user == null) {
+            logger.error("user is null!");
             throw new NotFoundException();
         } else {
             return profileService.getMatches(user);

@@ -14,6 +14,7 @@ public class MockProfiles {
         return Gender.values()[RANDOM.nextInt(Gender.values().length)];
     }
 
+    // todo deze gaat niet helemaal goed, op dubbele waardes checken.
     private static List<Gender> getRandomGenderList() {
         return List.of(getRandomGender(), getRandomGender());
     }

@@ -26,6 +26,8 @@ import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +51,7 @@ public class ProfileService {
     private final PreferenceService preferenceService;
     private final UserRepository userRepository;
     private final ChatService chatService;
+    private static final Logger logger = LoggerFactory.getLogger(ProfileController.class);
 
     public List<GetProfileDto> getAll() {
         return profileRepository.findAll().stream().map(GetProfileDto::from).toList();
@@ -90,6 +93,7 @@ public class ProfileService {
     public List<MatchDto> getMatches(User user) {
         Profile userProfile = getUserProfile(user);
         List<Long> matchIdList = judgementService.findMutualMatches(userProfile.getId());
+        logger.info("Potential Match IDs: " + matchIdList);
         List<Profile> profileMatches = matchIdList.stream().map(this::getById).toList();
         return profileMatches.stream()
                 .map(
