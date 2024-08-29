@@ -65,10 +65,8 @@ export const ProfileView = ({
                         }
                         style={"m-4 text-2xl"}
                     />
-                    {judging === undefined || judging === false ? (
+                    {(judging === undefined || judging === false) && (
                         <img src={imageSrc} className="rounded-lg h-56" />
-                    ) : (
-                        <img src={Placeholder} className="rounded-lg h-24" />
                     )}
                     <LabelBox
                         content={`${profile?.age} years`}
