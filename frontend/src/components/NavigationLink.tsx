@@ -12,7 +12,7 @@ export const NavigationLink: React.FC<NavigationLinkProps> = ({
     const navigate = useNavigate();
     return (
         <li
-            className={`${colspan} text-xl bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded flex items-center justify-center cursor-pointer transition shadow`}
+            className={`${colspan} text-xl text-white bg-pink-400 hover:bg-pink-600 font-bold py-2 px-4 mx-4 my-4 rounded flex items-center justify-center cursor-pointer transition shadow`}
             onClick={() => {
                 if (logoutUser) {
                     logout();

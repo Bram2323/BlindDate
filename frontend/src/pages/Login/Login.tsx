@@ -35,7 +35,7 @@ const Login = () => {
     return (
         <>
             <div className="flex min-h-full items-center justify-center">
-                <div className=" bg-green-300 h-fit p-4 rounded-xl border-2 border-green-800 flex flex-col items-center justify-center relative">
+                <div className=" bg-green-200 h-fit p-4 rounded-xl border-2 border-green-800 flex flex-col items-center justify-center relative">
                     <Warning
                         message={error}
                         duration={2000}

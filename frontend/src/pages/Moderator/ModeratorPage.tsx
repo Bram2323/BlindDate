@@ -46,8 +46,8 @@ export const ModeratorPage = () => {
 
     return (
         <div className="flex flex-col justify-center items-center">
-            <Section label={"start"} style={"bg-yellow-300 py-16"}>
-                <LabelBox content="Welcome to the Janitor's Lounge!" />
+            <Section label={"start"} style={"bg-yellow-200 py-16"}>
+                <LabelBox content="Welcome to the Moderators Lounge!" />
                 <Button
                     content={`${
                         showOpen ? "show Closed Reports" : "show Open Reports"
@@ -60,7 +60,7 @@ export const ModeratorPage = () => {
             {showOpen ? (
                 <Section
                     label={"open-reports"}
-                    style={"bg-green-300 gap-4 lg:px-10"}
+                    style={"bg-green-200 gap-4 lg:px-10"}
                 >
                     <LabelBox content={"Open Reports"} />
                     {openReports &&
@@ -77,7 +77,7 @@ export const ModeratorPage = () => {
             ) : (
                 <Section
                     label={"closed-reports"}
-                    style={"bg-blue-300 gap-4  lg:px-10"}
+                    style={"bg-blue-200 gap-4  lg:px-10"}
                 >
                     <LabelBox content={"Closed Reports"} />
                     {closedReports &&
