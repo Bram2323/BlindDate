@@ -40,6 +40,7 @@ export const ProfileView = ({
                 <p>Loading...</p>
             </>
         );
+    console.log("prrooooo", profile);
 
     return (
         <div className="relative w-full">
@@ -109,18 +110,6 @@ export const ProfileView = ({
                     </div>
                 </Section>
 
-                {judging && (
-                    <Section
-                        label={"gender-identity-container"}
-                        style={sectionsBgColors[4]}
-                    >
-                        <ProfileSection
-                            title="Gender identities"
-                            items={profile?.sexualities}
-                        />
-                    </Section>
-                )}
-
                 <Section
                     label={"preference-container"}
                     style={sectionsBgColors[3]}
@@ -135,7 +124,7 @@ export const ProfileView = ({
                     style={sectionsBgColors[0]}
                 >
                     <ProfileSection
-                        title="Thinks i like"
+                        title="Things i like"
                         items={profile?.interests}
                         style={""}
                     />

@@ -13,6 +13,7 @@ export interface IProfile {
     preferences: IFetchOption[] | number[];
     interests: IFetchOption[] | number[];
     traits: ITrait[];
+    userId?: string;
 }
 
 export interface IMinimalProfile {

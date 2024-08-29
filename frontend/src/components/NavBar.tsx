@@ -55,6 +55,10 @@ function NavBar() {
                     ) : (
                         <>
                             <NavigationLink label={"Chat"} url={"/"} />
+                            <NavigationLink
+                                label={"Matches"}
+                                url={"/matches"}
+                            />
                             <NavigationLink label={"Browse"} url={"/judging"} />
                             <NavigationLink
                                 label={"Profile"}
@@ -119,6 +123,11 @@ function NavBar() {
                                 <NavigationLink
                                     label={"Chat"}
                                     url={"/"}
+                                    hideAfterNav={() => setShowNav(false)}
+                                />
+                                <NavigationLink
+                                    label={"Matches"}
+                                    url={"/matches"}
                                     hideAfterNav={() => setShowNav(false)}
                                 />
                                 <NavigationLink

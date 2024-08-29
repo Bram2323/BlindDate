@@ -1,6 +1,7 @@
 package com.brajula.blinddate.entities.chat;
 
 import com.brajula.blinddate.entities.user.User;
+import com.brajula.blinddate.exceptions.BadRequestException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,5 +30,21 @@ public class ChatService {
         if (chat.getUserOne().equals(currentUser)) return Optional.of(chat.getUserTwo());
         if (chat.getUserTwo().equals(currentUser)) return Optional.of(chat.getUserOne());
         return Optional.empty();
+    }
+
+    public Chat startNewChat(User userOne, User userTwo) {
+        if (chatRepository.chatBetweenUsersExists(userOne, userTwo)) {
+            throw new BadRequestException("Chat already exists");
+        }
+        Chat chat = new Chat();
+        chat.setUserOne(userOne);
+        chat.setUserTwo(userTwo);
+        chat.setReadByUserOne(false);
+        chat.setReadByUserTwo(false);
+        return chatRepository.save(chat);
+    }
+
+    public boolean hasChatBetween(User userOne, User userTwo) {
+        return chatRepository.chatBetweenUsersExists(userOne, userTwo);
     }
 }

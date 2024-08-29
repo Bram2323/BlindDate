@@ -3,6 +3,7 @@ import React from "react";
 export const Button: React.FC<ButtonProps> = ({
     content,
     style,
+    id,
     handleClick,
 }) => {
     const defaultStyle =
@@ -10,6 +11,7 @@ export const Button: React.FC<ButtonProps> = ({
     return (
         <>
             <button
+                id={id ? id : ""}
                 className={`${defaultStyle} ${style} py-2 px-4`}
                 onClick={handleClick}
             >
@@ -22,5 +24,6 @@ export const Button: React.FC<ButtonProps> = ({
 interface ButtonProps {
     content: string;
     style?: string;
+    id?: string;
     handleClick: () => void;
 }
