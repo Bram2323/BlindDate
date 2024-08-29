@@ -10,7 +10,7 @@ export const Match: React.FC<MatchProps> = ({ match }) => {
             .then(() => {
                 navigate(`/`);
             })
-            .catch((error) => console.error(error));
+            .catch(() => navigate(`/`));
     };
     return (
         <li
