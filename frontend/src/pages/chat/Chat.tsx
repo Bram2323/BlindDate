@@ -80,7 +80,7 @@ function Chat() {
 
         ApiService.post("chats/" + id, { text: message }).catch((error) => {
             if (error.response.data.detail == "This chat is closed!") {
-                window.location.reload();
+                setChat({ ...chat, closedByUserOne: true });
             }
         });
     }
