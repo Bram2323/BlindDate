@@ -24,8 +24,8 @@ export const Matches = () => {
     return (
         <div className="flex justify-center">
             <Section label={"match-container"} style={"bg-blue-300"}>
-                <LabelBox content={"Matches"} style={"w-full"} />
-                <ul className="w-full">
+                <LabelBox content={"Matches"} style={"w-full text-2xl"} />
+                <ul className="w-full flex flex-col gap-2">
                     {matches.length > 0 ? (
                         matches.map((match) => (
                             <Match key={match.matchId} match={match} />

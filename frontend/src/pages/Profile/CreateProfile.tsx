@@ -152,9 +152,9 @@ export const CreateProfile = () => {
         fetchData("interests", setInterests);
         fetchData("traits", setTraits);
         fetchData("preferences", setPreferences);
-        fetchProfileData().then((res) => {
-            setProfile(res.profile);
-            setImageUrl(res.imageUrl);
+        fetchProfileData().then((response) => {
+            setProfile(response.profile);
+            setImageUrl(response.imageUrl);
         });
     }, []);
 
@@ -225,7 +225,7 @@ export const CreateProfile = () => {
                     {genders.map((gender) => (
                         <li
                             key={gender.id}
-                            className="bg-white border-2 border-gray-800 rounded-lg shadow-lg"
+                            className="bg-white min-w-72 rounded-lg shadow-lg capitalize"
                         >
                             <Checkbox
                                 targetId={gender.id}

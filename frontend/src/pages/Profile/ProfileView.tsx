@@ -68,7 +68,7 @@ export const ProfileView = ({
                     )}
 
                     <div className="flex flex-col items-center justify-center gap-4 mt-4">
-                        <div className="gap-2 flex flex-col items-center justify-between">
+                        <div className="gap-2 flex flex-col items-center justify-between capitalize">
                             <LabelBox content={profile?.gender.toLowerCase()} />
                         </div>
 
