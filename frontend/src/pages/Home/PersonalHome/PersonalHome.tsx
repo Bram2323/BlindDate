@@ -20,20 +20,26 @@ function PersonalHome({ userId }: PersonalHomeProps) {
         handleNotification(data);
     });
 
-    useEffect(() => {
+    useEffect(getChats, [userId]);
+
+    function getChats() {
         ApiService.get("chats/user/" + userId).then((response) => {
             setAllChats(response.data);
         });
         ApiService.get("chats/user/" + userId + "/unread").then((response) => {
             setUnreadChats(response.data);
         });
-    }, [userId]);
+    }
 
     function handleNotification(data: any) {
         const chatId = data.chatId;
         const message = data.message;
 
-        const chat = allChats.find((chat) => chat.id == chatId);
+        let chat = allChats.find((chat) => chat.id == chatId);
+        if (chat == undefined) {
+            getChats();
+            return;
+        }
         chat.lastMessage = message;
 
         const filteredChats = allChats.filter((chat) => chat.id != chatId);
