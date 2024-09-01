@@ -194,7 +194,10 @@ export const CreateProfile = () => {
                 warningColor={"bg-red-500"}
             />
             <Section label={"img-container"} style={sectionsBgColors[0]}>
-                <LabelBox content={user.username} style={"text-xl w-full"} />
+                <LabelBox
+                    content={user.username}
+                    style={"text-xl w-full border-2 border-gray-600"}
+                />
                 <ImageUpload
                     style={"h-72"}
                     initialValue={imageSrc ? imageSrc : ""}
@@ -216,7 +219,9 @@ export const CreateProfile = () => {
                     }
                 />
                 <ul className="flex flex-col gap-2">
-                    <li className="text-center">Looking for</li>
+                    <li className="text-center font-bold tracking-wider py-1">
+                        Looking for
+                    </li>
                     {genders.map((gender) => (
                         <li
                             key={gender.id}
@@ -286,9 +291,13 @@ export const CreateProfile = () => {
                     />
                 </div>
                 {/* slider: https://www.npmjs.com/package/multi-range-slider-react */}
-                <h1 className="min-w-48">Select age range</h1>
+                <h1 className="min-w-48 text-center font-bold tracking-wider">
+                    Select age range
+                </h1>
                 <div className="multi-range-slider-container bg-white rounded-lg p-4 shadow-2xl border-2 border-gray-800 w-full">
                     <MultiRangeSlider
+                        ruler={false}
+                        labels={["18", "99"]}
                         min={18}
                         max={99}
                         minValue={profile?.minAge ? profile.minAge : 18} // set naar min age als doorgegeven
@@ -334,7 +343,6 @@ export const CreateProfile = () => {
                 <LabelBox content={"Q&A"} style={"w-full text-center"} />
                 {traits && (
                     <EnhancedDropdown
-                        label={"Traits"}
                         category={"Trait"}
                         options={traits?.map((trait: any) => ({
                             id: trait.id,

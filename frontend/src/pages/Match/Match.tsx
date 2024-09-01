@@ -14,10 +14,10 @@ export const Match: React.FC<MatchProps> = ({ match }) => {
     };
     return (
         <li
-            className="flex flex-row p-4 gap-12 w-full border-b-2 justify-center items-center"
+            className="flex flex-row p-4 gap-12 w-full border-b-2 justify-between"
             key={match.matchId}
         >
-            <p className="tracking-wider font-bold bg-green-600 px-4 py-2 rounded-lg text-white">
+            <p className="tracking-wider font-bold text-2xl px-4 py-2 rounded-lg text-blue-800 capitalize">
                 {match.matchUsername}
             </p>
             <Button

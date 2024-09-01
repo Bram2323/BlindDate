@@ -3,9 +3,13 @@ import ApiService from "../../services/ApiService";
 import { Section } from "../Profile/components/Section";
 import { Match } from "./Match";
 import { IMatch } from "./IMatch";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../../generic/Button";
+import { LabelBox } from "../Profile/components/LabelBox";
 
 export const Matches = () => {
     const [matches, setMatches] = useState<IMatch[]>([]);
+    const navigate = useNavigate();
     useEffect(() => {
         ApiService.get(`/profiles/matches`)
             .then((response) => {
@@ -18,18 +22,24 @@ export const Matches = () => {
     }, []);
 
     return (
-        <div className="flex items-center justify-center">
-            <Section label={"match-container"} style={"bg-blue-300 "}>
-                <h1 className="tracking-wider font-bold text-2xl">Matches</h1>
+        <div className="flex justify-center">
+            <Section label={"match-container"} style={"bg-blue-300"}>
+                <LabelBox content={"Matches"} style={"w-full"} />
                 <ul className="w-full">
                     {matches.length > 0 ? (
                         matches.map((match) => (
                             <Match key={match.matchId} match={match} />
                         ))
                     ) : (
-                        <p className="tracking-wider text-center p-4">
-                            No Matches yet...
-                        </p>
+                        <div className="flex items-center justify-center">
+                            <p className="tracking-wider text-center p-4">
+                                You have no matches
+                            </p>
+                            <Button
+                                content={"Browse"}
+                                handleClick={() => navigate("/judging")}
+                            />
+                        </div>
                     )}
                 </ul>
             </Section>
