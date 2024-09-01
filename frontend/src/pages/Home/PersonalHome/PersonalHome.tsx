@@ -34,9 +34,7 @@ function PersonalHome({ userId }: PersonalHomeProps) {
         const message = data.message;
 
         const chat = allChats.find((chat) => chat.id == chatId);
-        console.log("old chat", chat);
         chat.lastMessage = message;
-        console.log("new chat", chat);
 
         const filteredChats = allChats.filter((chat) => chat.id != chatId);
         const filteredUnreadChats = unreadChats.filter(
