@@ -36,8 +36,8 @@ function MessageContainer({
     }, [imageId]);
 
     useEffect(() => {
-        const maxMsgToShowImg = 50;
-        const showMoreByMsgAmount = 5;
+        const maxMsgToShowImg = 20;
+        const showMoreByMsgAmount = 4;
         const minBlur = 0;
         const maxBlur = 70;
         const minOpacity = 0.2;
