@@ -284,7 +284,7 @@ public class Seeder implements CommandLineRunner {
     }
 
     public void seedModerators() {
-        if (userRepository.findByUsernameIgnoreCase("InternetJanitor").isPresent()) return;
+        if (userRepository.findByUsernameIgnoreCase("Moderator").isPresent()) return;
         User moderator =
                 userService.register(
                         "Moderator",
