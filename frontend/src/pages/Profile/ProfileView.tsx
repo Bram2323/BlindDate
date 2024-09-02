@@ -25,11 +25,10 @@ export const ProfileView = ({
     judging,
 }: ProfileViewProps) => {
     const navigate = useNavigate();
-    const [scroll, setScroll] = useState<boolean>(true);
     const sectionsBgColors = [
-        "bg-yellow-200",
-        "bg-purple-200",
         "bg-blue-200",
+        "bg-purple-200",
+        "bg-yellow-200",
         "bg-pink-200",
         "bg-green-200",
     ];
@@ -40,7 +39,6 @@ export const ProfileView = ({
                 <p>Loading...</p>
             </>
         );
-    console.log("prrooooo", profile);
 
     return (
         <div className="relative w-full">
@@ -63,54 +61,28 @@ export const ProfileView = ({
                         content={
                             profile?.username ? profile.username : "not found"
                         }
-                        style={"m-4 text-2xl"}
+                        style={"m-4 text-2xl w-full border-2 border-gray-600"}
                     />
                     {(judging === undefined || judging === false) && (
-                        <img src={imageSrc} className="rounded-lg h-56" />
+                        <img src={imageSrc} className="rounded-lg h-72" />
                     )}
-                    <LabelBox
-                        content={`${profile?.age} years`}
-                        style={"mt-4 mb-2"}
-                    />
-                </Section>
-                <Section label={"gender-box"} style={sectionsBgColors[1]}>
-                    <p className="text-2xl font-extrabold tracking-wider m-4">
-                        Gender
-                    </p>
-                    <div className="gap-2 flex flex-col items-center justify-between">
-                        <LabelBox content={profile?.gender.toLowerCase()} />
-                        {!judging && (
-                            <>
-                                <span className="font-bold tracking-wider ">
-                                    looking for
-                                </span>
-                                <ul className="flex flex-col gap-2">
-                                    {profile.lookingForGender &&
-                                        profile.lookingForGender.map(
-                                            (gender, index) => (
-                                                <LabelBox
-                                                    key={index}
-                                                    content={gender.toLowerCase()}
-                                                />
-                                            )
-                                        )}
-                                </ul>
-                            </>
-                        )}
+
+                    <div className="flex flex-col items-center justify-center gap-4 mt-4">
+                        <div className="gap-2 flex flex-col items-center justify-between capitalize">
+                            <LabelBox content={profile?.gender.toLowerCase()} />
+                        </div>
+
+                        <LabelBox content={`${profile?.age} years`} />
                     </div>
-                </Section>
-                <Section label={"about-container"} style={sectionsBgColors[2]}>
-                    <p className="text-2xl font-extrabold tracking-wider">
-                        About me
-                    </p>
-                    <div className="w-full my-4 bg-white p-4 min-h-48 rounded-lg shadow-lg">
+
+                    <div className="w-full my-4 bg-white p-4 min-h-48 rounded-lg shadow-lg border-2 border-gray-600">
                         {profile?.description}
                     </div>
                 </Section>
 
                 <Section
                     label={"preference-container"}
-                    style={sectionsBgColors[3]}
+                    style={sectionsBgColors[1]}
                 >
                     <ProfileSection
                         title="Preferences"
@@ -119,7 +91,7 @@ export const ProfileView = ({
                 </Section>
                 <Section
                     label={"interest-container"}
-                    style={sectionsBgColors[0]}
+                    style={sectionsBgColors[2]}
                 >
                     <ProfileSection
                         title="Things i like"
@@ -127,7 +99,7 @@ export const ProfileView = ({
                         style={""}
                     />
                 </Section>
-                <Section label={"traits-container"} style={sectionsBgColors[1]}>
+                <Section label={"traits-container"} style={sectionsBgColors[3]}>
                     <TraitsList traits={profile?.traits} />
                 </Section>
             </div>

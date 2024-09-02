@@ -8,7 +8,7 @@ export const Section: React.FC<SectionProps> = ({
     const breakpoints = "sm:w-2/3 lg:w-2/4";
     return (
         <div
-            className={`${style} ${breakpoints} w-full my-4 px-4 py-8 md:rounded-lg flex flex-col items-center justify-center shadow-lg border-2 border-gray-800`}
+            className={`${style} ${breakpoints} w-full gap-4 my-4 px-4 py-8 rounded-md md:rounded-lg flex flex-col items-center shadow-lg border-2 border-gray-800`}
         >
             {children}
         </div>

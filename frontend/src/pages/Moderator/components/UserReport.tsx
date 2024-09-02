@@ -12,7 +12,6 @@ export const UserReport: React.FC<ReportProps> = ({ profileUsername }) => {
         if (reportMsg == "") {
             return;
         }
-        console.log(profileUsername);
         ApiService.post("/reports", {
             reportMessage: reportMsg,
             reportedUsername: profileUsername,

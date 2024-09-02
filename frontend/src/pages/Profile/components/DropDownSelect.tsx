@@ -24,7 +24,9 @@ export const DropDownSelect: React.FC<DropDownSelectProps> = ({
 
     return (
         <div className="w-full flex flex-col items-center justify-center">
-            <label htmlFor={label}>{label}</label>
+            <label className="font-bold tracking-wider py-1" htmlFor={label}>
+                {label}
+            </label>
             <select
                 className="bg-white border-2 border-gray-800 rounded-lg px-2 py-1 mx-2 w-fit"
                 name={category}
