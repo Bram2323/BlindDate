@@ -13,6 +13,7 @@ function Register() {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [repeatPassword, setRepeatPassword] = useState("");
     const [error, setError] = useState("");
 
     const navigate = useNavigate();
@@ -37,7 +38,9 @@ function Register() {
         if (email.length == 0) errors.push("Email can't be blank!");
         if (!isValidEmail(email)) errors.push("Email is invalid!");
 
-        if (!isValidPassword(password)) errors.push("Password is invalid!");
+        if (password != repeatPassword) errors.push("Passwords don't match!");
+
+        errors.push(...validatePassword(password));
 
         if (errors.length > 0) {
             showError(errors[0]);
@@ -47,6 +50,36 @@ function Register() {
         register(username, firstName, lastName, email, password).then(() =>
             navigate("/create-profile")
         );
+    }
+
+    function validatePassword(password: string) {
+        let errors = [];
+
+        let hasUppercase = false;
+        let hasLowercase = false;
+        let hasNumber = false;
+        let hasSpecialCharacter = false;
+        for (let i = 0; i < password.length; i++) {
+            const chr = password[i];
+
+            if (chr.toUpperCase() != chr.toLowerCase()) {
+                if (chr == chr.toUpperCase()) hasUppercase = true;
+                else hasLowercase = true;
+            } else if (chr.match("[0-9]") != null) hasNumber = true;
+            else hasSpecialCharacter = true;
+        }
+
+        if (!hasUppercase) errors.push("Password needs an upper case letter!");
+        if (!hasLowercase) errors.push("Password needs a lower case letter!");
+        if (!hasNumber) errors.push("Password needs a number!");
+        if (!hasSpecialCharacter)
+            errors.push("Password needs a special character!");
+
+        if (password.length < 8) {
+            errors.push("Password needs to have at least 8 characters!");
+        }
+
+        return errors;
     }
 
     return (
@@ -93,6 +126,17 @@ function Register() {
                         style="rounded-lg border-blue-800"
                         layout="flex flex-col border-none w-72"
                         handleChange={(value: string) => setPassword(value)}
+                        onSubmit={TryRegister}
+                    />
+                    <FieldInput
+                        label="Repeat Password"
+                        content={repeatPassword}
+                        type="password"
+                        style="rounded-lg border-blue-800"
+                        layout="flex flex-col border-none w-72"
+                        handleChange={(value: string) =>
+                            setRepeatPassword(value)
+                        }
                         onSubmit={TryRegister}
                     />
                     <Button content="Register" handleClick={TryRegister} />
