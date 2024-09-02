@@ -119,7 +119,7 @@ export const EnhancedDropdown: React.FC<DropDownSelectProps> = ({
                             <li
                                 className={`${
                                     index != 0 && layoutIfExtra
-                                } w-full grid grid-cols-8`}
+                                } w-full grid grid-cols-8 items-center`}
                                 key={selection.id + selection.value}
                             >
                                 <div className="text-sm col-span-4">
