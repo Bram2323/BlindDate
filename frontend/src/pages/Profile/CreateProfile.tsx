@@ -262,7 +262,7 @@ export const CreateProfile = () => {
                 label={"gender-identities-box"}
                 style={sectionsBgColors[0]}
             >
-                <LabelBox content={"Gender identity"} style={"w-full"} />
+                <LabelBox content={"Sexuality"} style={"w-full"} />
                 <ScrollContainer
                     height={"h-48"}
                     headerStyle={"font-extrabold m-4"}
